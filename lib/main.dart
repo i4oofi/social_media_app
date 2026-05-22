@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
                 theme: AppTheme.lightThem,
                 onGenerateRoute: AppRouter.onGenerateRoute,
                 initialRoute: state is auth.AuthSuccess
-                    ? AppRoutes.homeScreen
+                    ? AppRoutes.customBottomNavbar
                     : AppRoutes.authScreen,
               );
             },

@@ -1,4 +1,6 @@
 class AppRoutes {
   static const authScreen = '/auth';
   static const homeScreen = '/home';
+  static const customBottomNavbar = '/custom_bottom_navbar';
+  static const createPost = '/create_post';
 }

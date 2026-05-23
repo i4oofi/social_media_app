@@ -1,9 +1,11 @@
+import 'package:social_media_app/core/services/supabase_database_services.dart';
+import 'package:social_media_app/core/theme/app_tables_names.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthServices {
   final supabase = Supabase.instance.client;
-
+  final supabaseDatabaseServices = SupabaseDatabaseServices.instance;
   Future<void> signUpWithEmail(
     String email,
     String password,
@@ -36,18 +38,6 @@ class AuthServices {
     await supabase.auth.resetPasswordForEmail(email);
   }
 
-  Future<UserData?> getUserData() async {
-    final user = supabase.auth.currentUser;
-    if (user == null) {
-      throw Exception('User is not logged in');
-    }
-    final response = await supabase
-        .from('users')
-        .select()
-        .eq('id', user.id)
-        .single();
-    return UserData.fromMap(response);
-  }
 
   User? fetchUserRaw() {
     final user = supabase.auth.currentUser;
@@ -58,10 +48,14 @@ class AuthServices {
   }
 
   Future<void> _setUserData(String name, String email, String userId) async {
-    await supabase.from('users').insert({
-      'name': name,
-      'email': email,
-      'id': userId,
-    });
+    try {
+      final userData = UserData(id: userId, name: name, email: email);
+      await supabaseDatabaseServices.insertRow(
+        table: AppTablesNames.users,
+        values: userData.toMap(),
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 }

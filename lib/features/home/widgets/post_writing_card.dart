@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
+import 'package:social_media_app/features/home/cubit/home_cubit.dart';
 
 class PostWritingCard extends StatelessWidget {
   const PostWritingCard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final homeCubit = context.read<HomeCubit>();
+    Future<void> navigatorToPost() => Navigator.of(context, rootNavigator: true)
+        .pushNamed(AppRoutes.createPost, arguments: homeCubit)
+        .then((value) async => await homeCubit.refresh());
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -25,10 +31,7 @@ class PostWritingCard extends StatelessWidget {
               const SizedBox(width: 16),
               InkWell(
                 onTap: () {
-                  Navigator.of(
-                    context,
-                    rootNavigator: true,
-                  ).pushNamed(AppRoutes.createPost);
+                  navigatorToPost();
                 },
                 child: Text(
                   "What's on your head?",
@@ -46,7 +49,9 @@ class PostWritingCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  navigatorToPost();
+                },
                 child: Row(
                   children: [
                     Icon(Icons.image, color: AppColors.indicatorColor),
@@ -68,7 +73,9 @@ class PostWritingCard extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  navigatorToPost();
+                },
                 child: Row(
                   children: [
                     Icon(Icons.video_file, color: AppColors.indicatorColor),

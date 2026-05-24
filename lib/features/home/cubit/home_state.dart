@@ -32,3 +32,21 @@ final class PostError extends HomeState {
 
   PostError({required this.error});
 }
+
+final class PostCreating extends HomeState {}
+
+final class PostCreated extends HomeState {}
+
+final class PostCreateError extends HomeState {
+  final String error;
+
+  PostCreateError({required this.error});
+}
+
+final class PostCreateInitialLoading extends HomeState {}
+
+final class PostCreateInitialData extends HomeState {
+  final UserData user;
+
+  PostCreateInitialData({required this.user});
+}

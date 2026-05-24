@@ -1,6 +1,7 @@
 import 'package:social_media_app/core/services/supabase_database_services.dart';
 import 'package:social_media_app/core/theme/app_tables_names.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
+import 'package:social_media_app/features/home/models/post_request_body.dart';
 import 'package:social_media_app/features/home/models/story_model.dart';
 
 class HomeServices {
@@ -33,4 +34,16 @@ class HomeServices {
       rethrow;
     }
   }
+
+  Future<void> createPost(PostRequestBody post) async {
+    try {
+      await supabaseServices.insertRow(
+        table: AppTablesNames.posts,
+        values: post.toMap(),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }

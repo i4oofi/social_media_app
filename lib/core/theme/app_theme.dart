@@ -4,6 +4,13 @@ import 'package:social_media_app/core/theme/app_colors.dart';
 class AppTheme {
   static final ThemeData lightThem = ThemeData(
     brightness: Brightness.light,
+    appBarTheme: const AppBarTheme(
+      scrolledUnderElevation: 0,
+      backgroundColor: AppColors.white,
+      foregroundColor: AppColors.black,
+      elevation: 0,
+      centerTitle: false,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),

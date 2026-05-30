@@ -94,14 +94,20 @@ class PostCard extends StatelessWidget {
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: 200,
-                  errorWidget: (context, error, stackTrace) {
-                    return Container(
-                      height: 200,
-                      width: double.infinity,
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.broken_image, color: Colors.grey),
-                    );
-                  },
+                  placeholder: (context, url) => Container(
+                    height: 200,
+                    width: double.infinity,
+                    color: Colors.grey[100],
+                    child: const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    height: 200,
+                    width: double.infinity,
+                    color: Colors.grey[200],
+                    child: const Icon(Icons.broken_image, color: Colors.grey),
+                  ),
                 ),
               ),
               const SizedBox(height: 12),

@@ -1,16 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'dart:io';
 
 class PostRequestBody {
   final String text;
   final String authorId;
-  final File? image;
-  final File? file;
+  final String? imageUrl;
+  final String? file;
   PostRequestBody({
     required this.text,
     required this.authorId,
-    this.image,
+    this.imageUrl,
     this.file,
   });
 
@@ -18,12 +17,24 @@ class PostRequestBody {
     return <String, dynamic>{
       'text': text,
       'author_id': authorId,
-      'image_url': image != null
-          ? base64Encode(image!.readAsBytesSync())
-          : null,
-      'file': file != null ? base64Encode(file!.readAsBytesSync()) : null,
+      'image_url': imageUrl,
+      'file': file,
     };
   }
 
   String toJson() => json.encode(toMap());
+
+  PostRequestBody copyWith({
+    String? text,
+    String? authorId,
+    String? imageUrl,
+    String? file,
+  }) {
+    return PostRequestBody(
+      text: text ?? this.text,
+      authorId: authorId ?? this.authorId,
+      imageUrl: imageUrl ?? this.imageUrl,
+      file: file ?? this.file,
+    );
+  }
 }

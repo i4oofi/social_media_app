@@ -50,3 +50,31 @@ final class PostCreateInitialData extends HomeState {
 
   PostCreateInitialData({required this.user});
 }
+
+final class FileUploading extends HomeState {}
+
+final class FileUploaded extends HomeState {
+  final File file;
+
+  FileUploaded({required this.file});
+}
+
+final class FileUploadError extends HomeState {
+  final String error;
+
+  FileUploadError({required this.error});
+}
+
+final class PickingImage extends HomeState {}
+
+final class ImagePicked extends HomeState {
+  final File image;
+
+  ImagePicked({required this.image});
+}
+
+final class PickingImageError extends HomeState {
+  final String error;
+
+  PickingImageError({required this.error});
+}

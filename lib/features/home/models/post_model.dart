@@ -12,19 +12,17 @@ class PostModel {
   final List<String>? likes;
   final List<String>? comments;
 
- const PostModel({
+  const PostModel({
     required this.id,
     required this.text,
     required this.authorId,
-     this.imageUrl,
-     this.authorName,
-     this.authorProfileImage,
+    this.imageUrl,
+    this.authorName,
+    this.authorProfileImage,
     required this.createdAt,
-     this.likes,
-     this.comments,
+    this.likes,
+    this.comments,
   });
-
-
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -45,18 +43,27 @@ class PostModel {
       id: map['id'] as String,
       text: map['text'] as String,
       authorId: map['author_id'] as String,
-      imageUrl: map['image_url'] != null ? map['image_url'] as String : null,
-      authorName: map['author_name'] != null ? map['author_name'] as String : null,
-      authorProfileImage: map['author_image_url'] != null ? map['author_image_url'] as String : null,
+      imageUrl: map['image_url'] as String?,
+      authorName: map['author_name'] != null
+          ? map['author_name'] as String
+          : null,
+      authorProfileImage: map['author_image_url'] != null
+          ? map['author_image_url'] as String
+          : null,
       createdAt: map['created_at'] as String,
-      likes: map['likes'] != null ? List<String>.from(map['likes'] as List) : null,
-      comments: map['comments'] != null ? List<String>.from(map['comments'] as List) : null,
+      likes: map['likes'] != null
+          ? List<String>.from(map['likes'] as List)
+          : null,
+      comments: map['comments'] != null
+          ? List<String>.from(map['comments'] as List)
+          : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory PostModel.fromJson(String source) => PostModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory PostModel.fromJson(String source) =>
+      PostModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   PostModel copyWith({
     String? id,

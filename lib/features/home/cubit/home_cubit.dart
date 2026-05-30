@@ -1,6 +1,11 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:social_media_app/core/services/core_auth_services.dart';
+import 'package:social_media_app/core/services/file_picker_services.dart';
 import 'package:social_media_app/core/services/home_services.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
@@ -13,6 +18,9 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
   final homeServices = HomeServices();
   final coreAuthServices = CoreAuthServices();
+  final filePickerServices = FilePickerServices();
+  File? currentImage;
+  File? currentFile;
   Future<void> fetchStories() async {
     try {
       emit(StoryLoading());
@@ -60,10 +68,9 @@ class HomeCubit extends Cubit<HomeState> {
       if (currentUser != null) {
         emit(PostCreating());
         await homeServices.createPost(
-          PostRequestBody(
-            text: text,
-            authorId: currentUser.id,
-          ),
+          PostRequestBody(text: text, authorId: currentUser.id),
+          currentImage,
+          currentFile,
         );
         emit(PostCreated());
       }
@@ -83,6 +90,7 @@ class HomeCubit extends Cubit<HomeState> {
       emit(PostCreateError(error: e.toString()));
     }
   }
+
   Future<void> refresh() async {
     try {
       await fetchStories();
@@ -90,6 +98,45 @@ class HomeCubit extends Cubit<HomeState> {
     } catch (e) {
       emit(StoryError(error: e.toString()));
       emit(PostError(error: e.toString()));
+    }
+  }
+
+  Future<void> pickImage() async {
+    emit(PickingImage());
+    try {
+      final image = await filePickerServices.pickImage();
+      if (image != null) {
+        currentImage = File(image.path);
+        emit(ImagePicked(image: File(image.path)));
+      }
+    } catch (e) {
+      emit(PickingImageError(error: e.toString()));
+    }
+  }
+
+  Future<void> takeImage() async {
+    emit(PickingImage());
+    try {
+      final image = await filePickerServices.takeImage();
+      if (image != null) {
+        currentImage = File(image.path);
+        emit(ImagePicked(image: File(image.path)));
+      }
+    } catch (e) {
+      emit(PickingImageError(error: e.toString()));
+    }
+  }
+
+  Future<void> uploadFile() async {
+    emit(FileUploading());
+    try {
+      final file = await filePickerServices.pickFile();
+      if (file != null) {
+        currentFile = File(file.path);
+        emit(FileUploaded(file: File(file.path)));
+      }
+    } catch (e) {
+      emit(FileUploadError(error: e.toString()));
     }
   }
 }

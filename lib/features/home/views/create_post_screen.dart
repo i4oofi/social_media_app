@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
-import 'package:social_media_app/features/home/models/post_model.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -87,7 +86,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     if (_textController.text.isNotEmpty) {
                       await homeCubit.createPost(text: _textController.text);
                       if (context.mounted) {
-                        Navigator.pop(context);
+                        // Navigator.pop(context);
                       }
                     }
                   },
@@ -128,57 +127,122 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       children: [
                         CircleAvatar(
                           radius: 22,
-                        backgroundColor: AppColors.babyBlue15,
-                        child: userData.imageUrl == null
-                            ? const Icon(
-                                Icons.person_rounded,
-                                color: AppColors.primaryColor,
-                              )
-                            : CachedNetworkImage(imageUrl: userData.imageUrl!, height: 44, width: 44,),
-                      ),
-                      const SizedBox(width: 12),
-                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            userData.name,
-                            style: TextStyle(
-                              color: AppColors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'SF Pro Text',
-                            ),
-                          ),
-                          SizedBox(height: 2),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.public,
-                                size: 14,
-                                color: AppColors.dividerColor,
-                              ),
-                              SizedBox(width: 4),
-                              Text(
-                                "Public",
-                                style: TextStyle(
-                                  color: AppColors.dividerColor,
-                                  fontSize: 12,
-                                  fontFamily: 'SF Pro Text',
+                          backgroundColor: AppColors.babyBlue15,
+                          child: userData.imageUrl == null
+                              ? const Icon(
+                                  Icons.person_rounded,
+                                  color: AppColors.primaryColor,
+                                )
+                              : CachedNetworkImage(
+                                  imageUrl: userData.imageUrl!,
+                                  height: 44,
+                                  width: 44,
                                 ),
+                        ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              userData.name,
+                              style: TextStyle(
+                                color: AppColors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'SF Pro Text',
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
-                }
+                            ),
+                            SizedBox(height: 2),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.public,
+                                  size: 14,
+                                  color: AppColors.dividerColor,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  "Public",
+                                  style: TextStyle(
+                                    color: AppColors.dividerColor,
+                                    fontSize: 12,
+                                    fontFamily: 'SF Pro Text',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
               ),
               const SizedBox(height: 16),
-
+              BlocBuilder<HomeCubit, HomeState>(
+                buildWhen: (previous, current) =>
+                    current is ImagePicked ||
+                    current is PickingImageError ||
+                    current is PickingImage,
+                builder: (context, state) {
+                  if (state is PickingImage) {
+                    return const CircularProgressIndicator.adaptive();
+                  } else if (state is ImagePicked) {
+                    return Stack(
+                      children: [
+                        Image.file(state.image),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              // homeCubit.clearImage();
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  } else if (state is PickingImageError) {
+                    return Text('Error: ${state.error}');
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
+              BlocBuilder<HomeCubit, HomeState>(
+                buildWhen: (previous, current) =>
+                    current is FileUploaded ||
+                    current is FileUploadError ||
+                    current is FileUploading,
+                builder: (context, state) {
+                  if (state is FileUploading) {
+                    return const CircularProgressIndicator.adaptive();
+                  } else if (state is FileUploaded) {
+                    return Stack(
+                      children: [
+                        Text(state.file.path),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              // homeCubit.clearFile();
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  } else if (state is FileUploadError) {
+                    return Text('Error: ${state.error}');
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
               // Post Text Input
               Expanded(
                 child: TextField(
@@ -332,14 +396,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
               // Option 1: Camera
               InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Camera selected'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
+                onTap: () async {
+                  await homeCubit.takeImage();
                 },
                 child: Container(
                   width: double.infinity,
@@ -391,14 +449,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
               // Option 2: Upload Image
               InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Upload Image selected'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
+                onTap: () async {
+                  await homeCubit.pickImage();
                 },
                 child: Container(
                   width: double.infinity,
@@ -452,14 +504,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
               // Option 3: Upload File
               InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Upload File selected'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
+                onTap: () async {
+                  await homeCubit.uploadFile();
                 },
                 child: Container(
                   width: double.infinity,

@@ -110,3 +110,24 @@ final class FetchingLikersDetailsError extends HomeState {
 
   FetchingLikersDetailsError({required this.error});
 }
+
+final class CommentAdding extends HomeState{}
+
+final class CommentAdded extends HomeState{}
+
+final class CommentAddingError extends HomeState{
+  final String error;
+  CommentAddingError({required this.error});
+}
+
+final class CommentsFetching extends HomeState{}
+
+final class CommentsFetched extends HomeState{
+  final List<CommentModel> comments;
+  CommentsFetched({required this.comments});
+}
+
+final class CommentsError extends HomeState{
+  final String error;
+  CommentsError({required this.error});
+}

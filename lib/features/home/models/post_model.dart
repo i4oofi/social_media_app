@@ -10,7 +10,7 @@ class PostModel {
   final String? authorProfileImage;
   final String createdAt;
   final List<String>? likes;
-  final List<String>? comments;
+  final int? commentCount;
   final bool isLiked;
 
   const PostModel({
@@ -22,7 +22,7 @@ class PostModel {
     this.authorProfileImage,
     required this.createdAt,
     this.likes,
-    this.comments,
+    this.commentCount = 0,
     this.isLiked = false,
   });
 
@@ -53,8 +53,8 @@ class PostModel {
       likes: map['likes'] != null
           ? List<String>.from(map['likes'] as List)
           : null,
-      comments: map['comments'] != null
-          ? List<String>.from(map['comments'] as List)
+      commentCount: map['comments'] != null
+          ? map['comments'] as int
           : null,
     );
   }
@@ -73,7 +73,7 @@ class PostModel {
     String? authorProfileImage,
     String? createdAt,
     List<String>? likes,
-    List<String>? comments,
+    int? commentCount,
     bool? isLiked,
   }) {
     return PostModel(
@@ -85,7 +85,7 @@ class PostModel {
       authorProfileImage: authorProfileImage ?? this.authorProfileImage,
       createdAt: createdAt ?? this.createdAt,
       likes: likes ?? this.likes,
-      comments: comments ?? this.comments,
+      commentCount: commentCount ?? this.commentCount,
       isLiked: isLiked ?? this.isLiked,
     );
   }

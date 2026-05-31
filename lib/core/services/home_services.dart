@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:social_media_app/core/app_constants.dart';
 import 'package:social_media_app/core/services/supabase_database_services.dart';
 import 'package:social_media_app/core/theme/app_tables_names.dart';
+import 'package:social_media_app/features/home/models/comment_model.dart';
+import 'package:social_media_app/features/home/models/comment_request_body.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 import 'package:social_media_app/features/home/models/post_request_body.dart';
 import 'package:social_media_app/features/home/models/story_model.dart';
@@ -113,7 +116,8 @@ class HomeServices {
       rethrow;
     }
   }
-  Future<PostModel> fetchPostById(String postId) async{
+
+  Future<PostModel> fetchPostById(String postId) async {
     try {
       return await supabaseServices.fetchRow(
         table: AppTablesNames.posts,
@@ -126,5 +130,54 @@ class HomeServices {
     } catch (e) {
       rethrow;
     }
-  } 
+  }
+
+  Future<void> addComment({
+    required String authorId,
+    required String text,
+    required File? image,
+    required String postId,
+  }) async {
+    try {
+      String? imageUrl;
+      if (image != null) {
+        imageUrl = await supabaseStorageClient
+            .from(AppTablesNames.comments)
+            .upload(
+              'private/${DateTime.now().toIso8601String()}',
+              image,
+              fileOptions: FileOptions(cacheControl: '3600', upsert: true),
+            );
+      }
+      final comment = CommentRequestBody(
+        authorId: authorId,
+        text: text,
+        postId: postId,
+        image: imageUrl != null
+            ? '${AppConstants.supabaseStorageUrl}/$imageUrl'
+            : null,
+      );
+      await supabaseServices.insertRow(
+        table: AppTablesNames.comments,
+        values: comment.toMap(),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<CommentModel>> fetchComments(String postId) async {
+    try {
+      return await supabaseServices.fetchRows(
+        table: AppTablesNames.comments,
+        builder: (data, id) {
+          return CommentModel.fromMap(data);
+        },
+        primaryKey: 'id',
+        filter: (query) => query.eq('post_id', postId),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

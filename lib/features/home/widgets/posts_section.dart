@@ -192,7 +192,7 @@ class PostCard extends StatelessWidget {
                       },
                       icon: const Icon(Icons.comment_outlined, size: 20),
                     ),
-                    Text('${post.comments?.length ?? 0}'),
+                    Text('${post.commentCount}'),
                   ],
                 );
               },

@@ -21,6 +21,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
   void initState() {
     homeCubit = context.read<HomeCubit>();
     homeCubit.fetchPostLikesDetails(widget.post.id);
+    homeCubit.fetchComments(widget.post.id);
     super.initState();
   }
 
@@ -30,29 +31,32 @@ class _CommentsSheetState extends State<CommentsSheet> {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: SizedBox(
-                    height: 10,
-                    width: 50,
-                    child: Divider(color: Colors.grey, thickness: 2),
+          Expanded(
+            flex: 10,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: SizedBox(
+                      height: 10,
+                      width: 50,
+                      child: Divider(color: Colors.grey, thickness: 2),
+                    ),
                   ),
-                ),
-                SizedBox(height: 16),
-                Text('Likes', style: Theme.of(context).textTheme.titleMedium),
-                SizedBox(height: 8),
-                LikeSection(post: widget.post),
-                SizedBox(height: 16),
-                Text(
-                  'Comments',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                CommentSection(post: widget.post),
-                SizedBox(height: 16),
-              ],
+                  SizedBox(height: 16),
+                  Text('Likes', style: Theme.of(context).textTheme.titleMedium),
+                  SizedBox(height: 8),
+                  LikeSection(post: widget.post),
+                  SizedBox(height: 16),
+                  Text(
+                    'Comments',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  CommentSection(post: widget.post),
+                  SizedBox(height: 16),
+                ],
+              ),
             ),
           ),
 

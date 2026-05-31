@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:social_media_app/core/services/core_auth_services.dart';
 import 'package:social_media_app/core/services/file_picker_services.dart';
@@ -157,6 +156,23 @@ class HomeCubit extends Cubit<HomeState> {
       }
     } catch (e) {
       emit(PostLikeError(error: e.toString(), postId: postId));
+    }
+  }
+
+  Future<void> fetchPostLikesDetails(String postId) async{
+    try {
+      emit(FetchingLikersDetails());
+      final post = await homeServices.fetchPostById(postId);
+      List<UserData> likersDetails = [];
+      for (var likerId in post.likes!) {
+        final userData = await coreAuthServices.getUserData(likerId);
+        if (userData != null) {
+          likersDetails.add(userData);
+        }
+      }
+      emit(LikersDetailsFetched(likersDetails: likersDetails));
+    } catch (e) {
+      emit(FetchingLikersDetailsError(error: e.toString()));
     }
   }
 }

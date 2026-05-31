@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
+import 'package:social_media_app/features/home/widgets/comments_sheet.dart';
 
 class PostsSection extends StatelessWidget {
   const PostsSection({super.key});
@@ -48,6 +49,7 @@ class PostCard extends StatelessWidget {
         post.authorProfileImage != null && post.authorProfileImage!.isNotEmpty;
     final hasPostImage = post.imageUrl != null && post.imageUrl!.isNotEmpty;
     final homeCubit = context.read<HomeCubit>();
+    final size = MediaQuery.of(context).size;
 
     return Card(
       color: AppColors.white,
@@ -148,18 +150,18 @@ class PostCard extends StatelessWidget {
                             icon: Icon(
                               state is PostLiked
                                   ? state.isLiked
-                                      ? Icons.favorite
-                                      : Icons.favorite_border
+                                        ? Icons.favorite
+                                        : Icons.favorite_border
                                   : post.isLiked
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
                               color: state is PostLiked
                                   ? state.isLiked
-                                      ? AppColors.primaryColor
-                                      : null
+                                        ? AppColors.primaryColor
+                                        : null
                                   : post.isLiked
-                                      ? AppColors.primaryColor
-                                      : null,
+                                  ? AppColors.primaryColor
+                                  : null,
                             ),
                           ),
                     Text(
@@ -168,7 +170,26 @@ class PostCard extends StatelessWidget {
                           : '${post.likes?.length ?? 0}',
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          useRootNavigator: true,
+                          backgroundColor: AppColors.white,
+                          builder: (context) {
+                            return SizedBox(
+                              height: size.height * 0.8,
+                              width: size.width,
+                              child: SafeArea(
+                                child: BlocProvider.value(
+                                  value: homeCubit,
+                                  child: CommentsSheet(post: post),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
                       icon: const Icon(Icons.comment_outlined, size: 20),
                     ),
                     Text('${post.comments?.length ?? 0}'),

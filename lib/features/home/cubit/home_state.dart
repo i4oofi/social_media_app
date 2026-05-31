@@ -97,3 +97,16 @@ final class PostLikeError extends HomeState {
 
   PostLikeError({required this.error, required this.postId});
 }
+final class FetchingLikersDetails extends HomeState {}
+
+final class LikersDetailsFetched extends HomeState {
+  final List<UserData> likersDetails;
+
+  LikersDetailsFetched({required this.likersDetails});
+}
+
+final class FetchingLikersDetailsError extends HomeState {
+  final String error;
+
+  FetchingLikersDetailsError({required this.error});
+}

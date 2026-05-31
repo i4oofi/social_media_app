@@ -113,4 +113,18 @@ class HomeServices {
       rethrow;
     }
   }
+  Future<PostModel> fetchPostById(String postId) async{
+    try {
+      return await supabaseServices.fetchRow(
+        table: AppTablesNames.posts,
+        id: postId,
+        builder: (data, id) {
+          return PostModel.fromMap(data);
+        },
+        primaryKey: 'id',
+      );
+    } catch (e) {
+      rethrow;
+    }
+  } 
 }

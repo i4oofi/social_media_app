@@ -83,4 +83,34 @@ class HomeServices {
       rethrow;
     }
   }
+
+  Future<PostModel> likePost(String postId, String userId) async {
+    try {
+      var post = await supabaseServices.fetchRow(
+        table: AppTablesNames.posts,
+        id: postId,
+        builder: (data, id) {
+          return PostModel.fromMap(data);
+        },
+        primaryKey: 'id',
+      );
+      if (post.likes != null && post.likes!.contains(userId)) {
+        post.likes?.remove(userId);
+        post = post.copyWith(isLiked: false);
+      } else {
+        post = post.copyWith(likes: post.likes ?? []);
+        post.likes?.add(userId);
+        post = post.copyWith(isLiked: true);
+      }
+      await supabaseServices.updateRow(
+        table: AppTablesNames.posts,
+        column: 'id',
+        values: post.toMap(),
+        value: postId,
+      );
+      return post;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

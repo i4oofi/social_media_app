@@ -47,6 +47,7 @@ class PostCard extends StatelessWidget {
     final hasProfileImage =
         post.authorProfileImage != null && post.authorProfileImage!.isNotEmpty;
     final hasPostImage = post.imageUrl != null && post.imageUrl!.isNotEmpty;
+    final homeCubit = context.read<HomeCubit>();
 
     return Card(
       color: AppColors.white,
@@ -119,16 +120,61 @@ class PostCard extends StatelessWidget {
               ).textTheme.bodyLarge!.copyWith(color: AppColors.black),
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                const Icon(Icons.favorite_border, size: 20),
-                const SizedBox(width: 4),
-                Text('${post.likes?.length ?? 0}'),
-                const SizedBox(width: 16),
-                const Icon(Icons.comment_outlined, size: 20),
-                const SizedBox(width: 4),
-                Text('${post.comments?.length ?? 0}'),
-              ],
+            BlocBuilder<HomeCubit, HomeState>(
+              bloc: homeCubit,
+              buildWhen: (previous, current) {
+                return (current is PostLiking && current.postId == post.id) ||
+                    (current is PostLiked && current.postId == post.id) ||
+                    (current is PostLikeError && current.postId == post.id);
+              },
+              builder: (context, state) {
+                return Row(
+                  children: [
+                    state is PostLiking
+                        ? const SizedBox(
+                            width: 48,
+                            height: 48,
+                            child: Padding(
+                              padding: EdgeInsets.all(14.0),
+                              child: CircularProgressIndicator.adaptive(
+                                strokeWidth: 2,
+                              ),
+                            ),
+                          )
+                        : IconButton(
+                            onPressed: () async {
+                              await homeCubit.likePost(post.id);
+                            },
+                            icon: Icon(
+                              state is PostLiked
+                                  ? state.isLiked
+                                      ? Icons.favorite
+                                      : Icons.favorite_border
+                                  : post.isLiked
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                              color: state is PostLiked
+                                  ? state.isLiked
+                                      ? AppColors.primaryColor
+                                      : null
+                                  : post.isLiked
+                                      ? AppColors.primaryColor
+                                      : null,
+                            ),
+                          ),
+                    Text(
+                      state is PostLiked
+                          ? state.likesCount.toString()
+                          : '${post.likes?.length ?? 0}',
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.comment_outlined, size: 20),
+                    ),
+                    Text('${post.comments?.length ?? 0}'),
+                  ],
+                );
+              },
             ),
           ],
         ),

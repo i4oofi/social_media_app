@@ -11,6 +11,7 @@ class PostModel {
   final String createdAt;
   final List<String>? likes;
   final List<String>? comments;
+  final bool isLiked;
 
   const PostModel({
     required this.id,
@@ -22,6 +23,7 @@ class PostModel {
     required this.createdAt,
     this.likes,
     this.comments,
+    this.isLiked = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -30,11 +32,8 @@ class PostModel {
       'text': text,
       'author_id': authorId,
       'image_url': imageUrl,
-      'author_name': authorName,
-      'author_image_url': authorProfileImage,
       'created_at': createdAt,
       'likes': likes,
-      'comments': comments,
     };
   }
 
@@ -47,9 +46,9 @@ class PostModel {
       authorName: map['author_name'] != null
           ? map['author_name'] as String
           : null,
-      authorProfileImage: map['author_image_url'] != null
-          ? map['author_image_url'] as String
-          : null,
+      // authorProfileImage: map['author_image_url'] != null
+      //     ? map['author_image_url'] as String
+      //     : null,
       createdAt: map['created_at'] as String,
       likes: map['likes'] != null
           ? List<String>.from(map['likes'] as List)
@@ -75,6 +74,7 @@ class PostModel {
     String? createdAt,
     List<String>? likes,
     List<String>? comments,
+    bool? isLiked,
   }) {
     return PostModel(
       id: id ?? this.id,
@@ -86,6 +86,7 @@ class PostModel {
       createdAt: createdAt ?? this.createdAt,
       likes: likes ?? this.likes,
       comments: comments ?? this.comments,
+      isLiked: isLiked ?? this.isLiked,
     );
   }
 }

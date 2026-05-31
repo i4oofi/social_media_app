@@ -78,3 +78,22 @@ final class PickingImageError extends HomeState {
 
   PickingImageError({required this.error});
 }
+
+final class PostLiking extends HomeState {
+  final String postId;
+  PostLiking({required this.postId});
+}
+
+final class PostLiked extends HomeState {
+  final String postId;
+  final int likesCount;
+  final bool isLiked;
+  PostLiked({required this.postId, this.likesCount = 0, required this.isLiked});
+}
+
+final class PostLikeError extends HomeState {
+  final String error;
+  final String postId;
+
+  PostLikeError({required this.error, required this.postId});
+}

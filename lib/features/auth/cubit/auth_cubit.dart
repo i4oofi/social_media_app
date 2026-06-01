@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:social_media_app/core/services/auth_services.dart';
+import 'package:social_media_app/features/auth/services/auth_services.dart';
 
 part 'auth_state.dart';
 

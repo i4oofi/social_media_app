@@ -12,4 +12,5 @@ class AppColors {
   static const Color indicatorColor = Color(0xff0779B8);
   static Color babyBlue5 = Color(0xff0779B8).withValues(alpha: 0.05);
   static Color babyBlue15 = Color(0xff0779B8).withValues(alpha: 0.15);
+  static const trasparent = Colors.transparent;
 }

@@ -5,7 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:social_media_app/core/services/core_auth_services.dart';
 import 'package:social_media_app/core/services/file_picker_services.dart';
-import 'package:social_media_app/core/services/home_services.dart';
+import 'package:social_media_app/features/home/services/home_services.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/home/models/comment_model.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';

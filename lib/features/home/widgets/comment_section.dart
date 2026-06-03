@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media_app/core/cubit/posts_cubit.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
-import 'package:social_media_app/features/home/models/comment_model.dart';
+import 'package:social_media_app/core/models/comment_model.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 
 class CommentSection extends StatelessWidget {
@@ -12,7 +13,7 @@ class CommentSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(
+    return BlocBuilder<PostsCubit, PostsState>(
       buildWhen: (previous, current) =>
           current is CommentsFetching ||
           current is CommentsFetched ||

@@ -7,6 +7,11 @@ class UserData {
   final String? title;
   final String? imageUrl;
   final String email;
+  final num? postsCount;
+  final num? followersCount;
+  final num? followingCount;
+  final List<String>? followers;
+  final List<String>? following;
 
   UserData({
     required this.id,
@@ -14,6 +19,11 @@ class UserData {
     this.title,
     this.imageUrl,
     required this.email,
+    this.postsCount = 0,
+    this.followersCount = 0,
+    this.followingCount = 0,
+    this.followers = const [],
+    this.following = const [],
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +32,10 @@ class UserData {
       'title': title,
       'image_url': imageUrl,
       'email': email,
+      'followers_count': followersCount,
+      'following_count': followingCount,
+      'followers': followers,
+      'following': following,
     };
   }
 
@@ -32,6 +46,10 @@ class UserData {
       title: map['title'] != null ? map['title'] as String : null,
       imageUrl: map['image_url'] != null ? map['image_url'] as String : null,
       email: map['email'] as String,
+      followersCount: map['followers_count'] != null ? map['followers_count'] as int : 0,
+      followingCount: map['following_count'] != null ? map['following_count'] as int : 0,
+      followers: map['followers'] != null ? List<String>.from(map['followers'] as List<dynamic>) : [],
+      following: map['following'] != null ? List<String>.from(map['following'] as List<dynamic>) : [],
     );
   }
 
@@ -46,6 +64,11 @@ class UserData {
     String? title,
     String? imageUrl,
     String? email,
+    num? postsCount,
+    num? followersCount,
+    num? followingCount,
+    List<String>? followers,
+    List<String>? following,
   }) {
     return UserData(
       id: id ?? this.id,
@@ -53,6 +76,11 @@ class UserData {
       title: title ?? this.title,
       imageUrl: imageUrl ?? this.imageUrl,
       email: email ?? this.email,
+      postsCount: postsCount ?? this.postsCount,
+      followersCount: followersCount ?? this.followersCount,
+      followingCount: followingCount ?? this.followingCount,
+      followers: followers ?? this.followers,
+      following: following ?? this.following,
     );
   }
 }

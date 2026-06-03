@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/app_constants.dart';
+import 'package:social_media_app/core/cubit/posts_cubit.dart';
 import 'package:social_media_app/core/route/app_router.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/theme/app_theme.dart';
@@ -21,8 +22,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => auth.AuthCubit()..checkUserAuth(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => auth.AuthCubit()..checkUserAuth()),
+        BlocProvider(create: (context) => PostsCubit()),
+      ],
       child: Builder(
         builder: (context) {
           return BlocBuilder<auth.AuthCubit, auth.AuthState>(

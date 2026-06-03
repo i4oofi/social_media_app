@@ -71,9 +71,7 @@ class StoryItem extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            if (story == null) {
-              
-            }
+            if (story == null) {}
           },
           child: Container(
             decoration: BoxDecoration(
@@ -93,7 +91,10 @@ class StoryItem extends StatelessWidget {
                   ? const Icon(Icons.add, size: 30, color: AppColors.white)
                   : ClipRRect(
                       borderRadius: BorderRadius.circular(50),
-                      child: CachedNetworkImage(imageUrl: story!.imageUrl, fit: BoxFit.cover),
+                      child: CachedNetworkImage(
+                        imageUrl: story!.imageUrl,
+                        fit: BoxFit.cover,
+                      ),
                     ),
             ),
           ),

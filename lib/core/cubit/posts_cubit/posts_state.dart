@@ -4,6 +4,7 @@ part of 'posts_cubit.dart';
 sealed class PostsState {}
 
 final class PostsInitial extends PostsState {}
+
 final class PostLiking extends PostsState {
   final String postId;
   PostLiking({required this.postId});
@@ -22,6 +23,7 @@ final class PostLikeError extends PostsState {
 
   PostLikeError({required this.error, required this.postId});
 }
+
 final class FetchingLikersDetails extends PostsState {}
 
 final class LikersDetailsFetched extends PostsState {
@@ -36,23 +38,23 @@ final class FetchingLikersDetailsError extends PostsState {
   FetchingLikersDetailsError({required this.error});
 }
 
-final class CommentAdding extends PostsState{}
+final class CommentAdding extends PostsState {}
 
-final class CommentAdded extends PostsState{}
+final class CommentAdded extends PostsState {}
 
-final class CommentAddingError extends PostsState{
+final class CommentAddingError extends PostsState {
   final String error;
   CommentAddingError({required this.error});
 }
 
-final class CommentsFetching extends PostsState{}
+final class CommentsFetching extends PostsState {}
 
-final class CommentsFetched extends PostsState{
+final class CommentsFetched extends PostsState {
   final List<CommentModel> comments;
   CommentsFetched({required this.comments});
 }
 
-final class CommentsError extends PostsState{
+final class CommentsError extends PostsState {
   final String error;
   CommentsError({required this.error});
 }

@@ -1,15 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/auth/widgets/main_button.dart';
+import 'package:social_media_app/features/profile/cubit/profile_cubit/profile_cubit.dart';
+import 'package:social_media_app/features/profile/models/edit_profile_screen_args.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({super.key, required this.userData});
   final UserData userData;
   @override
   Widget build(BuildContext context) {
+    final profileCubit = context.read<ProfileCubit>();
     final size = MediaQuery.sizeOf(context);
     return Column(
       children: [
@@ -88,7 +92,15 @@ class ProfileHeader extends StatelessWidget {
                 width: size.width * 0.5,
                 transparent: true,
                 onPressed: () {
-                  Navigator.of(context).pushNamed(AppRoutes.editProfile);
+                  Navigator.of(context, rootNavigator: true)
+                      .pushNamed(
+                        AppRoutes.editProfile,
+                        arguments: EditProfileScreenArgs(userData: userData),
+                      )
+                      .then((value) async {
+                        await profileCubit.fetchUserProfile();
+                        await profileCubit.fetchUserPosts();
+                      });
                 },
               ),
             ],

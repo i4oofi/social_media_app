@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/shared/views/custom_bottom_navbar.dart';
+import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/auth/views/auth_screen.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
 import 'package:social_media_app/features/home/views/create_post_screen.dart';
+import 'package:social_media_app/features/profile/models/edit_profile_screen_args.dart';
 import 'package:social_media_app/features/profile/views/edit_profile_screen.dart';
 import 'package:social_media_app/features/settings/views/setting_screen.dart';
 
@@ -24,7 +26,12 @@ class AppRouter {
           ),
         );
       case AppRoutes.editProfile:
-        return MaterialPageRoute(builder: (_) => const EditProfileScreen());
+        final args = settings.arguments as EditProfileScreenArgs;
+        return MaterialPageRoute(
+          builder: (_) => EditProfileScreen(
+            userData: args.userData,
+          ),
+        );
       case AppRoutes.settings:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       default:

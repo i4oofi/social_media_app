@@ -1,6 +1,7 @@
 import 'package:social_media_app/core/models/comment_model.dart';
 import 'package:social_media_app/core/services/supabase_database_services.dart';
 import 'package:social_media_app/core/theme/app_tables_names.dart';
+import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -32,6 +33,24 @@ class ProfileServices {
         },
         primaryKey: 'id',
         filter: (query) => query.eq('post_id', postId),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateProfile({required String userId, required String? name , String? title , String? imageUrl}) async {
+    try {
+      final data = {
+        'name': name,
+        'title': title,
+        'image_url': imageUrl,
+      };
+      await supabaseServices.updateRow(
+        table: AppTablesNames.users,
+        values: data,
+        column: 'id',
+        value: userId,
       );
     } catch (e) {
       rethrow;

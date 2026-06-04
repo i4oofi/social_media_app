@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_media_app/features/profile/cubit/profile_cubit.dart';
+import 'package:social_media_app/features/profile/cubit/profile_cubit/profile_cubit.dart';
 import 'package:social_media_app/features/profile/widgets/profile_body.dart';
 import 'package:social_media_app/features/profile/widgets/profile_header.dart';
 import 'package:social_media_app/features/profile/widgets/profile_stats.dart';

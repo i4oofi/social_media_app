@@ -53,4 +53,14 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthSuccess());
     }
   }
+
+  Future<void> signInWithMagicLink(String email) async {
+    emit(AuthLoading());
+    try {
+      await authServices.signInWithMagicLink(email);
+      emit(AuthSuccess());
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
+    }
+  }
 }

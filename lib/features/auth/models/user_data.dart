@@ -28,6 +28,7 @@ class UserData {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'name': name,
       'title': title,
       'image_url': imageUrl,
@@ -39,6 +40,7 @@ class UserData {
     };
   }
 
+
   factory UserData.fromMap(Map<String, dynamic> map) {
     return UserData(
       id: map['id'] as String,
@@ -46,16 +48,25 @@ class UserData {
       title: map['title'] != null ? map['title'] as String : null,
       imageUrl: map['image_url'] != null ? map['image_url'] as String : null,
       email: map['email'] as String,
-      followersCount: map['followers_count'] != null ? map['followers_count'] as int : 0,
-      followingCount: map['following_count'] != null ? map['following_count'] as int : 0,
-      followers: map['followers'] != null ? List<String>.from(map['followers'] as List<dynamic>) : [],
-      following: map['following'] != null ? List<String>.from(map['following'] as List<dynamic>) : [],
+      followersCount: map['followers_count'] != null
+          ? map['followers_count'] as int
+          : 0,
+      followingCount: map['following_count'] != null
+          ? map['following_count'] as int
+          : 0,
+      followers: map['followers'] != null
+          ? List<String>.from(map['followers'] as List<dynamic>)
+          : [],
+      following: map['following'] != null
+          ? List<String>.from(map['following'] as List<dynamic>)
+          : [],
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory UserData.fromJson(String source) => UserData.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UserData.fromJson(String source) =>
+      UserData.fromMap(json.decode(source) as Map<String, dynamic>);
 
   UserData copyWith({
     String? id,

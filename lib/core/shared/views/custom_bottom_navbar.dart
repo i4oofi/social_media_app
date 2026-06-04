@@ -3,6 +3,7 @@ import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:social_media_app/features/discover/views/discover_screen.dart';
 import 'package:social_media_app/features/home/views/home_screen.dart';
 import 'package:social_media_app/features/profile/views/profile_screen.dart';
+import 'package:social_media_app/features/settings/views/setting_screen.dart';
 
 class CustomBottomNavbar extends StatelessWidget {
   const CustomBottomNavbar({super.key});
@@ -25,6 +26,10 @@ class CustomBottomNavbar extends StatelessWidget {
         PersistentTabConfig(
           screen: ProfileScreen(),
           item: ItemConfig(icon: Icon(Icons.person), title: "Profile"),
+        ),
+        PersistentTabConfig(
+          screen: SettingsScreen(),
+          item: ItemConfig(icon: Icon(Icons.settings), title: "Settings"),
         ),
       ],
       navBarBuilder: (navBarConfig) =>

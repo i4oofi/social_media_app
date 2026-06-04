@@ -6,6 +6,7 @@ import 'package:social_media_app/features/auth/views/auth_screen.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
 import 'package:social_media_app/features/home/views/create_post_screen.dart';
 import 'package:social_media_app/features/profile/views/edit_profile_screen.dart';
+import 'package:social_media_app/features/settings/views/setting_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -24,6 +25,8 @@ class AppRouter {
         );
       case AppRoutes.editProfile:
         return MaterialPageRoute(builder: (_) => const EditProfileScreen());
+      case AppRoutes.settings:
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(backgroundColor: Colors.amberAccent),

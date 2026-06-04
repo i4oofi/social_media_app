@@ -38,7 +38,6 @@ class AuthServices {
     await supabase.auth.resetPasswordForEmail(email);
   }
 
-
   User? fetchUserRaw() {
     final user = supabase.auth.currentUser;
     if (user == null) {
@@ -58,4 +57,12 @@ class AuthServices {
       rethrow;
     }
   }
+
+Future<void> signInWithMagicLink(String email) async {
+  await supabase.auth.signInWithOtp(
+    email: email,
+    shouldCreateUser: false, 
+    emailRedirectTo: 'https://luwbglucaedacswkaqgn.supabase.co/auth/v1/verify?token=1357bb799f69048b29eb8f6126b33292acaa888cf52c09ce53c2e85e&type=magiclink&redirect_to=http://localhost:3000',
+  );
+}
 }

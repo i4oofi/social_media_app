@@ -72,8 +72,13 @@ class SupabaseDatabaseServices {
   }) async {
     try {
       // Perform upsert with conflict resolution
-      await _db.from(table)
-        .upsert(values, onConflict: onConflict, ignoreDuplicates: ignoreDuplicates);
+      await _db
+          .from(table)
+          .upsert(
+            values,
+            onConflict: onConflict,
+            ignoreDuplicates: ignoreDuplicates,
+          );
     } on PostgrestException catch (e) {
       debugPrint('Upsert error on $table: ${e.message}');
       rethrow;
@@ -118,9 +123,8 @@ class SupabaseDatabaseServices {
     required String table,
     required List<String> primaryKey,
     required T Function(Map<String, dynamic> data, String id) builder,
-    SupabaseStreamFilterBuilder Function(
-      SupabaseStreamFilterBuilder query,
-    )? filter,
+    SupabaseStreamFilterBuilder Function(SupabaseStreamFilterBuilder query)?
+    filter,
     int Function(T a, T b)? sort,
   }) {
     // Create the base realtime stream
@@ -154,9 +158,10 @@ class SupabaseDatabaseServices {
     required String id,
     required T Function(Map<String, dynamic> data, String id) builder,
   }) {
-    var streamQuery = _db.from(table)
-      .stream(primaryKey: [primaryKey])
-      .eq(primaryKey, id);
+    var streamQuery = _db
+        .from(table)
+        .stream(primaryKey: [primaryKey])
+        .eq(primaryKey, id);
     return streamQuery.map((rows) {
       final row = rows.first;
       return builder(row, row[primaryKey]?.toString() ?? '');
@@ -186,10 +191,36 @@ class SupabaseDatabaseServices {
       final data = await _db.from(table).select().eq(primaryKey, id).single();
       return builder(data, data[primaryKey]?.toString() ?? '');
     } on PostgrestException catch (e) {
-      debugPrint('Fetch row error on $table where $primaryKey==$id: ${e.message}');
+      debugPrint(
+        'Fetch row error on $table where $primaryKey==$id: ${e.message}',
+      );
       rethrow;
     }
   }
+
+  /// Fetches a single row from [table] where [primaryKey] == [id].
+  /// Returns null if no row is found, instead of throwing an exception.
+  Future<T?> fetchRowOptional<T>({
+    required String table,
+    required String primaryKey,
+    required String id,
+    required T Function(Map<String, dynamic> data, String id) builder,
+  }) async {
+    try {
+      final list = await _db.from(table).select().eq(primaryKey, id);
+      if (list.isEmpty) {
+        return null;
+      }
+      final data = list.first;
+      return builder(data, data[primaryKey]?.toString() ?? '');
+    } on PostgrestException catch (e) {
+      debugPrint(
+        'Fetch row optional error on $table where $primaryKey==$id: ${e.message}',
+      );
+      rethrow;
+    }
+  }
+
 
   /// Fetches multiple rows from [table], applying optional filters and sorting.
   ///
@@ -204,9 +235,7 @@ class SupabaseDatabaseServices {
     required String table,
     required T Function(Map<String, dynamic> data, String id) builder,
     String? primaryKey,
-    PostgrestFilterBuilder Function(
-      PostgrestFilterBuilder query,
-    )? filter,
+    PostgrestFilterBuilder Function(PostgrestFilterBuilder query)? filter,
     int Function(T a, T b)? sort,
   }) async {
     try {

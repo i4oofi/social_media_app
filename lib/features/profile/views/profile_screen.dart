@@ -80,7 +80,7 @@ class ProfileScreen extends StatelessWidget {
               ),
             );
           }
-          return const Center(child: Text("Profile"));
+          return const SizedBox.shrink();
         },
       ),
     );

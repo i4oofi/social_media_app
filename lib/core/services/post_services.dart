@@ -10,9 +10,9 @@ import 'package:social_media_app/features/home/models/post_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PostServices {
-    final supabaseServices = SupabaseDatabaseServices.instance;
+  final supabaseServices = SupabaseDatabaseServices.instance;
   final supabaseStorageClient = Supabase.instance.client.storage;
-    Future<PostModel> fetchPostById(String postId) async {
+  Future<PostModel> fetchPostById(String postId) async {
     try {
       return await supabaseServices.fetchRow(
         table: AppTablesNames.posts,
@@ -27,7 +27,7 @@ class PostServices {
     }
   }
 
-    Future<PostModel> likePost(String postId, String userId) async {
+  Future<PostModel> likePost(String postId, String userId) async {
     try {
       var post = await supabaseServices.fetchRow(
         table: AppTablesNames.posts,
@@ -56,7 +56,8 @@ class PostServices {
       rethrow;
     }
   }
-    Future<void> addComment({
+
+  Future<void> addComment({
     required String authorId,
     required String text,
     required File? image,

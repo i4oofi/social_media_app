@@ -36,7 +36,21 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(ProfilePostsFailure("User not found"));
         return;
       }
-      final userPosts = await profileServices.fetchUserPosts(userModel.id);
+      final rawUserPosts = await profileServices.fetchUserPosts(userModel.id);
+      final List<PostModel> userPosts = [];
+      for (var rawPost in rawUserPosts) {
+        final postAuthor = await coreAuthServices.getUserData(rawPost.authorId);
+      final comments = await profileServices.fetchComments(rawPost.id);
+        rawPost = rawPost.copyWith(commentCount: comments.length);
+        if (postAuthor != null) {
+          rawPost = rawPost.copyWith(
+            authorName: postAuthor.name,
+            authorProfileImage: postAuthor.imageUrl,
+            isLiked: rawPost.likes?.contains(userModel.id),
+          );
+        }
+        userPosts.add(rawPost);
+      }
       emit(ProfilePostsSuccess(userPosts));
     } catch (e) {
       emit(ProfilePostsFailure(e.toString()));

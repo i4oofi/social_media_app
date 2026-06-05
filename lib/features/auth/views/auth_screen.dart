@@ -5,26 +5,38 @@ import 'package:social_media_app/features/auth/widgets/login_form.dart';
 import 'package:social_media_app/features/auth/widgets/signup_form.dart';
 
 class AuthScreen extends StatelessWidget {
-  const AuthScreen({super.key});
+  final int initialIndex;
+  const AuthScreen({super.key, this.initialIndex = 0});
 
   @override
   Widget build(BuildContext context) {
     List<Tab> tabs = [Tab(text: "Sign In"), Tab(text: "Sign Up")];
     List<Widget> tabsViews = [LoginForm(), SignUpForm()];
-    return AuthView(tabs: tabs, tabsViews: tabsViews);
+    return AuthView(
+      tabs: tabs,
+      tabsViews: tabsViews,
+      initialIndex: initialIndex,
+    );
   }
 }
 
 class AuthView extends StatelessWidget {
-  const AuthView({super.key, required this.tabs, required this.tabsViews});
+  const AuthView({
+    super.key,
+    required this.tabs,
+    required this.tabsViews,
+    this.initialIndex = 0,
+  });
 
   final List<Tab> tabs;
   final List<Widget> tabsViews;
+  final int initialIndex;
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: tabs.length,
+      initialIndex: initialIndex,
       child: Builder(
         builder: (context) {
           return Scaffold(

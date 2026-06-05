@@ -1,4 +1,5 @@
 class AppRoutes {
+  static const onboardingScreen = '/onboarding';
   static const authScreen = '/auth';
   static const homeScreen = '/home';
   static const customBottomNavbar = '/custom_bottom_navbar';

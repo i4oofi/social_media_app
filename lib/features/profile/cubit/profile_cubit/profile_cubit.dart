@@ -11,27 +11,37 @@ class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit() : super(ProfileInitial());
   final coreAuthServices = CoreAuthServices();
   final profileServices = ProfileServices();
-  Future<void> fetchUserProfile() async {
+  Future<void> fetchUserProfile({String? userId}) async {
     emit(ProfileLoading());
     try {
-      final userModel = await coreAuthServices.getCurrentUserData();
+      final UserData? userModel;
+      if (userId == null) {
+        userModel = await coreAuthServices.getCurrentUserData();
+      } else {
+        userModel = await coreAuthServices.getUserData(userId);
+      }
       if (userModel == null) {
         emit(ProfileFailure("User not found"));
         return;
       }
       final userPosts = await profileServices.fetchUserPosts(userModel.id);
-      var user = userModel.copyWith(postsCount: userPosts.length);
-      user = user.copyWith(postsCount: userPosts.length);
+      final user = userModel.copyWith(postsCount: userPosts.length);
       emit(ProfileSuccess(user));
     } catch (e) {
       emit(ProfileFailure(e.toString()));
     }
   }
 
-  Future<void> fetchUserPosts() async {
+  Future<void> fetchUserPosts({String? userId}) async {
     emit(ProfilePostsLoading());
     try {
-      final userModel = await coreAuthServices.getCurrentUserData();
+      final currentAuthUser = await coreAuthServices.getCurrentUserData();
+      final UserData? userModel;
+      if (userId == null) {
+        userModel = currentAuthUser;
+      } else {
+        userModel = await coreAuthServices.getUserData(userId);
+      }
       if (userModel == null) {
         emit(ProfilePostsFailure("User not found"));
         return;
@@ -40,13 +50,13 @@ class ProfileCubit extends Cubit<ProfileState> {
       final List<PostModel> userPosts = [];
       for (var rawPost in rawUserPosts) {
         final postAuthor = await coreAuthServices.getUserData(rawPost.authorId);
-      final comments = await profileServices.fetchComments(rawPost.id);
+        final comments = await profileServices.fetchComments(rawPost.id);
         rawPost = rawPost.copyWith(commentCount: comments.length);
         if (postAuthor != null) {
           rawPost = rawPost.copyWith(
             authorName: postAuthor.name,
             authorProfileImage: postAuthor.imageUrl,
-            isLiked: rawPost.likes?.contains(userModel.id),
+            isLiked: currentAuthUser != null ? rawPost.likes?.contains(currentAuthUser.id) : false,
           );
         }
         userPosts.add(rawPost);
@@ -54,6 +64,20 @@ class ProfileCubit extends Cubit<ProfileState> {
       emit(ProfilePostsSuccess(userPosts));
     } catch (e) {
       emit(ProfilePostsFailure(e.toString()));
+    }
+  }
+
+  Future<void> toggleFollowUser(String targetUserId) async {
+    try {
+      final currentAuthUser = await coreAuthServices.getCurrentUserData();
+      if (currentAuthUser == null) return;
+      await profileServices.toggleFollowUser(
+        currentUserId: currentAuthUser.id,
+        targetUserId: targetUserId,
+      );
+      await fetchUserProfile(userId: targetUserId);
+    } catch (e) {
+      emit(ProfileFailure(e.toString()));
     }
   }
 }

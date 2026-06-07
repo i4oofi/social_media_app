@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
+import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 import 'package:social_media_app/features/home/widgets/comments_sheet.dart';
+import 'package:social_media_app/features/profile/views/profile_screen.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({super.key, required this.post});
   final PostModel post;
   @override
   Widget build(BuildContext context) {
-    final hasProfileImage =
-        post.authorProfileImage != null && post.authorProfileImage!.isNotEmpty;
     final hasPostImage = post.imageUrl != null && post.imageUrl!.isNotEmpty;
     final postsCubit = context.read<PostsCubit>();
     final size = MediaQuery.of(context).size;
@@ -25,35 +25,41 @@ class PostCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: AppColors.babyBlue15,
-                  foregroundColor: AppColors.primaryColor,
-                  backgroundImage: hasProfileImage
-                      ? CachedNetworkImageProvider(post.authorProfileImage!)
-                      : null,
-                  child: !hasProfileImage ? const Icon(Icons.person) : null,
-                ),
-                const SizedBox(width: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      post.authorName ?? 'No Name',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      DateFormat(
-                        "h:mm a",
-                      ).format(DateTime.parse(post.createdAt)).toString(),
-                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                        color: AppColors.darkGrey,
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(userId: post.authorId),
+                  ),
+                );
+              },
+              child: Row(
+                children: [
+                  UserAvatar(
+                    imageUrl: post.authorProfileImage,
+                    name: post.authorName ?? '',
+                    radius: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        post.authorName ?? 'No Name',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      Text(
+                        DateFormat(
+                          "h:mm a",
+                        ).format(DateTime.parse(post.createdAt)).toString(),
+                        style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                          color: AppColors.darkGrey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 12),
             if (hasPostImage) ...[

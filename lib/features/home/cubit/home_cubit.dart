@@ -144,5 +144,20 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-
+  Future<void> shareStory() async {
+    try {
+      final image = await filePickerServices.pickImage();
+      if (image == null) return;
+      emit(StoryLoading());
+      final currentUser = await coreAuthServices.getCurrentUserData();
+      if (currentUser != null) {
+        await homeServices.createStory(currentUser.id, File(image.path));
+        await fetchStories();
+      } else {
+        emit(StoryError(error: "User not authenticated"));
+      }
+    } catch (e) {
+      emit(StoryError(error: e.toString()));
+    }
+  }
 }

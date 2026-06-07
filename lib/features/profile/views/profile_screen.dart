@@ -6,15 +6,16 @@ import 'package:social_media_app/features/profile/widgets/profile_header.dart';
 import 'package:social_media_app/features/profile/widgets/profile_stats.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  final String? userId;
+  const ProfileScreen({super.key, this.userId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
         final cubit = ProfileCubit();
-        cubit.fetchUserProfile();
-        cubit.fetchUserPosts();
+        cubit.fetchUserProfile(userId: userId);
+        cubit.fetchUserPosts(userId: userId);
         return cubit;
       },
       child: BlocBuilder<ProfileCubit, ProfileState>(
@@ -31,6 +32,8 @@ class ProfileScreen extends StatelessWidget {
           }
           if (state is ProfileSuccess) {
             final userData = state.user;
+            final currentUserId = BlocProvider.of<ProfileCubit>(context).coreAuthServices.supabase.auth.currentUser?.id;
+            final isPrivate = currentUserId == userData.id;
             return SafeArea(
               child: DefaultTabController(
                 length: 2,
@@ -40,7 +43,7 @@ class ProfileScreen extends StatelessWidget {
                       SliverToBoxAdapter(
                         child: Column(
                           children: [
-                            ProfileHeader(userData: userData),
+                            ProfileHeader(userData: userData, isPrivate: isPrivate),
                             const SizedBox(height: 24),
                             Padding(
                               padding: const EdgeInsets.symmetric(
@@ -72,7 +75,7 @@ class ProfileScreen extends StatelessWidget {
                   },
                   body: TabBarView(
                     children: [
-                      ProfileDetails(user: userData),
+                      ProfileDetails(user: userData, isPrivate: isPrivate),
                       ProfilePosts(user: userData),
                     ],
                   ),

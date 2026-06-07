@@ -8,10 +8,14 @@ class DiscoverServices {
 
   Future<List<UserData>> fetchAllUsers() async {
     try {
+      final currentUserId = supabase.auth.currentUser?.id;
       return await supabaseDatabaseServices.fetchRows(
         table: 'users',
         primaryKey: 'id',
         builder: (data , id) => UserData.fromMap(data),
+        filter: currentUserId != null
+            ? (query) => query.neq('id', currentUserId)
+            : null,
       );
     } catch (e) {
       throw Exception(e.toString());

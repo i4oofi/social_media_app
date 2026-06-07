@@ -11,7 +11,19 @@ class HomeScreenHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Image.asset(AppAssets.appLogo, width: size.width * 0.5, height: 50),
+        Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+              icon: const Icon(Icons.menu_rounded, color: AppColors.black),
+              iconSize: 28,
+            ),
+            const SizedBox(width: 4),
+            Image.asset(AppAssets.appLogo, width: size.width * 0.42, height: 50),
+          ],
+        ),
         Row(
           children: [
             IconButton(

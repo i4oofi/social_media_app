@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/auth/widgets/main_button.dart';
 import 'package:social_media_app/features/profile/cubit/edit_profile_cubit/edit_profile_cubit.dart';
@@ -62,11 +62,10 @@ class _EditProfileBodyState extends State<EditProfileBody> {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    CircleAvatar(
+                    UserAvatar(
                       radius: 50,
-                      backgroundImage: CachedNetworkImageProvider(
-                        widget.userData.imageUrl ?? '',
-                      ),
+                      imageUrl: widget.userData.imageUrl,
+                      name: widget.userData.name,
                     ),
                     CircleAvatar(
                       radius: 50,

@@ -37,8 +37,9 @@ class ProfileBody extends StatelessWidget {
 }
 
 class ProfileDetails extends StatelessWidget {
-  const ProfileDetails({super.key, required this.user});
+  const ProfileDetails({super.key, required this.user, this.isPrivate = true});
   final UserData user;
+  final bool isPrivate;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -48,9 +49,9 @@ class ProfileDetails extends StatelessWidget {
           children: [
             Text("Profile Details"),
             Divider(),
-            Text("Email: ${user.email}"),
+            if (isPrivate) Text("Email: ${user.email}"),
             Text("Name: ${user.name}"),
-            Text("Bio: ${user.title}"),
+            Text("Bio: ${user.title ?? 'No bio yet'}"),
           ],
         ),
       ),

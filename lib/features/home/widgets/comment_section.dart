@@ -5,6 +5,7 @@ import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/core/models/comment_model.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
+import 'package:social_media_app/features/profile/views/profile_screen.dart';
 
 class CommentSection extends StatelessWidget {
   final PostModel post;
@@ -137,13 +138,22 @@ class CommentWidget extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              child: Text(
-                                comment.authorName ?? 'Anonymous',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.titleSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: theme.colorScheme.onSurface,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => ProfileScreen(userId: comment.authorId),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  comment.authorName ?? 'Anonymous',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.colorScheme.onSurface,
+                                  ),
                                 ),
                               ),
                             ),
@@ -216,30 +226,48 @@ class CommentWidget extends StatelessWidget {
         ? comment.authorName!.substring(0, 1).toUpperCase()
         : '?';
 
-    return Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: theme.colorScheme.primaryContainer,
-        border: Border.all(
-          color: theme.colorScheme.outline.withOpacity(0.1),
-          width: 1,
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ProfileScreen(userId: comment.authorId),
+          ),
+        );
+      },
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: theme.colorScheme.primaryContainer,
+          border: Border.all(
+            color: theme.colorScheme.outline.withOpacity(0.1),
+            width: 1,
+          ),
         ),
-      ),
-      child: ClipOval(
-        child: hasAuthorImage
-            ? CachedNetworkImage(
-                imageUrl: comment.authorImage!,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => const Center(
-                  child: SizedBox(
-                    height: 16,
-                    width: 16,
-                    child: CircularProgressIndicator(strokeWidth: 1.5),
+        child: ClipOval(
+          child: hasAuthorImage
+              ? CachedNetworkImage(
+                  imageUrl: comment.authorImage!,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => const Center(
+                    child: SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(strokeWidth: 1.5),
+                    ),
                   ),
-                ),
-                errorWidget: (context, url, error) => Center(
+                  errorWidget: (context, url, error) => Center(
+                    child: Text(
+                      nameInitials,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.colorScheme.onPrimaryContainer,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                )
+              : Center(
                   child: Text(
                     nameInitials,
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -248,16 +276,7 @@ class CommentWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-              )
-            : Center(
-                child: Text(
-                  nameInitials,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: theme.colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+        ),
       ),
     );
   }

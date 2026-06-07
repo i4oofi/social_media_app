@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
+import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/auth/widgets/main_button.dart';
@@ -9,12 +10,16 @@ import 'package:social_media_app/features/profile/cubit/profile_cubit/profile_cu
 import 'package:social_media_app/features/profile/models/edit_profile_screen_args.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key, required this.userData});
+  const ProfileHeader({super.key, required this.userData, this.isPrivate = true});
   final UserData userData;
+  final bool isPrivate;
   @override
   Widget build(BuildContext context) {
     final profileCubit = context.read<ProfileCubit>();
     final size = MediaQuery.sizeOf(context);
+    final currentUserId = profileCubit.coreAuthServices.supabase.auth.currentUser?.id;
+    final isFollowing = userData.followers?.contains(currentUserId ?? '') ?? false;
+
     return Column(
       children: [
         SizedBox(
@@ -30,43 +35,32 @@ class ProfileHeader extends StatelessWidget {
                   ),
                   image: DecorationImage(
                     image: CachedNetworkImageProvider(
-                      'https://www.presidency.eg/media/93877/%D8%A7%D9%84%D8%B1%D8%A6%D9%8A%D8%B3-%D8%B9%D8%A8%D8%AF-%D8%A7%D9%84%D9%81%D8%AA%D8%A7%D8%AD-%D8%A7%D9%84%D8%B3%D9%8A%D8%B3%D9%8A-black-one-finljpg.jpg',
+                      'https://images.unsplash.com/photo-1707343843437-caacff5cfa74?q=80&w=1200&auto=format&fit=crop',
                     ),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-              Positioned(
-                top: 16,
-                left: 16,
-                child: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
+              if (Navigator.of(context).canPop())
+                Positioned(
+                  top: 16,
+                  left: 16,
+                  child: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(Icons.arrow_back, color: Colors.white),
+                  ),
                 ),
-              ),
               Positioned(
                 bottom: 0,
                 left: size.width * 0.5 - 60,
                 right: size.width * 0.5 - 60,
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.primaryColor, width: 3),
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: userData.imageUrl ?? '',
-                    imageBuilder: (context, imageProvider) => Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
+                child: UserAvatar(
+                  imageUrl: userData.imageUrl,
+                  name: userData.name,
+                  radius: 60,
+                  showBorder: true,
+                  borderColor: AppColors.primaryColor,
+                  borderWidth: 3,
                 ),
               ),
             ],
@@ -87,22 +81,32 @@ class ProfileHeader extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               const SizedBox(height: 16),
-              MainButton(
-                text: 'EDIT PROFILE',
-                width: size.width * 0.5,
-                transparent: true,
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true)
-                      .pushNamed(
-                        AppRoutes.editProfile,
-                        arguments: EditProfileScreenArgs(userData: userData),
-                      )
-                      .then((value) async {
-                        await profileCubit.fetchUserProfile();
-                        await profileCubit.fetchUserPosts();
-                      });
-                },
-              ),
+              if (isPrivate)
+                MainButton(
+                  text: 'EDIT PROFILE',
+                  width: size.width * 0.5,
+                  transparent: true,
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed(
+                          AppRoutes.editProfile,
+                          arguments: EditProfileScreenArgs(userData: userData),
+                        )
+                        .then((value) async {
+                          await profileCubit.fetchUserProfile();
+                          await profileCubit.fetchUserPosts();
+                        });
+                  },
+                )
+              else
+                MainButton(
+                  text: isFollowing ? 'FOLLOWING' : 'FOLLOW',
+                  width: size.width * 0.5,
+                  transparent: isFollowing,
+                  onPressed: () async {
+                    await profileCubit.toggleFollowUser(userData.id);
+                  },
+                ),
             ],
           ),
         ),

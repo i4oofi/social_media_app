@@ -116,4 +116,31 @@ class HomeServices {
       rethrow;
     }
   }
+
+  Future<void> createStory(String authorId, File image) async {
+    try {
+      final fileName = 'private/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final path = await supabaseStorageClient
+          .from(AppTablesNames.posts)
+          .upload(
+            fileName,
+            image,
+            fileOptions: const FileOptions(
+              cacheControl: '3600',
+              upsert: true,
+            ),
+          );
+      final imageUrl = '${AppConstants.supabaseStorageUrl}/$path';
+      await supabaseServices.insertRow(
+        table: AppTablesNames.stories,
+        values: {
+          'author_id': authorId,
+          'image_url': imageUrl,
+          'created_at': DateTime.now().toUtc().toIso8601String(),
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

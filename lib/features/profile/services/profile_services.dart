@@ -56,4 +56,56 @@ class ProfileServices {
       rethrow;
     }
   }
+
+  Future<void> toggleFollowUser({required String currentUserId, required String targetUserId}) async {
+    try {
+      // 1. Update target user's followers list
+      final targetUser = await supabaseServices.fetchRow(
+        table: AppTablesNames.users,
+        primaryKey: 'id',
+        id: targetUserId,
+        builder: (data, id) => UserData.fromMap(data),
+      );
+      final List<String> followers = List<String>.from(targetUser.followers ?? []);
+      if (followers.contains(currentUserId)) {
+        followers.remove(currentUserId);
+      } else {
+        followers.add(currentUserId);
+      }
+      await supabaseServices.updateRow(
+        table: AppTablesNames.users,
+        values: {
+          'followers': followers,
+          'followers_count': followers.length,
+        },
+        column: 'id',
+        value: targetUserId,
+      );
+
+      // 2. Update current user's following list
+      final currentUser = await supabaseServices.fetchRow(
+        table: AppTablesNames.users,
+        primaryKey: 'id',
+        id: currentUserId,
+        builder: (data, id) => UserData.fromMap(data),
+      );
+      final List<String> following = List<String>.from(currentUser.following ?? []);
+      if (following.contains(targetUserId)) {
+        following.remove(targetUserId);
+      } else {
+        following.add(targetUserId);
+      }
+      await supabaseServices.updateRow(
+        table: AppTablesNames.users,
+        values: {
+          'following': following,
+          'following_count': following.length,
+        },
+        column: 'id',
+        value: currentUserId,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

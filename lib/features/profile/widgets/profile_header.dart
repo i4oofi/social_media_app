@@ -82,30 +82,71 @@ class ProfileHeader extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               if (isPrivate)
-                MainButton(
-                  text: 'EDIT PROFILE',
-                  width: size.width * 0.5,
-                  transparent: true,
-                  onPressed: () {
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed(
-                          AppRoutes.editProfile,
-                          arguments: EditProfileScreenArgs(userData: userData),
-                        )
-                        .then((value) async {
-                          await profileCubit.fetchUserProfile();
-                          await profileCubit.fetchUserPosts();
-                        });
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MainButton(
+                      text: 'EDIT PROFILE',
+                      width: size.width * 0.5,
+                      transparent: true,
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true)
+                            .pushNamed(
+                              AppRoutes.editProfile,
+                              arguments: EditProfileScreenArgs(userData: userData),
+                            )
+                            .then((value) async {
+                              await profileCubit.fetchUserProfile();
+                              await profileCubit.fetchUserPosts();
+                            });
+                      },
+                    ),
+                    const SizedBox(width: 12),
+                    Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        border: Border.all(color: AppColors.grey, width: 2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                        icon: const Icon(Icons.settings, color: AppColors.black),
+                      ),
+                    ),
+                  ],
                 )
               else
-                MainButton(
-                  text: isFollowing ? 'FOLLOWING' : 'FOLLOW',
-                  width: size.width * 0.5,
-                  transparent: isFollowing,
-                  onPressed: () async {
-                    await profileCubit.toggleFollowUser(userData.id);
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MainButton(
+                      text: isFollowing ? 'FOLLOWING' : 'FOLLOW',
+                      width: size.width * 0.4,
+                      transparent: isFollowing,
+                      onPressed: () async {
+                        await profileCubit.toggleFollowUser(userData.id);
+                      },
+                    ),
+                    const SizedBox(width: 12),
+                    MainButton(
+                      text: 'MESSAGE',
+                      width: size.width * 0.4,
+                      transparent: true,
+                      onPressed: () {
+                        Navigator.of(context, rootNavigator: true).pushNamed(
+                          AppRoutes.chatRoomScreen,
+                          arguments: {
+                            'otherUserId': userData.id,
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ),
             ],
           ),

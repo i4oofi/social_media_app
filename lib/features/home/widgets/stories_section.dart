@@ -2,9 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
+import 'package:social_media_app/features/auth/cubit/auth_cubit.dart';
+import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
 import 'package:social_media_app/features/home/models/story_model.dart';
 import 'package:social_media_app/features/home/views/story_view_screen.dart';
+import 'package:social_media_app/core/services/core_auth_services.dart';
 
 class StoriesSection extends StatefulWidget {
   const StoriesSection({super.key});
@@ -15,7 +18,23 @@ class StoriesSection extends StatefulWidget {
 
 class _StoriesSectionState extends State<StoriesSection> {
   List<StoryModel> _stories = [];
-  bool _isLoading = false;
+  bool _isLoading = true;
+  UserData? _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCurrentUser();
+  }
+
+  Future<void> _fetchCurrentUser() async {
+    final user = await CoreAuthServices().getCurrentUserData();
+    if (mounted) {
+      setState(() {
+        _currentUser = user;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +78,7 @@ class _StoriesSectionState extends State<StoriesSection> {
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return StoryItem(
+                          currentUser: _currentUser,
                           onTap: () => homeCubit.shareStory(),
                         );
                       }
@@ -89,11 +109,13 @@ class _StoriesSectionState extends State<StoriesSection> {
 class StoryItem extends StatelessWidget {
   final StoryModel? story;
   final VoidCallback onTap;
+  final UserData? currentUser;
 
   const StoryItem({
     super.key,
     this.story,
     required this.onTap,
+    this.currentUser,
   });
 
   @override
@@ -118,9 +140,10 @@ class StoryItem extends StatelessWidget {
                         ),
                       ),
                       child: CircleAvatar(
+                        backgroundImage: currentUser?.imageUrl != null ? CachedNetworkImageProvider(currentUser!.imageUrl!) : null,
                         radius: 32,
                         backgroundColor: Colors.grey.withValues(alpha: 0.08),
-                        child: const Icon(
+                        child: currentUser?.imageUrl != null ? null : const Icon(
                           Icons.person,
                           size: 32,
                           color: AppColors.dividerColor,

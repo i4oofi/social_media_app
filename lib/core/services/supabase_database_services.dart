@@ -123,15 +123,16 @@ class SupabaseDatabaseServices {
     required String table,
     required List<String> primaryKey,
     required T Function(Map<String, dynamic> data, String id) builder,
-    SupabaseStreamFilterBuilder Function(SupabaseStreamFilterBuilder query)?
+    SupabaseStreamBuilder Function(SupabaseStreamFilterBuilder query)?
     filter,
     int Function(T a, T b)? sort,
   }) {
     // Create the base realtime stream
-    var streamQuery = _db.from(table).stream(primaryKey: primaryKey);
+    SupabaseStreamBuilder streamQuery =
+        _db.from(table).stream(primaryKey: primaryKey);
     if (filter != null) {
       // Apply any additional realtime filters
-      streamQuery = filter(streamQuery);
+      streamQuery = filter(streamQuery as SupabaseStreamFilterBuilder);
     }
     // Map each update into model instances
     return streamQuery.map((rows) {

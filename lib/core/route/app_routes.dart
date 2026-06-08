@@ -6,4 +6,6 @@ class AppRoutes {
   static const createPost = '/create_post';
   static const editProfile = '/edit_profile';
   static const settings = '/settings';
+  static const inboxScreen = '/inbox';
+  static const chatRoomScreen = '/chat_room';
 }

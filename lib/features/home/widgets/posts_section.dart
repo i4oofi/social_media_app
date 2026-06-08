@@ -13,7 +13,7 @@ class PostsSection extends StatefulWidget {
 
 class _PostsSectionState extends State<PostsSection> {
   List<PostModel> _posts = [];
-  bool _isLoading = false;
+  bool _isLoading = true;
   String? _error;
 
   @override

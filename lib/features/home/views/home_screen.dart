@@ -24,21 +24,31 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: AppColors.white,
         drawer: const SettingsDrawer(),
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: [
-                  const SizedBox(height: 16),
-                  const HomeScreenHeader(),
-                  const SizedBox(height: 16),
-                  const PostWritingCard(),
-                  const SizedBox(height: 24),
-                  const StoriesSection(),
-                  const PostsSection(),
-                ],
-              ),
-            ),
+          child: Builder(
+            builder: (context) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  await context.read<HomeCubit>().refresh();
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        const HomeScreenHeader(),
+                        const SizedBox(height: 16),
+                        const PostWritingCard(),
+                        const SizedBox(height: 24),
+                        const StoriesSection(),
+                        const PostsSection(),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
           ),
         ),
       ),

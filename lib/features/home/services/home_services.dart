@@ -42,15 +42,17 @@ class HomeServices {
     }
   }
 
-  Future<void> createPost(PostRequestBody post, File? image, File? file) async {
+  Future<void> createPost(PostRequestBody post, File? image, File? video, File? file) async {
     try {
       String? imageUrl;
+      String? videoUrl;
       String? fileUrl;
       if (image != null) {
+        final imageName = 'private/${DateTime.now().millisecondsSinceEpoch}_${image.path.split('/').last}';
         imageUrl = await supabaseStorageClient
             .from(AppTablesNames.posts)
             .upload(
-              'private/${DateTime.now().toIso8601String()}',
+              imageName,
               image,
               fileOptions: const FileOptions(
                 cacheControl: '3600',
@@ -58,11 +60,25 @@ class HomeServices {
               ),
             );
       }
+      if (video != null) {
+        final videoName = 'private/${DateTime.now().millisecondsSinceEpoch}_${video.path.split('/').last}';
+        videoUrl = await supabaseStorageClient
+            .from(AppTablesNames.posts)
+            .upload(
+              videoName,
+              video,
+              fileOptions: const FileOptions(
+                cacheControl: '3600',
+                upsert: true,
+              ),
+            );
+      }
       if (file != null) {
+        final fileName = 'private/${DateTime.now().millisecondsSinceEpoch}_${file.path.split('/').last}';
         fileUrl = await supabaseStorageClient
             .from(AppTablesNames.posts)
             .upload(
-              'private/${file.path}',
+              fileName,
               file,
               fileOptions: const FileOptions(
                 cacheControl: '3600',
@@ -70,14 +86,17 @@ class HomeServices {
               ),
             );
       }
-      if (imageUrl != null || fileUrl != null) {
-        post = post.copyWith(
-          imageUrl:
-              'https://luwbglucaedacswkaqgn.supabase.co/storage/v1/object/public/$imageUrl',
-          file:
-              'https://luwbglucaedacswkaqgn.supabase.co/storage/v1/object/public/$fileUrl',
-        );
-      }
+      
+      String? finalImageUrl = imageUrl != null ? '${AppConstants.supabaseStorageUrl}/$imageUrl' : null;
+      String? finalVideoUrl = videoUrl != null ? '${AppConstants.supabaseStorageUrl}/$videoUrl' : null;
+      String? finalFileUrl = fileUrl != null ? '${AppConstants.supabaseStorageUrl}/$fileUrl' : null;
+
+      post = post.copyWith(
+        imageUrl: finalImageUrl ?? post.imageUrl,
+        video: finalVideoUrl ?? post.video,
+        file: finalFileUrl ?? post.file,
+      );
+
       await supabaseServices.insertRow(
         table: AppTablesNames.posts,
         values: post.toMap(),

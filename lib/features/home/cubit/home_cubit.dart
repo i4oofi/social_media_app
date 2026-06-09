@@ -22,6 +22,7 @@ class HomeCubit extends Cubit<HomeState> {
   final postServices = PostServices();
   File? currentImage;
   File? currentFile;
+  File? currentVideo;
   Future<void> fetchStories() async {
     try {
       emit(StoryLoading());
@@ -74,6 +75,7 @@ class HomeCubit extends Cubit<HomeState> {
         await homeServices.createPost(
           PostRequestBody(text: text, authorId: currentUser.id),
           currentImage,
+          currentVideo,
           currentFile,
         );
         emit(PostCreated());
@@ -111,6 +113,8 @@ class HomeCubit extends Cubit<HomeState> {
       final image = await filePickerServices.pickImage();
       if (image != null) {
         currentImage = File(image.path);
+        currentVideo = null;
+        currentFile = null;
         emit(ImagePicked(image: File(image.path)));
       }
     } catch (e) {
@@ -124,11 +128,72 @@ class HomeCubit extends Cubit<HomeState> {
       final image = await filePickerServices.takeImage();
       if (image != null) {
         currentImage = File(image.path);
+        currentVideo = null;
+        currentFile = null;
         emit(ImagePicked(image: File(image.path)));
       }
     } catch (e) {
       emit(PickingImageError(error: e.toString()));
     }
+  }
+
+  Future<void> pickVideo() async {
+    emit(PickingVideo());
+    try {
+      final video = await filePickerServices.pickVideo();
+      if (video != null) {
+        final file = File(video.path);
+        final sizeInBytes = await file.length();
+        final sizeInMb = sizeInBytes / (1024 * 1024);
+        if (sizeInMb > 5) {
+          emit(PickingVideoError(error: 'Video size exceeds 5MB limit. Please pick a smaller video.'));
+          return;
+        }
+        currentVideo = file;
+        currentImage = null;
+        currentFile = null;
+        emit(VideoPicked(video: file));
+      }
+    } catch (e) {
+      emit(PickingVideoError(error: e.toString()));
+    }
+  }
+
+  Future<void> takeVideo() async {
+    emit(PickingVideo());
+    try {
+      final video = await filePickerServices.takeVideo();
+      if (video != null) {
+        final file = File(video.path);
+        final sizeInBytes = await file.length();
+        final sizeInMb = sizeInBytes / (1024 * 1024);
+        if (sizeInMb > 5) {
+          emit(PickingVideoError(error: 'Video size exceeds 5MB limit. Please record a shorter video.'));
+          return;
+        }
+        currentVideo = file;
+        currentImage = null;
+        currentFile = null;
+        emit(VideoPicked(video: file));
+      }
+    } catch (e) {
+      emit(PickingVideoError(error: e.toString()));
+    }
+  }
+
+  void clearImage() {
+    currentImage = null;
+    emit(ImageCleared());
+  }
+
+  void clearVideo() {
+    currentVideo = null;
+    emit(VideoCleared());
+  }
+
+  void clearFile() {
+    currentFile = null;
+    emit(FileCleared());
   }
 
   Future<void> uploadFile() async {
@@ -137,6 +202,8 @@ class HomeCubit extends Cubit<HomeState> {
       final file = await filePickerServices.pickFile();
       if (file != null) {
         currentFile = File(file.path);
+        currentImage = null;
+        currentVideo = null;
         emit(FileUploaded(file: File(file.path)));
       }
     } catch (e) {

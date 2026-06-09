@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
+import 'package:social_media_app/core/shared/widgets/custom_video_player.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 import 'package:social_media_app/features/home/widgets/comments_sheet.dart';
@@ -12,9 +13,15 @@ import 'package:social_media_app/features/profile/views/profile_screen.dart';
 class PostCard extends StatelessWidget {
   const PostCard({super.key, required this.post});
   final PostModel post;
+
+  bool _hasVideo() {
+    return post.video != null && post.video!.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     final hasPostImage = post.imageUrl != null && post.imageUrl!.isNotEmpty;
+    final hasPostVideo = _hasVideo();
     final postsCubit = context.read<PostsCubit>();
     final size = MediaQuery.of(context).size;
 
@@ -86,6 +93,10 @@ class PostCard extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 12),
+            ],
+            if (hasPostVideo) ...[
+              CustomVideoPlayer(videoUrl: post.video!),
               const SizedBox(height: 12),
             ],
             Text(

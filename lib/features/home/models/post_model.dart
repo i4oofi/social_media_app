@@ -6,6 +6,7 @@ class PostModel {
   final String text;
   final String authorId;
   final String? imageUrl;
+  final String? video;
   final String? authorName;
   final String? authorProfileImage;
   final String createdAt;
@@ -18,6 +19,7 @@ class PostModel {
     required this.text,
     required this.authorId,
     this.imageUrl,
+    this.video,
     this.authorName,
     this.authorProfileImage,
     required this.createdAt,
@@ -32,6 +34,7 @@ class PostModel {
       'text': text,
       'author_id': authorId,
       'image_url': imageUrl,
+      'video': video,
       'created_at': createdAt,
       'likes': likes,
     };
@@ -43,6 +46,7 @@ class PostModel {
       text: map['text'] as String,
       authorId: map['author_id'] as String,
       imageUrl: map['image_url'] as String?,
+      video: map['video'] as String?,
       authorName: map['author_name'] != null
           ? map['author_name'] as String
           : null,
@@ -69,6 +73,7 @@ class PostModel {
     String? text,
     String? authorId,
     String? imageUrl,
+    String? video,
     String? authorName,
     String? authorProfileImage,
     String? createdAt,
@@ -81,6 +86,7 @@ class PostModel {
       text: text ?? this.text,
       authorId: authorId ?? this.authorId,
       imageUrl: imageUrl ?? this.imageUrl,
+      video: video ?? this.video,
       authorName: authorName ?? this.authorName,
       authorProfileImage: authorProfileImage ?? this.authorProfileImage,
       createdAt: createdAt ?? this.createdAt,

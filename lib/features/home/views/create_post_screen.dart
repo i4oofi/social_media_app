@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media_app/core/shared/widgets/custom_video_player.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
 
@@ -137,6 +138,22 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   imageUrl: userData.imageUrl!,
                                   height: 44,
                                   width: 44,
+                                  fit: BoxFit.cover,
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(
+                                        Icons.person_rounded,
+                                        color: AppColors.primaryColor,
+                                      ),
                                 ),
                         ),
                         const SizedBox(width: 12),
@@ -182,25 +199,35 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               ),
               const SizedBox(height: 16),
               BlocBuilder<HomeCubit, HomeState>(
-                buildWhen: (previous, current) =>
-                    current is ImagePicked ||
-                    current is PickingImageError ||
-                    current is PickingImage,
                 builder: (context, state) {
                   if (state is PickingImage) {
                     return const CircularProgressIndicator.adaptive();
-                  } else if (state is ImagePicked) {
+                  } else if (homeCubit.currentImage != null) {
                     return Stack(
                       children: [
-                        Image.file(state.image),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(
+                            homeCubit.currentImage!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                         Positioned(
-                          top: 0,
-                          right: 0,
-                          child: IconButton(
-                            icon: Icon(Icons.close),
-                            onPressed: () {
-                              // homeCubit.clearImage();
-                            },
+                          top: 8,
+                          right: 8,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.black54,
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                homeCubit.clearImage();
+                              },
+                            ),
                           ),
                         ),
                       ],
@@ -213,24 +240,82 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 },
               ),
               BlocBuilder<HomeCubit, HomeState>(
-                buildWhen: (previous, current) =>
-                    current is FileUploaded ||
-                    current is FileUploadError ||
-                    current is FileUploading,
+                builder: (context, state) {
+                  if (state is PickingVideo) {
+                    return const CircularProgressIndicator.adaptive();
+                  } else if (homeCubit.currentVideo != null) {
+                    return Expanded(
+                      child: Stack(
+                        children: [
+                          CustomVideoPlayer(
+                            videoFile: homeCubit.currentVideo!,
+                            height: 200,
+                          ),
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.black54,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  homeCubit.clearVideo();
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (state is PickingVideoError) {
+                    return Text('Error: ${state.error}');
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
+              BlocBuilder<HomeCubit, HomeState>(
                 builder: (context, state) {
                   if (state is FileUploading) {
                     return const CircularProgressIndicator.adaptive();
-                  } else if (state is FileUploaded) {
+                  } else if (homeCubit.currentFile != null) {
                     return Stack(
                       children: [
-                        Text(state.file.path),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.babyBlue5,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.insert_drive_file_outlined,
+                                color: AppColors.primaryColor,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  homeCubit.currentFile!.path.split('/').last,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         Positioned(
-                          top: 0,
-                          right: 0,
+                          top: 4,
+                          right: 4,
                           child: IconButton(
-                            icon: Icon(Icons.close),
+                            icon: const Icon(Icons.close, color: Colors.grey),
                             onPressed: () {
-                              // homeCubit.clearFile();
+                              homeCubit.clearFile();
                             },
                           ),
                         ),
@@ -313,6 +398,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       ),
                       const SizedBox(width: 12),
                       const Icon(
+                        Icons.video_library_outlined,
+                        color: AppColors.primaryColor,
+                        size: 22,
+                      ),
+                      const SizedBox(width: 12),
+                      const Icon(
                         Icons.insert_drive_file_outlined,
                         color: AppColors.primaryColor,
                         size: 22,
@@ -336,7 +427,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       builder: (context) {
         return Container(
           width: double.infinity,
-          height: 524,
+          height: 630,
           decoration: ShapeDecoration(
             color: Colors.white,
             shape: const RoundedRectangleBorder(
@@ -394,9 +485,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Option 1: Camera
+              // Option 1: Camera (Image)
               InkWell(
                 onTap: () async {
+                  if (context.mounted) Navigator.pop(context);
                   await homeCubit.takeImage();
                 },
                 child: Container(
@@ -405,41 +497,28 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     horizontal: 32,
                     vertical: 12,
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 28,
-                              height: 28,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(),
-                              child: const Icon(
-                                Icons.camera_alt_outlined,
-                                color: AppColors.primaryColor,
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            const Text(
-                              'Camera',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'SF Pro Text',
-                                fontWeight: FontWeight.w500,
-                                height: 1.50,
-                              ),
-                            ),
-                          ],
+                      Container(
+                        width: 28,
+                        height: 28,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(),
+                        child: const Icon(
+                          Icons.camera_alt_outlined,
+                          color: AppColors.primaryColor,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Camera (Image)',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontFamily: 'SF Pro Text',
+                          fontWeight: FontWeight.w500,
+                          height: 1.50,
                         ),
                       ),
                     ],
@@ -447,54 +526,81 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 ),
               ),
 
-              // Option 2: Upload Image
+              // Option 2: Camera (Video)
               InkWell(
                 onTap: () async {
+                  if (context.mounted) Navigator.pop(context);
+                  await homeCubit.takeVideo();
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 28,
+                        height: 28,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(),
+                        child: const Icon(
+                          Icons.videocam_outlined,
+                          color: AppColors.primaryColor,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Camera (Video)',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontFamily: 'SF Pro Text',
+                          fontWeight: FontWeight.w500,
+                          height: 1.50,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Option 3: Upload Image
+              InkWell(
+                onTap: () async {
+                  if (context.mounted) Navigator.pop(context);
                   await homeCubit.pickImage();
                 },
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.only(
-                    top: 12,
-                    left: 32,
-                    right: 10,
-                    bottom: 12,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 28,
-                              height: 28,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(),
-                              child: const Icon(
-                                Icons.image_outlined,
-                                color: AppColors.primaryColor,
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            const Text(
-                              'Upload image',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'SF Pro Text',
-                                fontWeight: FontWeight.w500,
-                                height: 1.50,
-                              ),
-                            ),
-                          ],
+                      Container(
+                        width: 28,
+                        height: 28,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(),
+                        child: const Icon(
+                          Icons.image_outlined,
+                          color: AppColors.primaryColor,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Upload Image',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontFamily: 'SF Pro Text',
+                          fontWeight: FontWeight.w500,
+                          height: 1.50,
                         ),
                       ),
                     ],
@@ -502,18 +608,60 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 ),
               ),
 
-              // Option 3: Upload File
+              // Option 4: Upload Video
               InkWell(
                 onTap: () async {
+                  if (context.mounted) Navigator.pop(context);
+                  await homeCubit.pickVideo();
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 28,
+                        height: 28,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(),
+                        child: const Icon(
+                          Icons.video_library_outlined,
+                          color: AppColors.primaryColor,
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Upload Video',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontFamily: 'SF Pro Text',
+                          fontWeight: FontWeight.w500,
+                          height: 1.50,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Option 5: Upload File
+              InkWell(
+                onTap: () async {
+                  if (context.mounted) Navigator.pop(context);
                   await homeCubit.uploadFile();
                 },
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.only(top: 12, left: 32, bottom: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 12,
+                  ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
                         width: 28,
@@ -528,7 +676,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       ),
                       const SizedBox(width: 8),
                       const Text(
-                        'Upload file',
+                        'Upload File',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,

@@ -46,4 +46,32 @@ class FilePickerServices {
     }
     return null;
   }
+
+  Future<XFile?> pickVideo() async {
+    try {
+      final XFile? video = await _imagePicker.pickVideo(
+        source: ImageSource.gallery,
+      );
+      if (video != null) {
+        return video;
+      }
+    } catch (e) {
+      rethrow;
+    }
+    return null;
+  }
+
+  Future<XFile?> takeVideo() async {
+    try {
+      final XFile? video = await _imagePicker.pickVideo(
+        source: ImageSource.camera,
+      );
+      if (video != null) {
+        return video;
+      }
+    } catch (e) {
+      rethrow;
+    }
+    return null;
+  }
 }

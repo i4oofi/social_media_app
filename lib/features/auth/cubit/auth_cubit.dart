@@ -63,4 +63,34 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthFailure(e.toString()));
     }
   }
+
+  Future<void> signInWithGoogle() async {
+    emit(AuthLoading());
+    try {
+      await authServices.signInWithGoogle();
+      emit(AuthSuccess());
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
+    }
+  }
+
+  Future<void> signInWithApple() async {
+    emit(AuthLoading());
+    try {
+      await authServices.signInWithApple();
+      emit(AuthSuccess());
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
+    }
+  }
+
+  Future<void> signInWithFacebook() async {
+    emit(AuthLoading());
+    try {
+      await authServices.signInWithFacebook();
+      emit(AuthSuccess());
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
+    }
+  }
 }

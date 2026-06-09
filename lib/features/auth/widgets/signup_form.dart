@@ -21,6 +21,32 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isObscure = true;
 
+  InputDecoration _buildInputDecoration(String label, {Widget? suffixIcon}) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(color: AppColors.darkGrey),
+      filled: true,
+      fillColor: AppColors.babyBlue5,
+      suffixIcon: suffixIcon,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: AppColors.babyBlue15, width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primaryColor, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.red, width: 1),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final AuthCubit authCubit = context.read<AuthCubit>();
@@ -29,12 +55,10 @@ class _SignUpFormState extends State<SignUpForm> {
       child: SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(height: 4),
             TextFormField(
               controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: 'Full Name',
-                border: OutlineInputBorder(),
-              ),
+              decoration: _buildInputDecoration('Full Name'),
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Please enter your full name';
@@ -45,10 +69,7 @@ class _SignUpFormState extends State<SignUpForm> {
             SizedBox(height: 16),
             TextFormField(
               controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
+              decoration: _buildInputDecoration('Email'),
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Please enter your email';
@@ -59,9 +80,8 @@ class _SignUpFormState extends State<SignUpForm> {
             SizedBox(height: 16),
             TextFormField(
               controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+              decoration: _buildInputDecoration(
+                'Password',
                 suffixIcon: IconButton(
                   icon: Icon(
                     _isObscure ? Icons.visibility : Icons.visibility_off,
@@ -102,7 +122,10 @@ class _SignUpFormState extends State<SignUpForm> {
                   );
                 }
                 if (state is AuthSuccess) {
-                  Navigator.pushReplacementNamed(context, AppRoutes.customBottomNavbar);
+                  Navigator.pushReplacementNamed(
+                    context,
+                    AppRoutes.customBottomNavbar,
+                  );
                 }
               },
               builder: (context, state) {
@@ -126,23 +149,48 @@ class _SignUpFormState extends State<SignUpForm> {
             SizedBox(height: 32),
             Row(
               children: [
-                Expanded(child: Divider(color: AppColors.black, thickness: 1.5)),
+                Expanded(
+                  child: Divider(color: AppColors.black, thickness: 1.5),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text('Or signin with'),
                 ),
-                Expanded(child: Divider(color: AppColors.black, thickness: 1.5)),
+                Expanded(
+                  child: Divider(color: AppColors.black, thickness: 1.5),
+                ),
               ],
             ),
             SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(AppAssets.googleIcon, width: 50, height: 50),
+                InkWell(
+                  onTap: () => authCubit.signInWithGoogle(),
+                  child: SvgPicture.asset(
+                    AppAssets.googleIcon,
+                    width: 50,
+                    height: 50,
+                  ),
+                ),
                 SizedBox(width: 32),
-                SvgPicture.asset(AppAssets.facebookIcon, width: 50, height: 50),
+                InkWell(
+                  onTap: () => authCubit.signInWithFacebook(),
+                  child: SvgPicture.asset(
+                    AppAssets.facebookIcon,
+                    width: 50,
+                    height: 50,
+                  ),
+                ),
                 SizedBox(width: 32),
-                SvgPicture.asset(AppAssets.appleIcon, width: 50, height: 50),
+                InkWell(
+                  onTap: () => authCubit.signInWithApple(),
+                  child: SvgPicture.asset(
+                    AppAssets.appleIcon,
+                    width: 50,
+                    height: 50,
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 16),
@@ -157,7 +205,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    DefaultTabController.of(context).animateTo(0);
+                  },
                   child: Text(
                     'Sign In',
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(

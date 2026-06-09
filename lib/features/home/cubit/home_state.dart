@@ -79,3 +79,21 @@ final class PickingImageError extends HomeState {
   PickingImageError({required this.error});
 }
 
+final class PickingVideo extends HomeState {}
+
+final class VideoPicked extends HomeState {
+  final File video;
+
+  VideoPicked({required this.video});
+}
+
+final class PickingVideoError extends HomeState {
+  final String error;
+
+  PickingVideoError({required this.error});
+}
+
+final class ImageCleared extends HomeState {}
+final class VideoCleared extends HomeState {}
+final class FileCleared extends HomeState {}
+

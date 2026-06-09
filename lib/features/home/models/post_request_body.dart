@@ -5,11 +5,13 @@ class PostRequestBody {
   final String text;
   final String authorId;
   final String? imageUrl;
+  final String? video;
   final String? file;
   PostRequestBody({
     required this.text,
     required this.authorId,
     this.imageUrl,
+    this.video,
     this.file,
   });
 
@@ -18,6 +20,7 @@ class PostRequestBody {
       'text': text,
       'author_id': authorId,
       'image_url': imageUrl,
+      'video': video,
       'file': file,
     };
   }
@@ -28,12 +31,14 @@ class PostRequestBody {
     String? text,
     String? authorId,
     String? imageUrl,
+    String? video,
     String? file,
   }) {
     return PostRequestBody(
       text: text ?? this.text,
       authorId: authorId ?? this.authorId,
       imageUrl: imageUrl ?? this.imageUrl,
+      video: video ?? this.video,
       file: file ?? this.file,
     );
   }

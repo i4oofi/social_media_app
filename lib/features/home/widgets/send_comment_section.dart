@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
+import 'package:social_media_app/core/shared/widgets/app_toast.dart';
+import 'package:social_media_app/core/theme/app_colors.dart';
 
 class SendCommentSection extends StatefulWidget {
   final PostModel post;
@@ -42,9 +44,10 @@ class _SendCommentSectionState extends State<SendCommentSection> {
               textController.clear();
               await postsCubit.fetchComments(widget.post.id);
             } else if (state is CommentAddingError) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(state.error)));
+              AppToast.showToast(
+                msg: state.error,
+                backgroundColor: AppColors.red,
+              );
             }
           },
           builder: (context, state) {
@@ -54,7 +57,10 @@ class _SendCommentSectionState extends State<SendCommentSection> {
             return IconButton(
               icon: const Icon(Icons.send),
               onPressed: () async {
-                await postsCubit.addComment(widget.post.id, textController.text);
+                await postsCubit.addComment(
+                  widget.post.id,
+                  textController.text,
+                );
               },
             );
           },

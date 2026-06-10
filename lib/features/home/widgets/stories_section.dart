@@ -8,6 +8,8 @@ import 'package:social_media_app/features/home/cubit/home_cubit.dart';
 import 'package:social_media_app/features/home/models/story_model.dart';
 import 'package:social_media_app/features/home/views/story_view_screen.dart';
 import 'package:social_media_app/core/services/core_auth_services.dart';
+import 'package:social_media_app/core/shared/widgets/app_toast.dart';
+import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
 
 class StoriesSection extends StatefulWidget {
   const StoriesSection({super.key});
@@ -56,12 +58,7 @@ class _StoriesSectionState extends State<StoriesSection> {
           setState(() {
             _isLoading = false;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error),
-              backgroundColor: AppColors.red,
-            ),
-          );
+          AppToast.showToast(msg: state.error, backgroundColor: AppColors.red);
         }
       },
       child: Column(
@@ -70,9 +67,15 @@ class _StoriesSectionState extends State<StoriesSection> {
           SizedBox(
             height: size.height * 0.14,
             child: _isLoading && _stories.isEmpty
-                ? const Center(child: CircularProgressIndicator.adaptive())
+                ? ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    separatorBuilder: (_, __) => const SizedBox(width: 14),
+                    itemCount: 5,
+                    itemBuilder: (_, __) => const StoryShimmer(),
+                  )
                 : ListView.separated(
-                    separatorBuilder: (context, index) => const SizedBox(width: 14),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: 14),
                     scrollDirection: Axis.horizontal,
                     itemCount: _stories.length + 1,
                     itemBuilder: (context, index) {
@@ -140,14 +143,18 @@ class StoryItem extends StatelessWidget {
                         ),
                       ),
                       child: CircleAvatar(
-                        backgroundImage: currentUser?.imageUrl != null ? CachedNetworkImageProvider(currentUser!.imageUrl!) : null,
+                        backgroundImage: currentUser?.imageUrl != null
+                            ? CachedNetworkImageProvider(currentUser!.imageUrl!)
+                            : null,
                         radius: 32,
                         backgroundColor: Colors.grey.withValues(alpha: 0.08),
-                        child: currentUser?.imageUrl != null ? null : const Icon(
-                          Icons.person,
-                          size: 32,
-                          color: AppColors.dividerColor,
-                        ),
+                        child: currentUser?.imageUrl != null
+                            ? null
+                            : const Icon(
+                                Icons.person,
+                                size: 32,
+                                color: AppColors.dividerColor,
+                              ),
                       ),
                     ),
                     Positioned(
@@ -162,11 +169,7 @@ class StoryItem extends StatelessWidget {
                         child: const CircleAvatar(
                           radius: 9,
                           backgroundColor: AppColors.primaryColor,
-                          child: Icon(
-                            Icons.add,
-                            size: 13,
-                            color: Colors.white,
-                          ),
+                          child: Icon(Icons.add, size: 13, color: Colors.white),
                         ),
                       ),
                     ),
@@ -227,10 +230,10 @@ class StoryItem extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.black,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 11,
-                ),
+              color: AppColors.black,
+              fontWeight: FontWeight.w600,
+              fontSize: 11,
+            ),
           ),
         ),
       ],

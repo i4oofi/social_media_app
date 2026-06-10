@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
@@ -113,7 +114,16 @@ class _InboxScreenState extends State<InboxScreen> {
               child: BlocBuilder<InboxCubit, InboxState>(
                 builder: (context, state) {
                   if (state is InboxLoading) {
-                    return const Center(child: CircularProgressIndicator.adaptive());
+                    return ListView.separated(
+                      itemCount: 7,
+                      separatorBuilder: (_, index) => const Divider(
+                        height: 1,
+                        indent: 84,
+                        endIndent: 20,
+                        color: Color(0xffF2F2F7),
+                      ),
+                      itemBuilder: (_, __) => const InboxChatShimmer(),
+                    );
                   }
                   
                   if (state is InboxFailure) {

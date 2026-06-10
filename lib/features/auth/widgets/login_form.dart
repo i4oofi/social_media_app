@@ -6,6 +6,7 @@ import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/auth/cubit/auth_cubit.dart';
 import 'package:social_media_app/features/auth/widgets/main_button.dart';
+import 'package:social_media_app/core/shared/widgets/app_toast.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -91,11 +92,9 @@ class _LoginFormState extends State<LoginForm> {
                 if (emailController.text.isNotEmpty) {
                   authCubit.resetPassword(emailController.text);
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Password reset link sent!'),
-                      backgroundColor: Colors.green,
-                    ),
+                  AppToast.showToast(
+                    msg: 'Password reset link sent!',
+                    backgroundColor: Colors.green,
                   );
                 }
               },
@@ -180,11 +179,9 @@ class _LoginFormState extends State<LoginForm> {
                 current is AuthSuccess,
             listener: (context, state) {
               if (state is AuthFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.red,
-                  ),
+                AppToast.showToast(
+                  msg: state.message,
+                  backgroundColor: AppColors.red,
                 );
               }
               if (state is AuthSuccess) {

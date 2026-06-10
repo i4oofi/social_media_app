@@ -71,32 +71,23 @@ class AuthServices {
     );
   }
 
-  Future<void> signInWithGoogle() async {
-    const webClientId = 'my-web-client-id';
-    const iosClientId = 'my-ios-client-id';
-
+Future<void> signInWithGoogle() async {
+  try {
     await google.GoogleSignIn.instance.initialize(
-      serverClientId: webClientId,
-      clientId: iosClientId,
+      serverClientId: "722087504847-9vak50ldillkgnucuu01li1en0nd2e34.apps.googleusercontent.com",
     );
-    final googleUser = await google.GoogleSignIn.instance.authenticate();
-    final googleAuth = googleUser.authentication;
-    final idToken = googleAuth.idToken;
 
-    if (idToken == null) {
-      throw Exception('No ID Token found.');
-    }
+    final googleUser =
+        await google.GoogleSignIn.instance.authenticate();
 
-    // Get access token for Supabase if available
-    final authz = await googleUser.authorizationClient.authorizationForScopes([]);
-    final accessToken = authz?.accessToken;
+    print('USER: ${googleUser.email}');
 
-    await supabase.auth.signInWithIdToken(
-      provider: OAuthProvider.google,
-      idToken: idToken,
-      accessToken: accessToken,
-    );
+  } catch (e, st) {
+    print('ERROR => $e');
+    print('STACK => $st');
+    rethrow;
   }
+}
 
   Future<void> signInWithApple() async {
     final rawNonce = supabase.auth.generateRawNonce();

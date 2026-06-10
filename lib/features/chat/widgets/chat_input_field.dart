@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media_app/core/services/file_picker_services.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
+import 'package:social_media_app/core/shared/widgets/app_toast.dart';
 
 class ChatInputField extends StatefulWidget {
   final Function(String text) onSend;
@@ -55,15 +56,16 @@ class _ChatInputFieldState extends State<ChatInputField> {
     try {
       final XFile? image = await _filePickerServices.pickImage();
       if (image != null) {
-        final fileName = image.name.isNotEmpty 
-            ? image.name 
+        final fileName = image.name.isNotEmpty
+            ? image.name
             : '${DateTime.now().millisecondsSinceEpoch}.jpg';
         widget.onImageSelected(image.path, fileName);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to pick image: $e')),
+        AppToast.showToast(
+          msg: 'Failed to pick image: $e',
+          backgroundColor: AppColors.red,
         );
       }
     }
@@ -73,15 +75,16 @@ class _ChatInputFieldState extends State<ChatInputField> {
     try {
       final XFile? image = await _filePickerServices.takeImage();
       if (image != null && image.path.isNotEmpty) {
-        final fileName = image.name.isNotEmpty 
-            ? image.name 
+        final fileName = image.name.isNotEmpty
+            ? image.name
             : '${DateTime.now().millisecondsSinceEpoch}.jpg';
         widget.onImageSelected(image.path, fileName);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to capture photo: $e')),
+        AppToast.showToast(
+          msg: 'Failed to capture photo: $e',
+          backgroundColor: AppColors.red,
         );
       }
     }
@@ -99,7 +102,10 @@ class _ChatInputFieldState extends State<ChatInputField> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.camera_alt_rounded, color: AppColors.primaryColor),
+                leading: const Icon(
+                  Icons.camera_alt_rounded,
+                  color: AppColors.primaryColor,
+                ),
                 title: const Text('Camera'),
                 onTap: () {
                   Navigator.pop(context);
@@ -107,7 +113,10 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.photo_library_rounded, color: AppColors.primaryColor),
+                leading: const Icon(
+                  Icons.photo_library_rounded,
+                  color: AppColors.primaryColor,
+                ),
                 title: const Text('Gallery'),
                 onTap: () {
                   Navigator.pop(context);
@@ -141,11 +150,14 @@ class _ChatInputFieldState extends State<ChatInputField> {
           children: [
             // Attachment Button
             IconButton(
-              icon: const Icon(Icons.add_circle_outline_rounded, color: AppColors.primaryColor),
+              icon: const Icon(
+                Icons.add_circle_outline_rounded,
+                color: AppColors.primaryColor,
+              ),
               onPressed: widget.isSending ? null : _showAttachmentOptions,
               iconSize: 28,
             ),
-            
+
             // Text Input Field
             Expanded(
               child: Container(
@@ -164,14 +176,17 @@ class _ChatInputFieldState extends State<ChatInputField> {
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                   ),
                 ),
               ),
             ),
-            
+
             const SizedBox(width: 8),
-            
+
             // Send Button
             widget.isSending
                 ? const SizedBox(
@@ -185,10 +200,15 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 : Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _isTextEmpty ? Colors.grey.withValues(alpha: 0.2) : AppColors.primaryColor,
+                      color: _isTextEmpty
+                          ? Colors.grey.withValues(alpha: 0.2)
+                          : AppColors.primaryColor,
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.send_rounded, color: AppColors.white),
+                      icon: const Icon(
+                        Icons.send_rounded,
+                        color: AppColors.white,
+                      ),
                       iconSize: 18,
                       onPressed: _isTextEmpty ? null : _handleSend,
                     ),

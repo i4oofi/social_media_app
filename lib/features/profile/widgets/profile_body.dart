@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:social_media_app/core/shared/widgets/post_card.dart';
+import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/profile/cubit/profile_cubit/profile_cubit.dart';
@@ -313,7 +314,10 @@ class ProfilePosts extends StatelessWidget {
           current is ProfilePostsFailure,
       builder: (context, state) {
         if (state is ProfilePostsLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return ListView.builder(
+            itemCount: 4,
+            itemBuilder: (_, __) => const PostShimmer(),
+          );
         }
         if (state is ProfilePostsFailure) {
           return Center(child: Text(state.message));

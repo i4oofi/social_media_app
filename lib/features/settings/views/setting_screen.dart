@@ -7,6 +7,7 @@ import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/profile/models/edit_profile_screen_args.dart';
 import 'package:social_media_app/features/settings/cubit/settings_cubit.dart';
+import 'package:social_media_app/core/shared/widgets/app_toast.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -153,10 +154,9 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                       arguments: EditProfileScreenArgs(userData: _userData!),
                     );
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Profile data is still loading..."),
-                      ),
+                    AppToast.showToast(
+                      msg: "Profile data is still loading...",
+                      backgroundColor: AppColors.red,
                     );
                   }
                 },
@@ -208,14 +208,17 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                 current is SignOutSuccess || current is SignOutFailure,
             listener: (context, state) {
               if (state is SignOutSuccess) {
-                Navigator.of(context, rootNavigator: true)
-                    .pushNamedAndRemoveUntil(
+                Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).pushNamedAndRemoveUntil(
                   AppRoutes.authScreen,
                   (route) => false,
                 );
               } else if (state is SignOutFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.error)),
+                AppToast.showToast(
+                  msg: state.error,
+                  backgroundColor: AppColors.red,
                 );
               }
             },
@@ -225,7 +228,9 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                 current is SignOutFailure,
             builder: (context, state) {
               if (state is SignOutLoading) {
-                return const Center(child: CircularProgressIndicator.adaptive());
+                return const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                );
               }
               return Container(
                 decoration: BoxDecoration(
@@ -239,7 +244,10 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  leading: const Icon(Icons.logout_rounded, color: AppColors.red),
+                  leading: const Icon(
+                    Icons.logout_rounded,
+                    color: AppColors.red,
+                  ),
                   title: const Text(
                     "Logout",
                     style: TextStyle(
@@ -266,9 +274,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: ListTile(
         onTap: onTap,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         leading: Icon(icon, color: AppColors.black, size: 22),
         title: Text(
           title,

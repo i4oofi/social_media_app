@@ -6,6 +6,7 @@ import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/auth/cubit/auth_cubit.dart';
 import 'package:social_media_app/features/auth/widgets/main_button.dart';
+import 'package:social_media_app/core/shared/widgets/app_toast.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -114,11 +115,9 @@ class _SignUpFormState extends State<SignUpForm> {
               listener: (context, state) {
                 if (state is AuthFailure) {
                   debugPrint(state.message);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.message),
-                      backgroundColor: AppColors.red,
-                    ),
+                  AppToast.showToast(
+                    msg: state.message,
+                    backgroundColor: AppColors.red,
                   );
                 }
                 if (state is AuthSuccess) {

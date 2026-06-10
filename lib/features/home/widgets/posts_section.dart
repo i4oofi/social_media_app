@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/shared/widgets/post_card.dart';
+import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 
@@ -38,9 +39,11 @@ class _PostsSectionState extends State<PostsSection> {
         }
       },
       child: _isLoading && _posts.isEmpty
-          ? const Padding(
-              padding: EdgeInsets.symmetric(vertical: 40),
-              child: Center(child: CircularProgressIndicator.adaptive()),
+          ? ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 4,
+              itemBuilder: (_, __) => const PostShimmer(),
             )
           : _error != null && _posts.isEmpty
               ? Padding(

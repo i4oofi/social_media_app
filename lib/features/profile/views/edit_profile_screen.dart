@@ -4,6 +4,8 @@ import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/auth/widgets/main_button.dart';
 import 'package:social_media_app/features/profile/cubit/edit_profile_cubit/edit_profile_cubit.dart';
+import 'package:social_media_app/core/shared/widgets/app_toast.dart';
+import 'package:social_media_app/core/theme/app_colors.dart';
 
 class EditProfileScreen extends StatelessWidget {
   final UserData userData;
@@ -96,9 +98,10 @@ class _EditProfileBodyState extends State<EditProfileBody> {
                         Navigator.pop(context);
                       }
                       if (state is EditProfileFailure) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(SnackBar(content: Text(state.message)));
+                        AppToast.showToast(
+                          msg: state.message,
+                          backgroundColor: AppColors.red,
+                        );
                       }
                     },
                     buildWhen: (previous, current) =>

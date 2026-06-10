@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/auth/widgets/main_button.dart';
@@ -125,8 +126,9 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                   current is DiscoverSuccess,
               builder: (context, state) {
                 if (state is DiscoverLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator.adaptive(),
+                  return ListView.builder(
+                    itemCount: 7,
+                    itemBuilder: (_, __) => const DiscoverUserShimmer(),
                   );
                 } else if (state is DiscoverFailure) {
                   return Center(

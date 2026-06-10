@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
 import 'package:social_media_app/features/profile/cubit/profile_cubit/profile_cubit.dart';
 import 'package:social_media_app/features/profile/widgets/profile_body.dart';
 import 'package:social_media_app/features/profile/widgets/profile_header.dart';
@@ -26,7 +27,7 @@ class ProfileScreen extends StatelessWidget {
             current is ProfileFailure,
         builder: (context, state) {
           if (state is ProfileLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const ProfileHeaderShimmer();
           }
           if (state is ProfileFailure) {
             return Center(child: Text(state.message));

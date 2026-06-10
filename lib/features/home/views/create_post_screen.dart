@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/shared/widgets/custom_video_player.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
+import 'package:social_media_app/core/shared/widgets/app_toast.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -64,39 +65,49 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   current is PostCreated || current is PostCreateError,
               listener: (context, state) {
                 if (state is PostCreated) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Post created successfully')),
+                  AppToast.showToast(
+                    msg: 'Post created successfully',
+                    backgroundColor: Colors.green,
                   );
+                  _textController.clear();
+                  homeCubit.clearImage();
+                  homeCubit.clearVideo();
+                  homeCubit.clearFile();
+                  Navigator.pop(context);
                 } else if (state is PostCreateError) {
                   debugPrint('Error: ${state.error}');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: ${state.error}')),
+                  AppToast.showToast(
+                    msg: 'Error: ${state.error}',
+                    backgroundColor: AppColors.red,
                   );
                 }
               },
-              buildWhen: (previous, current) =>
-                  current is PostCreating ||
-                  current is PostCreated ||
-                  current is PostCreateError,
               builder: (context, state) {
                 if (state is PostCreating) {
-                  return const CircularProgressIndicator.adaptive();
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Center(child: CircularProgressIndicator.adaptive()),
+                  );
                 }
+
+                final bool canPost =
+                    _textController.text.trim().isNotEmpty ||
+                    homeCubit.currentImage != null ||
+                    homeCubit.currentVideo != null ||
+                    homeCubit.currentFile != null;
+
                 return TextButton(
-                  onPressed: () async {
-                    if (_textController.text.isNotEmpty) {
-                      await homeCubit.createPost(text: _textController.text);
-                      if (context.mounted) {
-                        // Navigator.pop(context);
-                      }
-                    }
-                  },
+                  onPressed: canPost
+                      ? () async {
+                          await homeCubit.createPost(
+                            text: _textController.text,
+                          );
+                        }
+                      : null,
                   child: Text(
                     'Post',
                     style: TextStyle(
-                      color: _textController.text.isNotEmpty
-                          ? AppColors.primaryColor
-                          : AppColors.grey,
+                      color: canPost ? AppColors.primaryColor : AppColors.grey,
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                       fontFamily: 'SF Pro Text',
@@ -113,239 +124,278 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Column(
             children: [
-              // User Profile Info
-              BlocBuilder<HomeCubit, HomeState>(
-                bloc: homeCubit,
-                buildWhen: (previous, current) =>
-                    current is PostCreateInitialLoading ||
-                    current is PostCreateInitialData,
-                builder: (context, state) {
-                  if (state is PostCreateInitialLoading) {
-                    return const CircularProgressIndicator.adaptive();
-                  } else if (state is PostCreateInitialData) {
-                    final userData = state.user;
-                    return Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 22,
-                          backgroundColor: AppColors.babyBlue15,
-                          child: userData.imageUrl == null
-                              ? const Icon(
-                                  Icons.person_rounded,
-                                  color: AppColors.primaryColor,
-                                )
-                              : CachedNetworkImage(
-                                  imageUrl: userData.imageUrl!,
-                                  height: 44,
-                                  width: 44,
-                                  fit: BoxFit.cover,
-                                  imageBuilder: (context, imageProvider) =>
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                            image: imageProvider,
+              Expanded(
+                child: CustomScrollView(
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildListDelegate([
+                        // User Profile Info
+                        BlocBuilder<HomeCubit, HomeState>(
+                          bloc: homeCubit,
+                          buildWhen: (previous, current) =>
+                              current is PostCreateInitialLoading ||
+                              current is PostCreateInitialData,
+                          builder: (context, state) {
+                            if (state is PostCreateInitialLoading) {
+                              return const CircularProgressIndicator.adaptive();
+                            } else if (state is PostCreateInitialData) {
+                              final userData = state.user;
+                              return Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 22,
+                                    backgroundColor: AppColors.babyBlue15,
+                                    child: userData.imageUrl == null
+                                        ? const Icon(
+                                            Icons.person_rounded,
+                                            color: AppColors.primaryColor,
+                                          )
+                                        : CachedNetworkImage(
+                                            imageUrl: userData.imageUrl!,
+                                            height: 44,
+                                            width: 44,
                                             fit: BoxFit.cover,
+                                            imageBuilder: (context, imageProvider) =>
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                            errorWidget: (context, url, error) =>
+                                                const Icon(
+                                                  Icons.person_rounded,
+                                                  color: AppColors.primaryColor,
+                                                ),
                                           ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        userData.name,
+                                        style: TextStyle(
+                                          color: AppColors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'SF Pro Text',
                                         ),
                                       ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(
-                                        Icons.person_rounded,
-                                        color: AppColors.primaryColor,
+                                      SizedBox(height: 2),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.public,
+                                            size: 14,
+                                            color: AppColors.dividerColor,
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            "Public",
+                                            style: TextStyle(
+                                              color: AppColors.dividerColor,
+                                              fontSize: 12,
+                                              fontFamily: 'SF Pro Text',
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                ),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          },
                         ),
-                        const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              userData.name,
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'SF Pro Text',
-                              ),
-                            ),
-                            SizedBox(height: 2),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.public,
-                                  size: 14,
-                                  color: AppColors.dividerColor,
+                        const SizedBox(height: 16),
+                        BlocBuilder<HomeCubit, HomeState>(
+                          builder: (context, state) {
+                            if (state is PickingImage) {
+                              return const CircularProgressIndicator.adaptive();
+                            } else if (homeCubit.currentImage != null) {
+                              return Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(bottom: 16),
+                                constraints: BoxConstraints(
+                                  maxHeight: MediaQuery.of(context).size.height * 0.6,
                                 ),
-                                SizedBox(width: 4),
-                                Text(
-                                  "Public",
-                                  style: TextStyle(
-                                    color: AppColors.dividerColor,
-                                    fontSize: 12,
-                                    fontFamily: 'SF Pro Text',
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: AppColors.dividerColor.withValues(alpha: 0.2),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-              BlocBuilder<HomeCubit, HomeState>(
-                builder: (context, state) {
-                  if (state is PickingImage) {
-                    return const CircularProgressIndicator.adaptive();
-                  } else if (homeCubit.currentImage != null) {
-                    return Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            homeCubit.currentImage!,
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.black54,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                homeCubit.clearImage();
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  } else if (state is PickingImageError) {
-                    return Text('Error: ${state.error}');
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              ),
-              BlocBuilder<HomeCubit, HomeState>(
-                builder: (context, state) {
-                  if (state is PickingVideo) {
-                    return const CircularProgressIndicator.adaptive();
-                  } else if (homeCubit.currentVideo != null) {
-                    return Expanded(
-                      child: Stack(
-                        children: [
-                          CustomVideoPlayer(
-                            videoFile: homeCubit.currentVideo!,
-                            height: 200,
-                          ),
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.black54,
-                              child: IconButton(
-                                icon: const Icon(
-                                  Icons.close,
-                                  color: Colors.white,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.file(
+                                        homeCubit.currentImage!,
+                                        width: double.infinity,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 8,
+                                      right: 8,
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.black54,
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            homeCubit.clearImage();
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                onPressed: () {
-                                  homeCubit.clearVideo();
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
+                              );
+                            } else if (state is PickingImageError) {
+                              return Text('Error: ${state.error}');
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          },
+                        ),
+                        BlocBuilder<HomeCubit, HomeState>(
+                          builder: (context, state) {
+                            if (state is PickingVideo) {
+                              return const CircularProgressIndicator.adaptive();
+                            } else if (homeCubit.currentVideo != null) {
+                              return Container(
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(bottom: 16),
+                                constraints: BoxConstraints(
+                                  maxHeight: MediaQuery.of(context).size.height * 0.6,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: Colors.black,
+                                ),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: CustomVideoPlayer(
+                                        videoFile: homeCubit.currentVideo!,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 8,
+                                      right: 8,
+                                      child: CircleAvatar(
+                                        backgroundColor: Colors.black54,
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            homeCubit.clearVideo();
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else if (state is PickingVideoError) {
+                              return Text('Error: ${state.error}');
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          },
+                        ),
+                        BlocBuilder<HomeCubit, HomeState>(
+                          builder: (context, state) {
+                            if (state is FileUploading) {
+                              return const CircularProgressIndicator.adaptive();
+                            } else if (homeCubit.currentFile != null) {
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 16),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.babyBlue5,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.insert_drive_file_outlined,
+                                            color: AppColors.primaryColor,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              homeCubit.currentFile!.path.split('/').last,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: IconButton(
+                                        icon: const Icon(Icons.close, color: Colors.grey),
+                                        onPressed: () {
+                                          homeCubit.clearFile();
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else if (state is FileUploadError) {
+                              return Text('Error: ${state.error}');
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          },
+                        ),
+                      ]),
+                    ),
+                    // Post Text Input
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: TextField(
+                        controller: _textController,
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontFamily: 'SF Pro Text',
+                        ),
+                        decoration: InputDecoration(
+                          hintText: "What's on your mind?",
+                          hintStyle: TextStyle(color: AppColors.grey, fontSize: 16),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                        ),
                       ),
-                    );
-                  } else if (state is PickingVideoError) {
-                    return Text('Error: ${state.error}');
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              ),
-              BlocBuilder<HomeCubit, HomeState>(
-                builder: (context, state) {
-                  if (state is FileUploading) {
-                    return const CircularProgressIndicator.adaptive();
-                  } else if (homeCubit.currentFile != null) {
-                    return Stack(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: AppColors.babyBlue5,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.insert_drive_file_outlined,
-                                color: AppColors.primaryColor,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  homeCubit.currentFile!.path.split('/').last,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          top: 4,
-                          right: 4,
-                          child: IconButton(
-                            icon: const Icon(Icons.close, color: Colors.grey),
-                            onPressed: () {
-                              homeCubit.clearFile();
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  } else if (state is FileUploadError) {
-                    return Text('Error: ${state.error}');
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              ),
-              // Post Text Input
-              Expanded(
-                child: TextField(
-                  controller: _textController,
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'SF Pro Text',
-                  ),
-                  decoration: InputDecoration(
-                    hintText: "What's on your mind?",
-                    hintStyle: TextStyle(color: AppColors.grey, fontSize: 16),
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                  ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),

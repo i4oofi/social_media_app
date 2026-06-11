@@ -11,8 +11,9 @@ class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit() : super(ProfileInitial());
   final coreAuthServices = CoreAuthServices();
   final profileServices = ProfileServices();
-  Future<void> fetchUserProfile({String? userId}) async {
-    emit(ProfileLoading());
+  Future<void> fetchUserProfile({String? userId, bool silent = false}) async {
+    if (!silent) emit(ProfileLoading());
+    else emit(ProfileRefreshing());
     try {
       final UserData? userModel;
       if (userId == null) {
@@ -32,8 +33,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  Future<void> fetchUserPosts({String? userId}) async {
-    emit(ProfilePostsLoading());
+  Future<void> fetchUserPosts({String? userId, bool silent = false}) async {
+    if (!silent) emit(ProfilePostsLoading());
     try {
       final currentAuthUser = await coreAuthServices.getCurrentUserData();
       final UserData? userModel;
@@ -65,6 +66,12 @@ class ProfileCubit extends Cubit<ProfileState> {
     } catch (e) {
       emit(ProfilePostsFailure(e.toString()));
     }
+  }
+
+  /// Silent pull-to-refresh: does NOT show the full-page shimmer.
+  Future<void> refreshProfile({String? userId}) async {
+    await fetchUserProfile(userId: userId, silent: true);
+    await fetchUserPosts(userId: userId, silent: true);
   }
 
   Future<void> toggleFollowUser(String targetUserId) async {

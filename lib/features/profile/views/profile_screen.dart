@@ -16,55 +16,92 @@ class ProfileScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         final cubit = ProfileCubit();
+        // Initial load — NOT silent → shows full shimmer.
         cubit.fetchUserProfile(userId: userId);
         cubit.fetchUserPosts(userId: userId);
         return cubit;
       },
-      child: BlocBuilder<ProfileCubit, ProfileState>(
-        buildWhen: (previous, current) =>
-            current is ProfileLoading ||
-            current is ProfileSuccess ||
-            current is ProfileFailure,
-        builder: (context, state) {
-          if (state is ProfileLoading) {
-            return const ProfileHeaderShimmer();
-          }
-          if (state is ProfileFailure) {
-            return Center(child: Text(state.message));
-          }
-          if (state is ProfileSuccess) {
-            final userData = state.user;
-            final currentUserId = BlocProvider.of<ProfileCubit>(context).coreAuthServices.supabase.auth.currentUser?.id;
-            final isPrivate = currentUserId == userData.id;
-            return Scaffold(
-              drawer: const SettingsDrawer(),
-              body: SafeArea(
-                child: DefaultTabController(
-                  length: 2,
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      final cubit = BlocProvider.of<ProfileCubit>(context);
-                      await Future.wait([
-                        cubit.fetchUserProfile(userId: userId),
-                        cubit.fetchUserPosts(userId: userId),
-                      ]);
-                    },
-                    child: NestedScrollView(
+      child: _ProfileScreenContent(userId: userId),
+    );
+  }
+}
+
+class _ProfileScreenContent extends StatelessWidget {
+  final String? userId;
+  const _ProfileScreenContent({this.userId});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      // Only rebuild the root when profile data (or loading) changes.
+      // ProfileRefreshing keeps the old ProfileSuccess UI alive.
+      buildWhen: (previous, current) =>
+          current is ProfileLoading ||
+          current is ProfileSuccess ||
+          current is ProfileFailure,
+      builder: (context, state) {
+        // ── Full-page shimmer on first load ──────────────────────────────
+        if (state is ProfileLoading) {
+          return const Scaffold(body: SafeArea(child: ProfileHeaderShimmer()));
+        }
+
+        // ── Error ────────────────────────────────────────────────────────
+        if (state is ProfileFailure) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                  const SizedBox(height: 12),
+                  Text(
+                    state.message,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // ── Success ──────────────────────────────────────────────────────
+        if (state is ProfileSuccess) {
+          final userData = state.user;
+          final cubit = context.read<ProfileCubit>();
+          final currentUserId =
+              cubit.coreAuthServices.supabase.auth.currentUser?.id;
+          final isPrivate = currentUserId == userData.id;
+
+          return Scaffold(
+            drawer: const SettingsDrawer(),
+            body: SafeArea(
+              child: DefaultTabController(
+                length: 2,
+                child: RefreshIndicator(
+                  // Silent refresh — does NOT emit ProfileLoading
+                  onRefresh: () => cubit.refreshProfile(userId: userId),
+                  child: NestedScrollView(
+                    // Must be AlwaysScrollable so RefreshIndicator
+                    // can be triggered even when content fills the screen.
+                    physics: const AlwaysScrollableScrollPhysics(),
                     headerSliverBuilder: (context, innerBoxIsScrolled) {
                       return [
                         SliverToBoxAdapter(
                           child: Column(
                             children: [
-                              ProfileHeader(userData: userData, isPrivate: isPrivate),
+                              ProfileHeader(
+                                userData: userData,
+                                isPrivate: isPrivate,
+                              ),
                               const SizedBox(height: 24),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 24),
                                 child: Column(
                                   children: [
                                     ProfileStatsCard(userData: userData),
-                                    SizedBox(height: 16),
+                                    const SizedBox(height: 16),
                                   ],
                                 ),
                               ),
@@ -94,26 +131,31 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              )
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
+            ),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
 class _TabBarDelegate extends SliverPersistentHeaderDelegate {
   _TabBarDelegate(this.tabBar);
   final TabBar tabBar;
+
   @override
   Widget build(
     BuildContext context,
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    return tabBar;
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: tabBar,
+    );
   }
 
   @override
@@ -123,7 +165,5 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => tabBar.preferredSize.height;
 
   @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
-  }
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
 }

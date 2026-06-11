@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:social_media_app/core/models/comment_model.dart';
 import 'package:social_media_app/core/services/supabase_database_services.dart';
 import 'package:social_media_app/core/theme/app_tables_names.dart';
@@ -24,7 +26,7 @@ class ProfileServices {
     }
   }
 
-    Future<List<CommentModel>> fetchComments(String postId) async {
+  Future<List<CommentModel>> fetchComments(String postId) async {
     try {
       return await supabaseServices.fetchRows(
         table: AppTablesNames.comments,
@@ -39,13 +41,64 @@ class ProfileServices {
     }
   }
 
-  Future<void> updateProfile({required String userId, required String? name , String? title , String? imageUrl}) async {
+  /// Uploads an image file to Supabase Storage under [bucket] and returns the public URL.
+  Future<String> _uploadImage({
+    required File imageFile,
+    required String bucket,
+    required String userId,
+    required String prefix,
+  }) async {
+    final path = '$userId/$prefix-${DateTime.now().millisecondsSinceEpoch}.jpg';
+    await supabaseStorageClient
+        .from(bucket)
+        .upload(
+          path,
+          imageFile,
+          fileOptions: FileOptions(cacheControl: '3600', upsert: true),
+        );
+    final publicUrl =
+        supabaseStorageClient.from(bucket).getPublicUrl(path);
+    return publicUrl;
+  }
+
+  Future<void> updateProfile({
+    required String userId,
+    required String? name,
+    String? title,
+    String? imageUrl,
+    String? coverUrl,
+    File? profileImageFile,
+    File? coverImageFile,
+  }) async {
     try {
-      final data = {
+      String? finalImageUrl = imageUrl;
+      String? finalCoverUrl = coverUrl;
+
+      if (profileImageFile != null) {
+        finalImageUrl = await _uploadImage(
+          imageFile: profileImageFile,
+          bucket: 'avatars',
+          userId: userId,
+          prefix: 'profile',
+        );
+      }
+
+      if (coverImageFile != null) {
+        finalCoverUrl = await _uploadImage(
+          imageFile: coverImageFile,
+          bucket: 'covers',
+          userId: userId,
+          prefix: 'cover',
+        );
+      }
+
+      final data = <String, dynamic>{
         'name': name,
         'title': title,
-        'image_url': imageUrl,
+        'image_url': finalImageUrl,
+        'cover_url': finalCoverUrl,
       };
+
       await supabaseServices.updateRow(
         table: AppTablesNames.users,
         values: data,
@@ -57,7 +110,10 @@ class ProfileServices {
     }
   }
 
-  Future<void> toggleFollowUser({required String currentUserId, required String targetUserId}) async {
+  Future<void> toggleFollowUser({
+    required String currentUserId,
+    required String targetUserId,
+  }) async {
     try {
       // 1. Update target user's followers list
       final targetUser = await supabaseServices.fetchRow(
@@ -66,7 +122,9 @@ class ProfileServices {
         id: targetUserId,
         builder: (data, id) => UserData.fromMap(data),
       );
-      final List<String> followers = List<String>.from(targetUser.followers ?? []);
+      final List<String> followers = List<String>.from(
+        targetUser.followers ?? [],
+      );
       if (followers.contains(currentUserId)) {
         followers.remove(currentUserId);
       } else {
@@ -89,7 +147,9 @@ class ProfileServices {
         id: currentUserId,
         builder: (data, id) => UserData.fromMap(data),
       );
-      final List<String> following = List<String>.from(currentUser.following ?? []);
+      final List<String> following = List<String>.from(
+        currentUser.following ?? [],
+      );
       if (following.contains(targetUserId)) {
         following.remove(targetUserId);
       } else {

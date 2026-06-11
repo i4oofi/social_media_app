@@ -6,6 +6,7 @@ class UserData {
   final String name;
   final String? title;
   final String? imageUrl;
+  final String? coverUrl;
   final String email;
   final num? postsCount;
   final num? followersCount;
@@ -18,6 +19,7 @@ class UserData {
     required this.name,
     this.title,
     this.imageUrl,
+    this.coverUrl,
     required this.email,
     this.postsCount = 0,
     this.followersCount = 0,
@@ -32,6 +34,7 @@ class UserData {
       'name': name,
       'title': title,
       'image_url': imageUrl,
+      'cover_url': coverUrl,
       'email': email,
       'followers_count': followersCount,
       'following_count': followingCount,
@@ -47,6 +50,7 @@ class UserData {
       name: map['name'] as String,
       title: map['title'] != null ? map['title'] as String : null,
       imageUrl: map['image_url'] != null ? map['image_url'] as String : null,
+      coverUrl: map['cover_url'] != null ? map['cover_url'] as String : null,
       email: map['email'] as String,
       followersCount: map['followers_count'] != null
           ? map['followers_count'] as int
@@ -74,6 +78,7 @@ class UserData {
     String? userName,
     String? title,
     String? imageUrl,
+    String? coverUrl,
     String? email,
     num? postsCount,
     num? followersCount,
@@ -86,6 +91,7 @@ class UserData {
       name: name ?? this.name,
       title: title ?? this.title,
       imageUrl: imageUrl ?? this.imageUrl,
+      coverUrl: coverUrl ?? this.coverUrl,
       email: email ?? this.email,
       postsCount: postsCount ?? this.postsCount,
       followersCount: followersCount ?? this.followersCount,

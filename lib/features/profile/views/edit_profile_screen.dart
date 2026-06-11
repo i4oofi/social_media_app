@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
@@ -34,6 +36,11 @@ class EditProfileBody extends StatefulWidget {
 class _EditProfileBodyState extends State<EditProfileBody> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
+
+  // Local preview paths (null = not yet picked, use network URL)
+  String? _localProfileImagePath;
+  String? _localCoverImagePath;
+
   @override
   void initState() {
     super.initState();
@@ -51,84 +58,304 @@ class _EditProfileBodyState extends State<EditProfileBody> {
   @override
   Widget build(BuildContext context) {
     final editProfileCubit = context.read<EditProfileCubit>();
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            SizedBox(height: 24),
-            ListView(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
+
+    return BlocConsumer<EditProfileCubit, EditProfileState>(
+      listenWhen: (previous, current) =>
+          current is EditProfileSuccess ||
+          current is EditProfileFailure ||
+          current is EditProfileImagePicked ||
+          current is EditProfileCoverPicked,
+      listener: (context, state) {
+        if (state is EditProfileSuccess) {
+          AppToast.showToast(
+            msg: 'Profile updated successfully!',
+            backgroundColor: Colors.green,
+          );
+          Navigator.pop(context);
+        }
+        if (state is EditProfileFailure) {
+          AppToast.showToast(
+            msg: state.message,
+            backgroundColor: AppColors.red,
+          );
+        }
+        if (state is EditProfileImagePicked) {
+          setState(() => _localProfileImagePath = state.imagePath);
+        }
+        if (state is EditProfileCoverPicked) {
+          setState(() => _localCoverImagePath = state.coverPath);
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is EditProfileLoading;
+
+        return SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
               children: [
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    UserAvatar(
-                      radius: 50,
-                      imageUrl: widget.userData.imageUrl,
-                      name: widget.userData.name,
-                    ),
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.black54,
-                      child: Icon(Icons.edit, color: Colors.white),
-                    ),
-                  ],
+                // ── Cover Photo Section ──────────────────────────────────
+                _CoverPhotoSection(
+                  localCoverPath: _localCoverImagePath,
+                  networkCoverUrl: widget.userData.coverUrl,
+                  onTap: () => editProfileCubit.pickCoverImage(),
                 ),
-                SizedBox(height: 36),
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Name'),
+
+                // ── Profile Avatar (overlapping cover) ──────────────────
+                Transform.translate(
+                  offset: const Offset(0, -40),
+                  child: _ProfileAvatarSection(
+                    localProfilePath: _localProfileImagePath,
+                    networkImageUrl: widget.userData.imageUrl,
+                    name: widget.userData.name,
+                    onTap: () => editProfileCubit.pickProfileImage(),
+                  ),
                 ),
-                SizedBox(height: 36),
-                TextField(
-                  controller: _titleController,
-                  decoration: InputDecoration(labelText: 'Title'),
-                ),
-                SizedBox(height: 24),
+
+                // ── Form Fields ──────────────────────────────────────────
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: BlocConsumer<EditProfileCubit, EditProfileState>(
-                    listenWhen: (previous, current) =>
-                        current is EditProfileSuccess ||
-                        current is EditProfileFailure,
-                    listener: (context, state) {
-                      if (state is EditProfileSuccess) {
-                        Navigator.pop(context);
-                      }
-                      if (state is EditProfileFailure) {
-                        AppToast.showToast(
-                          msg: state.message,
-                          backgroundColor: AppColors.red,
-                        );
-                      }
-                    },
-                    buildWhen: (previous, current) =>
-                        current is EditProfileLoading ||
-                        current is EditProfileSuccess ||
-                        current is EditProfileFailure,
-                    builder: (context, state) {
-                      if (state is EditProfileLoading) {
-                        return MainButton(isLoading: true);
-                      }
-                      return MainButton(
-                        text: 'UPDATE',
-                        onPressed: () async {
-                          await editProfileCubit.editProfile(
-                            _nameController.text,
-                            _titleController.text,
-                            widget.userData.imageUrl,
-                          );
-                        },
-                      );
-                    },
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 4),
+                      _buildTextField(
+                        controller: _nameController,
+                        label: 'Name',
+                        icon: Icons.person_outline,
+                      ),
+                      const SizedBox(height: 16),
+                      _buildTextField(
+                        controller: _titleController,
+                        label: 'Title / Bio',
+                        icon: Icons.work_outline,
+                      ),
+                      const SizedBox(height: 32),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: MainButton(
+                          isLoading: isLoading,
+                          text: isLoading ? null : 'UPDATE PROFILE',
+                          onPressed: isLoading
+                              ? null
+                              : () async {
+                                  await editProfileCubit.editProfile(
+                                    name: _nameController.text,
+                                    title: _titleController.text,
+                                    existingImageUrl: widget.userData.imageUrl,
+                                    existingCoverUrl: widget.userData.coverUrl,
+                                  );
+                                },
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                   ),
                 ),
               ],
             ),
-          ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+  }) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: AppColors.primaryColor),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.primaryColor, width: 2),
         ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Cover Photo Widget
+// ─────────────────────────────────────────────────────────────────────────────
+class _CoverPhotoSection extends StatelessWidget {
+  final String? localCoverPath;
+  final String? networkCoverUrl;
+  final VoidCallback onTap;
+
+  const _CoverPhotoSection({
+    required this.localCoverPath,
+    required this.networkCoverUrl,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasImage = localCoverPath != null || networkCoverUrl != null;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        children: [
+          // Cover image / placeholder
+          Container(
+            width: double.infinity,
+            height: 180,
+            decoration: BoxDecoration(
+              color: AppColors.babyBlue15,
+              image: localCoverPath != null
+                  ? DecorationImage(
+                      image: FileImage(File(localCoverPath!)),
+                      fit: BoxFit.cover,
+                    )
+                  : (networkCoverUrl != null
+                      ? DecorationImage(
+                          image: NetworkImage(networkCoverUrl!),
+                          fit: BoxFit.cover,
+                        )
+                      : null),
+            ),
+            child: hasImage
+                ? null
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.add_photo_alternate_outlined,
+                        size: 40,
+                        color: AppColors.primaryColor.withValues(alpha: 0.7),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Add Cover Photo',
+                        style: TextStyle(
+                          color: AppColors.primaryColor.withValues(alpha: 0.7),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+
+          // Edit overlay
+          Positioned.fill(
+            child: Container(
+              alignment: Alignment.bottomRight,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: hasImage
+                    ? LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.3),
+                        ],
+                      )
+                    : null,
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.camera_alt, color: Colors.white, size: 14),
+                    SizedBox(width: 4),
+                    Text(
+                      'Edit Cover',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Profile Avatar Widget
+// ─────────────────────────────────────────────────────────────────────────────
+class _ProfileAvatarSection extends StatelessWidget {
+  final String? localProfilePath;
+  final String? networkImageUrl;
+  final String name;
+  final VoidCallback onTap;
+
+  const _ProfileAvatarSection({
+    required this.localProfilePath,
+    required this.networkImageUrl,
+    required this.name,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Avatar ring
+          Container(
+            width: 108,
+            height: 108,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 4),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.15),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: localProfilePath != null
+                  ? Image.file(
+                      File(localProfilePath!),
+                      fit: BoxFit.cover,
+                      width: 100,
+                      height: 100,
+                    )
+                  : UserAvatar(
+                      radius: 50,
+                      imageUrl: networkImageUrl,
+                      name: name,
+                    ),
+            ),
+          ),
+
+          // Dark edit overlay
+          Container(
+            width: 108,
+            height: 108,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black38,
+            ),
+            child: const Icon(
+              Icons.camera_alt,
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
+        ],
       ),
     );
   }

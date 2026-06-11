@@ -26,20 +26,39 @@ class ProfileHeader extends StatelessWidget {
           height: size.height * 0.3 + 40,
           child: Stack(
             children: [
-              Container(
-                width: size.width,
-                height: size.height * 0.3,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(24),
-                  ),
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(
-                      'https://images.unsplash.com/photo-1707343843437-caacff5cfa74?q=80&w=1200&auto=format&fit=crop',
-                    ),
-                    fit: BoxFit.cover,
-                  ),
+              // ── Cover Photo ──────────────────────────────────────
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(24),
                 ),
+                child: userData.coverUrl != null
+                    ? CachedNetworkImage(
+                        imageUrl: userData.coverUrl!,
+                        width: size.width,
+                        height: size.height * 0.3,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => _CoverPlaceholder(
+                          width: size.width,
+                          height: size.height * 0.3,
+                          isPrivate: isPrivate,
+                          isLoading: true,
+                          userName: userData.name,
+                        ),
+                        errorWidget: (context, url, error) => _CoverPlaceholder(
+                          width: size.width,
+                          height: size.height * 0.3,
+                          isPrivate: isPrivate,
+                          isLoading: false,
+                          userName: userData.name,
+                        ),
+                      )
+                    : _CoverPlaceholder(
+                        width: size.width,
+                        height: size.height * 0.3,
+                        isPrivate: isPrivate,
+                        isLoading: false,
+                        userName: userData.name,
+                      ),
               ),
               if (Navigator.of(context).canPop())
                 Positioned(
@@ -152,6 +171,176 @@ class ProfileHeader extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Cover Placeholder
+//
+// • isPrivate = true  → own profile: dashed border + camera icon + CTA text
+// • isPrivate = false → public profile: subtle gradient + translucent initials
+// ─────────────────────────────────────────────────────────────────────────────
+class _CoverPlaceholder extends StatelessWidget {
+  final double width;
+  final double height;
+  final bool isPrivate;
+  final bool isLoading;
+  final String userName;
+
+  const _CoverPlaceholder({
+    required this.width,
+    required this.height,
+    required this.isPrivate,
+    required this.isLoading,
+    required this.userName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return Container(
+        width: width,
+        height: height,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF0779B8), Color(0xFF003D6B)],
+          ),
+        ),
+        child: const Center(
+          child: CircularProgressIndicator(color: Colors.white54, strokeWidth: 2),
+        ),
+      );
+    }
+
+    // ── Own profile (private) ─────────────────────────────────────────────
+    if (isPrivate) {
+      return Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF0779B8), Color(0xFF005FA3), Color(0xFF003D6B)],
+          ),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.25),
+            width: 0,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.15),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.4),
+                  width: 1.5,
+                ),
+              ),
+              child: const Icon(
+                Icons.add_photo_alternate_outlined,
+                size: 32,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Add a Cover Photo',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.9),
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.3,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Tap "Edit Profile" to add one',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.55),
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // ── Public profile (other user) ───────────────────────────────────────
+    final initials = userName
+        .trim()
+        .split(' ')
+        .where((w) => w.isNotEmpty)
+        .take(2)
+        .map((w) => w[0].toUpperCase())
+        .join();
+
+    return Container(
+      width: width,
+      height: height,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: [0.0, 0.5, 1.0],
+          colors: [
+            Color(0xFF1a1a2e),
+            Color(0xFF16213e),
+            Color(0xFF0f3460),
+          ],
+        ),
+      ),
+      child: Stack(
+        children: [
+          // Decorative blurred circle top-right
+          Positioned(
+            top: -30,
+            right: -30,
+            child: Container(
+              width: 160,
+              height: 160,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFF0779B8).withValues(alpha: 0.18),
+              ),
+            ),
+          ),
+          // Decorative blurred circle bottom-left
+          Positioned(
+            bottom: -20,
+            left: -20,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.05),
+              ),
+            ),
+          ),
+          // Centered initials
+          Center(
+            child: Text(
+              initials,
+              style: TextStyle(
+                fontSize: 72,
+                fontWeight: FontWeight.w800,
+                color: Colors.white.withValues(alpha: 0.08),
+                letterSpacing: 8,
+                height: 1,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

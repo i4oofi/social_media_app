@@ -20,6 +20,10 @@ class _PostsSectionState extends State<PostsSection> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<HomeCubit, HomeState>(
+      listenWhen: (_, current) =>
+          current is PostLoading ||
+          current is PostLoaded ||
+          current is PostError,
       listener: (context, state) {
         if (state is PostLoading) {
           setState(() {
@@ -30,6 +34,7 @@ class _PostsSectionState extends State<PostsSection> {
           setState(() {
             _posts = state.posts;
             _isLoading = false;
+            _error = null;
           });
         } else if (state is PostError) {
           setState(() {
@@ -71,3 +76,4 @@ class _PostsSectionState extends State<PostsSection> {
     );
   }
 }
+

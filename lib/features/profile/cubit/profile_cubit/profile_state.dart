@@ -7,6 +7,8 @@ final class ProfileInitial extends ProfileState {}
 
 final class ProfileLoading extends ProfileState {}
 
+final class ProfileRefreshing extends ProfileState {}
+
 final class ProfileSuccess extends ProfileState {
   final UserData user;
   ProfileSuccess(this.user);

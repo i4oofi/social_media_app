@@ -21,6 +21,7 @@ class ChatRoomScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => ChatRoomCubit()
         ..initChatRoom(
@@ -28,7 +29,6 @@ class ChatRoomScreen extends StatelessWidget {
           otherUserId: otherUserId,
         ),
       child: Scaffold(
-        backgroundColor: AppColors.white,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: BlocBuilder<ChatRoomCubit, ChatRoomState>(
@@ -38,11 +38,10 @@ class ChatRoomScreen extends StatelessWidget {
                 return AppBar(
                   elevation: 0,
                   scrolledUnderElevation: 0,
-                  backgroundColor: AppColors.white,
                   leadingWidth: 40,
                   leading: IconButton(
                     padding: const EdgeInsets.only(left: 8),
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.black),
+                    icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.iconTheme.color),
                     onPressed: () => Navigator.pop(context),
                   ),
                   titleSpacing: 8,
@@ -72,19 +71,18 @@ class ChatRoomScreen extends StatelessWidget {
                             children: [
                               Text(
                                 otherUser?.name ?? 'User',
-                                style: const TextStyle(
+                                style: theme.textTheme.titleMedium?.copyWith(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.black,
                                 ),
                               ),
                               if (otherUser?.title != null &&
                                   otherUser!.title!.isNotEmpty) ...[
                                 Text(
                                   otherUser.title!,
-                                  style: TextStyle(
+                                  style: theme.textTheme.bodySmall?.copyWith(
                                     fontSize: 11,
-                                    color: AppColors.darkGrey,
+                                    color: theme.hintColor,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -98,7 +96,7 @@ class ChatRoomScreen extends StatelessWidget {
                   ),
                   actions: [
                     IconButton(
-                      icon: const Icon(Icons.info_outline_rounded, color: AppColors.black),
+                      icon: Icon(Icons.info_outline_rounded, color: theme.iconTheme.color),
                       onPressed: () {
                         if (otherUser != null) {
                           Navigator.push(
@@ -114,10 +112,9 @@ class ChatRoomScreen extends StatelessWidget {
                 );
               }
               return AppBar(
-                backgroundColor: AppColors.white,
                 elevation: 0,
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.black),
+                  icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.iconTheme.color),
                   onPressed: () => Navigator.pop(context),
                 ),
               );
@@ -153,6 +150,7 @@ class ChatRoomScreen extends StatelessWidget {
                         onPressed: () {
                           context.read<ChatRoomCubit>().initChatRoom(
                                 chat: chat,
+                                // ignore: avoid_redundant_argument_values
                                 otherUserId: otherUserId,
                               );
                         },
@@ -171,7 +169,7 @@ class ChatRoomScreen extends StatelessWidget {
 
               return Column(
                 children: [
-                  const Divider(height: 1, color: Color(0xffF2F2F7)),
+                  Divider(height: 1, color: theme.dividerColor.withValues(alpha: 0.5)),
                   Expanded(
                     child: messages.isEmpty
                         ? Center(
@@ -181,13 +179,13 @@ class ChatRoomScreen extends StatelessWidget {
                                 Icon(
                                   Icons.chat_bubble_outline_rounded,
                                   size: 48,
-                                  color: AppColors.darkGrey.withValues(alpha: 0.3),
+                                  color: theme.hintColor,
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
                                   'Say hello to ${state.chat.otherUser?.name ?? 'User'}!',
-                                  style: TextStyle(
-                                    color: AppColors.darkGrey,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.hintColor,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -195,7 +193,7 @@ class ChatRoomScreen extends StatelessWidget {
                             ),
                           )
                         : ListView.builder(
-                            reverse: true, // Auto-scrolls and keeps bottom focus
+                            reverse: true,
                             padding: const EdgeInsets.only(top: 10, bottom: 10),
                             itemCount: reversedMessages.length,
                             itemBuilder: (context, index) {

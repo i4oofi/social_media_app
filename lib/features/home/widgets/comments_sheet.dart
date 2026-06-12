@@ -60,7 +60,12 @@ class _CommentsSheetState extends State<CommentsSheet> {
             ),
           ),
 
-          Expanded(child: SendCommentSection(post: widget.post)),
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: SendCommentSection(post: widget.post),
+          ),
         ],
       ),
     );

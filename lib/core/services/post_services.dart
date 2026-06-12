@@ -105,4 +105,30 @@ class PostServices {
       rethrow;
     }
   }
+
+  Future<void> deletePost(String postId) async {
+    try {
+      await supabaseServices.deleteRow(
+        table: AppTablesNames.posts,
+        column: 'id',
+        value: postId,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> editPost(String postId, String text) async {
+    try {
+      await supabaseServices.updateRow(
+        table: AppTablesNames.posts,
+        column: 'id',
+        value: postId,
+        values: {'text': text},
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
+

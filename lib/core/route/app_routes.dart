@@ -8,4 +8,8 @@ class AppRoutes {
   static const settings = '/settings';
   static const inboxScreen = '/inbox';
   static const chatRoomScreen = '/chat_room';
+  static const createStory = '/create_story';
+  static const postDetailScreen = '/post_detail';
+  static const savedPosts = '/saved_posts';
+  static const notifications = '/notifications';
 }

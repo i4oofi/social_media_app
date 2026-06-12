@@ -21,7 +21,6 @@ class HomeScreen extends StatelessWidget {
         return cubit;
       },
       child: Scaffold(
-        backgroundColor: AppColors.white,
         drawer: const SettingsDrawer(),
         body: SafeArea(
           child: Builder(
@@ -48,7 +47,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               );
-            }
+            },
           ),
         ),
       ),

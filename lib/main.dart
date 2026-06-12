@@ -9,6 +9,9 @@ import 'package:social_media_app/core/theme/app_theme.dart';
 import 'package:social_media_app/features/auth/cubit/auth_cubit.dart' as auth;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:social_media_app/core/cubit/theme_cubit/theme_cubit.dart';
+import 'package:social_media_app/core/cubit/notification_cubit/notification_cubit.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
@@ -32,23 +35,31 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => auth.AuthCubit()..checkUserAuth()),
         BlocProvider(create: (context) => PostsCubit()),
+        BlocProvider(create: (context) => ThemeCubit()),
+        BlocProvider(create: (context) => NotificationCubit()),
       ],
       child: Builder(
         builder: (context) {
-          return BlocBuilder<auth.AuthCubit, auth.AuthState>(
-            bloc: BlocProvider.of<auth.AuthCubit>(context),
-            buildWhen: (previous, current) => current is auth.AuthSuccess,
-            builder: (context, state) {
-              return MaterialApp(
-                debugShowCheckedModeBanner: false,
-                title: AppConstants.appName,
-                theme: AppTheme.lightThem,
-                onGenerateRoute: AppRouter.onGenerateRoute,
-                initialRoute: !onboardingCompleted
-                    ? AppRoutes.onboardingScreen
-                    : (state is auth.AuthSuccess
-                        ? AppRoutes.customBottomNavbar
-                        : AppRoutes.authScreen),
+          return BlocBuilder<ThemeCubit, ThemeMode>(
+            builder: (context, themeMode) {
+              return BlocBuilder<auth.AuthCubit, auth.AuthState>(
+                bloc: BlocProvider.of<auth.AuthCubit>(context),
+                buildWhen: (previous, current) => current is auth.AuthSuccess,
+                builder: (context, authState) {
+                  return MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    title: AppConstants.appName,
+                    theme: AppTheme.lightThem,
+                    darkTheme: AppTheme.darkTheme,
+                    themeMode: themeMode,
+                    onGenerateRoute: AppRouter.onGenerateRoute,
+                    initialRoute: !onboardingCompleted
+                        ? AppRoutes.onboardingScreen
+                        : (authState is auth.AuthSuccess
+                            ? AppRoutes.customBottomNavbar
+                            : AppRoutes.authScreen),
+                  );
+                },
               );
             },
           );
@@ -57,3 +68,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

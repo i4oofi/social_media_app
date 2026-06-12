@@ -9,9 +9,15 @@ import 'package:social_media_app/features/onboarding/views/onboarding_screen.dar
 import 'package:social_media_app/features/profile/models/edit_profile_screen_args.dart';
 import 'package:social_media_app/features/profile/views/edit_profile_screen.dart';
 import 'package:social_media_app/features/settings/views/setting_screen.dart';
+import 'package:social_media_app/features/home/views/create_story_screen.dart';
 import 'package:social_media_app/core/models/chat_model.dart';
 import 'package:social_media_app/features/chat/views/inbox_screen.dart';
 import 'package:social_media_app/features/chat/views/chat_room_screen.dart';
+
+import 'package:social_media_app/features/home/views/post_detail_screen.dart';
+import 'package:social_media_app/features/home/models/post_model.dart';
+import 'package:social_media_app/features/settings/views/saved_posts_screen.dart';
+import 'package:social_media_app/features/home/views/notifications_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -54,6 +60,23 @@ class AppRouter {
             otherUserId: otherUserId,
           ),
         );
+      case AppRoutes.createStory:
+        final homeCubit = settings.arguments as HomeCubit;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: homeCubit,
+            child: const CreateStoryScreen(),
+          ),
+        );
+      case AppRoutes.postDetailScreen:
+        final post = settings.arguments as PostModel;
+        return MaterialPageRoute(
+          builder: (_) => PostDetailScreen(post: post),
+        );
+      case AppRoutes.savedPosts:
+        return MaterialPageRoute(builder: (_) => const SavedPostsScreen());
+      case AppRoutes.notifications:
+        return MaterialPageRoute(builder: (_) => const NotificationsScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(backgroundColor: Colors.amberAccent),

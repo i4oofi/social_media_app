@@ -40,7 +40,6 @@ class AuthView extends StatelessWidget {
       child: Builder(
         builder: (context) {
           return Scaffold(
-            backgroundColor: AppColors.backgroundColor,
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -57,7 +56,6 @@ class AuthView extends StatelessWidget {
                       isScrollable: true,
                       dividerColor: AppColors.dividerColor,
                       indicatorColor: AppColors.indicatorColor,
-                      labelColor: AppColors.black,
                       tabAlignment: TabAlignment.start,
                       labelStyle: Theme.of(context).textTheme.bodyLarge!
                           .copyWith(fontWeight: FontWeight.w400),

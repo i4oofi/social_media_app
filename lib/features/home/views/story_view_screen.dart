@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/features/home/models/story_model.dart';
 
@@ -22,6 +23,15 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
   late AnimationController _animationController;
   int _currentIndex = 0;
 
+  Future<void> _markStoryAsViewed(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> viewed = prefs.getStringList('viewed_story_ids') ?? [];
+    if (!viewed.contains(id)) {
+      viewed.add(id);
+      await prefs.setStringList('viewed_story_ids', viewed);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +49,7 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
       }
     });
 
+    _markStoryAsViewed(widget.stories[_currentIndex].id);
     _startAnimation();
   }
 
@@ -52,6 +63,7 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
       setState(() {
         _currentIndex++;
       });
+      _markStoryAsViewed(widget.stories[_currentIndex].id);
       _pageController.animateToPage(
         _currentIndex,
         duration: const Duration(milliseconds: 300),
@@ -68,6 +80,7 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
       setState(() {
         _currentIndex--;
       });
+      _markStoryAsViewed(widget.stories[_currentIndex].id);
       _pageController.animateToPage(
         _currentIndex,
         duration: const Duration(milliseconds: 300),
@@ -202,7 +215,7 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
                   Row(
                     children: [
                       UserAvatar(
-                        imageUrl: null, // If we don't have author profile image, the initial will show
+                        imageUrl: activeStory.authorProfileImage,
                         name: activeStory.authorName,
                         radius: 18,
                       ),

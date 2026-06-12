@@ -199,7 +199,6 @@ class _SignUpFormState extends State<SignUpForm> {
                 Text(
                   'Already have an account?',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: AppColors.black,
                     fontWeight: FontWeight.w400,
                   ),
                 ),

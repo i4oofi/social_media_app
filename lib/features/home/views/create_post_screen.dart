@@ -39,10 +39,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
+        title: Text(
           "Create Post",
           style: TextStyle(
-            color: AppColors.black,
             fontWeight: FontWeight.bold,
             fontSize: 20,
             fontFamily: 'SF Pro Text',
@@ -54,7 +53,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.close_rounded, color: AppColors.black),
+          icon: const Icon(Icons.close_rounded),
         ),
         actions: [
           Padding(
@@ -155,18 +154,23 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                             height: 44,
                                             width: 44,
                                             fit: BoxFit.cover,
-                                            imageBuilder: (context, imageProvider) =>
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.cover,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
-                                            errorWidget: (context, url, error) =>
-                                                const Icon(
+                                            errorWidget:
+                                                (
+                                                  context,
+                                                  url,
+                                                  error,
+                                                ) => const Icon(
                                                   Icons.person_rounded,
                                                   color: AppColors.primaryColor,
                                                 ),
@@ -174,12 +178,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   ),
                                   const SizedBox(width: 12),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         userData.name,
                                         style: TextStyle(
-                                          color: AppColors.black,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                           fontFamily: 'SF Pro Text',
@@ -223,12 +227,15 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                 width: double.infinity,
                                 margin: const EdgeInsets.only(bottom: 16),
                                 constraints: BoxConstraints(
-                                  maxHeight: MediaQuery.of(context).size.height * 0.6,
+                                  maxHeight:
+                                      MediaQuery.of(context).size.height * 0.6,
                                 ),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: AppColors.dividerColor.withValues(alpha: 0.2),
+                                    color: AppColors.dividerColor.withValues(
+                                      alpha: 0.2,
+                                    ),
                                   ),
                                 ),
                                 child: Stack(
@@ -277,7 +284,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                 width: double.infinity,
                                 margin: const EdgeInsets.only(bottom: 16),
                                 constraints: BoxConstraints(
-                                  maxHeight: MediaQuery.of(context).size.height * 0.6,
+                                  maxHeight:
+                                      MediaQuery.of(context).size.height * 0.6,
                                 ),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
@@ -342,7 +350,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                           const SizedBox(width: 8),
                                           Expanded(
                                             child: Text(
-                                              homeCubit.currentFile!.path.split('/').last,
+                                              homeCubit.currentFile!.path
+                                                  .split('/')
+                                                  .last,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w500,
                                               ),
@@ -356,7 +366,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                       top: 4,
                                       right: 4,
                                       child: IconButton(
-                                        icon: const Icon(Icons.close, color: Colors.grey),
+                                        icon: const Icon(
+                                          Icons.close,
+                                          color: Colors.grey,
+                                        ),
                                         onPressed: () {
                                           homeCubit.clearFile();
                                         },
@@ -382,13 +395,15 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
                         style: const TextStyle(
-                          color: Colors.black,
                           fontSize: 16,
                           fontFamily: 'SF Pro Text',
                         ),
                         decoration: InputDecoration(
                           hintText: "What's on your mind?",
-                          hintStyle: TextStyle(color: AppColors.grey, fontSize: 16),
+                          hintStyle: TextStyle(
+                            color: AppColors.grey,
+                            fontSize: 16,
+                          ),
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -409,7 +424,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     vertical: 14,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
                     border: Border.all(
                       color: AppColors.dividerColor.withValues(alpha: 0.3),
                     ),
@@ -479,7 +493,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           width: double.infinity,
           height: 630,
           decoration: ShapeDecoration(
-            color: Colors.white,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(25),
@@ -561,10 +574,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Text(
+                      Text(
                         'Camera (Image)',
                         style: TextStyle(
-                          color: Colors.black,
                           fontSize: 16,
                           fontFamily: 'SF Pro Text',
                           fontWeight: FontWeight.w500,
@@ -602,10 +614,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Text(
+                      Text(
                         'Camera (Video)',
                         style: TextStyle(
-                          color: Colors.black,
                           fontSize: 16,
                           fontFamily: 'SF Pro Text',
                           fontWeight: FontWeight.w500,
@@ -643,10 +654,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Text(
+                      Text(
                         'Upload Image',
                         style: TextStyle(
-                          color: Colors.black,
                           fontSize: 16,
                           fontFamily: 'SF Pro Text',
                           fontWeight: FontWeight.w500,
@@ -687,7 +697,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                       const Text(
                         'Upload Video',
                         style: TextStyle(
-                          color: Colors.black,
                           fontSize: 16,
                           fontFamily: 'SF Pro Text',
                           fontWeight: FontWeight.w500,
@@ -725,10 +734,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Text(
+                      Text(
                         'Upload File',
                         style: TextStyle(
-                          color: Colors.black,
                           fontSize: 16,
                           fontFamily: 'SF Pro Text',
                           fontWeight: FontWeight.w500,

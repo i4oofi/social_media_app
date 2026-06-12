@@ -54,24 +54,22 @@ class _InboxScreenState extends State<InboxScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => InboxCubit()..listenToInbox(),
       child: Scaffold(
-        backgroundColor: AppColors.white,
         appBar: AppBar(
           title: Text(
             'Messages',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.black,
-                  letterSpacing: -0.5,
-                ),
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              letterSpacing: -0.5,
+            ),
           ),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.black),
+            icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.iconTheme.color),
             onPressed: () => Navigator.pop(context),
           ),
-          backgroundColor: AppColors.white,
           elevation: 0,
         ),
         body: Column(
@@ -81,19 +79,20 @@ class _InboxScreenState extends State<InboxScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey.withValues(alpha: 0.08),
+                  color: theme.brightness == Brightness.dark
+                      ? Colors.white.withValues(alpha: 0.08)
+                      : Colors.grey.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextField(
                   controller: _searchController,
-                  style: const TextStyle(color: AppColors.black),
                   decoration: InputDecoration(
                     hintText: 'Search chats...',
-                    hintStyle: TextStyle(color: AppColors.darkGrey),
-                    prefixIcon: const Icon(Icons.search, color: AppColors.black),
+                    hintStyle: TextStyle(color: theme.hintColor),
+                    prefixIcon: Icon(Icons.search, color: theme.iconTheme.color),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear, color: AppColors.black),
+                            icon: Icon(Icons.clear, color: theme.iconTheme.color),
                             onPressed: () => _searchController.clear(),
                           )
                         : null,
@@ -116,11 +115,11 @@ class _InboxScreenState extends State<InboxScreen> {
                   if (state is InboxLoading) {
                     return ListView.separated(
                       itemCount: 7,
-                      separatorBuilder: (_, index) => const Divider(
+                      separatorBuilder: (_, index) => Divider(
                         height: 1,
                         indent: 84,
                         endIndent: 20,
-                        color: Color(0xffF2F2F7),
+                        color: theme.dividerColor.withValues(alpha: 0.5),
                       ),
                       itemBuilder: (_, __) => const InboxChatShimmer(),
                     );
@@ -149,7 +148,7 @@ class _InboxScreenState extends State<InboxScreen> {
                       ),
                     );
                   }
-
+                  
                   if (state is InboxSuccess) {
                     final chats = state.chats;
                     
@@ -169,16 +168,14 @@ class _InboxScreenState extends State<InboxScreen> {
                             Icon(
                               Icons.chat_bubble_outline_rounded,
                               size: 64,
-                              color: AppColors.darkGrey.withValues(alpha: 0.4),
+                              color: theme.hintColor,
                             ),
                             const SizedBox(height: 16),
                             Text(
                               _searchQuery.isNotEmpty
                                   ? 'No matching chats'
                                   : 'No conversations yet',
-                              style: TextStyle(
-                                color: AppColors.darkGrey,
-                                fontSize: 16,
+                              style: theme.textTheme.bodyLarge?.copyWith(
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -192,7 +189,6 @@ class _InboxScreenState extends State<InboxScreen> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  // Simply pop back, since user can use Discover tab to find users to chat with
                                   Navigator.pop(context);
                                 },
                                 child: const Text(
@@ -209,11 +205,11 @@ class _InboxScreenState extends State<InboxScreen> {
                     return ListView.separated(
                       padding: const EdgeInsets.only(bottom: 24),
                       itemCount: filteredChats.length,
-                      separatorBuilder: (context, index) => const Divider(
+                      separatorBuilder: (context, index) => Divider(
                         height: 1,
                         indent: 84,
                         endIndent: 20,
-                        color: Color(0xffF2F2F7),
+                        color: theme.dividerColor.withValues(alpha: 0.5),
                       ),
                       itemBuilder: (context, index) {
                         final chat = filteredChats[index];
@@ -249,7 +245,6 @@ class _InboxScreenState extends State<InboxScreen> {
                             ),
                             child: Row(
                               children: [
-                                // Avatar
                                 UserAvatar(
                                   imageUrl: otherUser?.imageUrl,
                                   name: otherUser?.name ?? 'User',
@@ -260,7 +255,6 @@ class _InboxScreenState extends State<InboxScreen> {
                                 ),
                                 const SizedBox(width: 12),
                                 
-                                // Info Block
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,10 +264,9 @@ class _InboxScreenState extends State<InboxScreen> {
                                         children: [
                                           Text(
                                             otherUser?.name ?? 'User',
-                                            style: TextStyle(
+                                            style: theme.textTheme.titleMedium?.copyWith(
                                               fontWeight: hasUnread ? FontWeight.bold : FontWeight.w600,
                                               fontSize: 16,
-                                              color: AppColors.black,
                                             ),
                                           ),
                                           if (chat.lastMessageTime != null)
@@ -281,7 +274,7 @@ class _InboxScreenState extends State<InboxScreen> {
                                               _formatTime(chat.lastMessageTime!),
                                               style: TextStyle(
                                                 fontSize: 12,
-                                                color: hasUnread ? AppColors.primaryColor : AppColors.darkGrey,
+                                                color: hasUnread ? AppColors.primaryColor : theme.hintColor,
                                                 fontWeight: hasUnread ? FontWeight.bold : FontWeight.normal,
                                               ),
                                             ),
@@ -295,10 +288,10 @@ class _InboxScreenState extends State<InboxScreen> {
                                               messagePreview,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
+                                              style: theme.textTheme.bodyMedium?.copyWith(
                                                 fontSize: 14,
-                                                color: hasUnread ? AppColors.black : AppColors.darkGrey,
                                                 fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
+                                                color: hasUnread ? theme.textTheme.bodyLarge?.color : theme.hintColor,
                                               ),
                                             ),
                                           ),

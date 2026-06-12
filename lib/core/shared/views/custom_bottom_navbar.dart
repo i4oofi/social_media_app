@@ -6,6 +6,7 @@ import 'package:social_media_app/features/profile/views/profile_screen.dart';
 import 'package:social_media_app/core/services/core_auth_services.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:social_media_app/core/theme/app_colors.dart';
 
 class CustomBottomNavbar extends StatefulWidget {
   const CustomBottomNavbar({super.key});
@@ -34,17 +35,30 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final activeColor = AppColors.primaryColor;
+    final inactiveColor = theme.brightness == Brightness.dark
+        ? Colors.white54
+        : Colors.black45;
+
     return PersistentTabView(
       tabs: [
         PersistentTabConfig(
           screen: const HomeScreen(),
-          item: ItemConfig(icon: const Icon(Icons.home), title: "Home"),
+          item: ItemConfig(
+            icon: const Icon(Icons.home),
+            title: "Home",
+            activeForegroundColor: activeColor,
+            inactiveForegroundColor: inactiveColor,
+          ),
         ),
         PersistentTabConfig(
           screen: const DiscoverScreen(),
           item: ItemConfig(
             icon: const Icon(Icons.group_add_rounded),
             title: "Discover",
+            activeForegroundColor: activeColor,
+            inactiveForegroundColor: inactiveColor,
           ),
         ),
         PersistentTabConfig(
@@ -57,11 +71,23 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
                   )
                 : const Icon(Icons.person),
             title: "Profile",
+            activeForegroundColor: activeColor,
+            inactiveForegroundColor: inactiveColor,
           ),
         ),
       ],
-      navBarBuilder: (navBarConfig) =>
-          Style5BottomNavBar(navBarConfig: navBarConfig),
+      navBarBuilder: (navBarConfig) => Style5BottomNavBar(
+        navBarConfig: navBarConfig,
+        navBarDecoration: NavBarDecoration(
+          color: theme.cardColor,
+          border: Border(
+            top: BorderSide(
+              color: theme.dividerColor.withValues(alpha: 0.3),
+              width: 0.5,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

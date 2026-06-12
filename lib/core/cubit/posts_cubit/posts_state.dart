@@ -58,3 +58,9 @@ final class CommentsError extends PostsState {
   final String error;
   CommentsError({required this.error});
 }
+
+final class SavedPostsLoaded extends PostsState {
+  final List<String> savedPostIds;
+  SavedPostsLoaded({required this.savedPostIds});
+}
+

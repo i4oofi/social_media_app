@@ -8,15 +8,12 @@ class ChatBubble extends StatelessWidget {
   final MessageModel message;
   final bool isMe;
 
-  const ChatBubble({
-    super.key,
-    required this.message,
-    required this.isMe,
-  });
+  const ChatBubble({super.key, required this.message, required this.isMe});
 
   @override
   Widget build(BuildContext context) {
-    final bool isImage = message.content.startsWith('http') &&
+    final bool isImage =
+        message.content.startsWith('http') &&
         (message.content.contains('chat_attachments') ||
             message.content.contains('/storage/v1/object/public') ||
             message.content.endsWith('.jpg') ||
@@ -26,21 +23,25 @@ class ChatBubble extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isMe
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (!isMe) ...[
-            const SizedBox(width: 4),
-          ],
+          if (!isMe) ...[const SizedBox(width: 4)],
           Flexible(
             child: Column(
-              crossAxisAlignment:
-                  isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              crossAxisAlignment: isMe
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
               children: [
                 Container(
                   padding: isImage
                       ? EdgeInsets.zero
-                      : const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      : const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
                   decoration: BoxDecoration(
                     color: isMe
                         ? AppColors.primaryColor
@@ -77,7 +78,12 @@ class ChatBubble extends StatelessWidget {
                       : Text(
                           message.content,
                           style: TextStyle(
-                            color: isMe ? AppColors.white : AppColors.black,
+                            color:
+                                isMe &&
+                                    Theme.of(context).brightness ==
+                                        Brightness.light
+                                ? AppColors.black
+                                : AppColors.white,
                             fontSize: 15,
                           ),
                         ),

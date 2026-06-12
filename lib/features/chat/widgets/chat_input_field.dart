@@ -91,6 +91,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
   }
 
   void _showAttachmentOptions() {
+    final theme = Theme.of(context);
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -106,7 +107,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   Icons.camera_alt_rounded,
                   color: AppColors.primaryColor,
                 ),
-                title: const Text('Camera'),
+                title: Text('Camera', style: theme.textTheme.bodyLarge),
                 onTap: () {
                   Navigator.pop(context);
                   _takePhoto();
@@ -117,7 +118,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   Icons.photo_library_rounded,
                   color: AppColors.primaryColor,
                 ),
-                title: const Text('Gallery'),
+                title: Text('Gallery', style: theme.textTheme.bodyLarge),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage();
@@ -133,13 +134,14 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: theme.cardColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withValues(alpha: theme.brightness == Brightness.dark ? 0.2 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -148,7 +150,6 @@ class _ChatInputFieldState extends State<ChatInputField> {
       child: SafeArea(
         child: Row(
           children: [
-            // Attachment Button
             IconButton(
               icon: const Icon(
                 Icons.add_circle_outline_rounded,
@@ -157,26 +158,26 @@ class _ChatInputFieldState extends State<ChatInputField> {
               onPressed: widget.isSending ? null : _showAttachmentOptions,
               iconSize: 28,
             ),
-
-            // Text Input Field
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey.withValues(alpha: 0.08),
+                  color: theme.brightness == Brightness.dark
+                      ? Colors.white.withValues(alpha: 0.08)
+                      : Colors.grey.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: TextField(
                   controller: _controller,
                   maxLines: 5,
                   minLines: 1,
-                  style: const TextStyle(color: AppColors.black, fontSize: 15),
-                  decoration: const InputDecoration(
+                  style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 15),
+                  decoration: InputDecoration(
                     hintText: 'Type a message...',
-                    hintStyle: TextStyle(color: Colors.grey),
+                    hintStyle: TextStyle(color: theme.hintColor),
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,
                     ),
@@ -184,10 +185,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 ),
               ),
             ),
-
             const SizedBox(width: 8),
-
-            // Send Button
             widget.isSending
                 ? const SizedBox(
                     width: 40,
@@ -201,7 +199,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _isTextEmpty
-                          ? Colors.grey.withValues(alpha: 0.2)
+                          ? (theme.brightness == Brightness.dark
+                              ? Colors.white.withValues(alpha: 0.1)
+                              : Colors.grey.withValues(alpha: 0.2))
                           : AppColors.primaryColor,
                     ),
                     child: IconButton(

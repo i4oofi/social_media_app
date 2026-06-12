@@ -48,7 +48,6 @@ class PostShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppColors.white,
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -72,11 +71,7 @@ class PostShimmer extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             // Image placeholder
-            ShimmerBox(
-              width: double.infinity,
-              height: 180,
-              borderRadius: 10,
-            ),
+            ShimmerBox(width: double.infinity, height: 180, borderRadius: 10),
             const SizedBox(height: 12),
             // Text lines
             ShimmerBox(width: double.infinity, height: 13, borderRadius: 6),
@@ -172,18 +167,13 @@ class ProfileHeaderShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Cover image
-              ShimmerBox(
-                width: double.infinity,
-                height: 200,
-                borderRadius: 0,
-              ),
+              ShimmerBox(width: double.infinity, height: 200, borderRadius: 0),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(

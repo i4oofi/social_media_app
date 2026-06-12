@@ -22,6 +22,8 @@ class MainButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return SizedBox(
       height: height,
       width: width ?? double.infinity,
@@ -29,11 +31,13 @@ class MainButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: transparent
-              ? AppColors.white
+              ? Theme.of(context).scaffoldBackgroundColor
               : AppColors.primaryColor,
-          foregroundColor: transparent ? AppColors.black : AppColors.white,
+          foregroundColor: transparent 
+              ? (isDark ? Colors.white : AppColors.black) 
+              : AppColors.white,
           side: BorderSide(
-            color: transparent ? AppColors.grey : AppColors.trasparent,
+            color: transparent ? AppColors.grey : Colors.transparent,
             width: 2,
           ),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

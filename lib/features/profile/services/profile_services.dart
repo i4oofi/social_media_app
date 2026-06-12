@@ -6,6 +6,8 @@ import 'package:social_media_app/core/theme/app_tables_names.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:social_media_app/core/models/notification_model.dart';
+import 'package:social_media_app/core/services/notification_services.dart';
 
 class ProfileServices {
   final supabaseServices = SupabaseDatabaseServices.instance;
@@ -125,10 +127,12 @@ class ProfileServices {
       final List<String> followers = List<String>.from(
         targetUser.followers ?? [],
       );
+      bool isNowFollowing = false;
       if (followers.contains(currentUserId)) {
         followers.remove(currentUserId);
       } else {
         followers.add(currentUserId);
+        isNowFollowing = true;
       }
       await supabaseServices.updateRow(
         table: AppTablesNames.users,
@@ -164,6 +168,18 @@ class ProfileServices {
         column: 'id',
         value: currentUserId,
       );
+
+      if (isNowFollowing) {
+        final notification = NotificationModel(
+          id: '',
+          createdAt: '',
+          receiverId: targetUserId,
+          senderId: currentUserId,
+          type: 'follow',
+          isRead: false,
+        );
+        await NotificationServices().createNotification(notification);
+      }
     } catch (e) {
       rethrow;
     }

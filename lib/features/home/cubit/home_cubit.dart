@@ -26,14 +26,27 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> fetchStories() async {
     try {
       emit(StoryLoading());
+      final currentUser = await coreAuthServices.getCurrentUserData();
+      final currentUserId = currentUser?.id;
       final rawStories = await homeServices.fetchStories();
       List<StoryModel> stories = [];
       for (var story in rawStories) {
         final userData = await coreAuthServices.getUserData(story.authorId);
         if (userData != null) {
-          story = story.copyWith(authorName: userData.name);
+          story = story.copyWith(
+            authorName: userData.name,
+            authorProfileImage: userData.imageUrl,
+          );
+          final isOwnStory = story.authorId == currentUserId;
+          final isFollower = userData.followers?.contains(currentUserId ?? '') ?? false;
+          if (!story.isPrivate || isOwnStory || isFollower) {
+            stories.add(story);
+          }
+        } else {
+          if (!story.isPrivate) {
+            stories.add(story);
+          }
         }
-        stories.add(story);
       }
 
       emit(StoryLoaded(stories: stories));
@@ -227,4 +240,40 @@ class HomeCubit extends Cubit<HomeState> {
       emit(StoryError(error: e.toString()));
     }
   }
+
+  Future<void> uploadStory({required File image, required bool isPrivate}) async {
+    try {
+      emit(StoryLoading());
+      final currentUser = await coreAuthServices.getCurrentUserData();
+      if (currentUser != null) {
+        await homeServices.createStory(currentUser.id, image, isPrivate: isPrivate);
+        await fetchStories();
+      } else {
+        emit(StoryError(error: "User not authenticated"));
+      }
+    } catch (e) {
+      emit(StoryError(error: e.toString()));
+    }
+  }
+
+  Future<void> deletePost(String postId) async {
+    try {
+      emit(PostLoading());
+      await postServices.deletePost(postId);
+      await fetchPosts();
+    } catch (e) {
+      emit(PostError(error: e.toString()));
+    }
+  }
+
+  Future<void> editPost(String postId, String text) async {
+    try {
+      emit(PostLoading());
+      await postServices.editPost(postId, text);
+      await fetchPosts();
+    } catch (e) {
+      emit(PostError(error: e.toString()));
+    }
+  }
 }
+

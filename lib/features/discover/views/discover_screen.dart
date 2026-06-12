@@ -15,7 +15,6 @@ class DiscoverScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => DiscoverCubit()..fetchAllUsers(),
       child: const Scaffold(
-        backgroundColor: AppColors.white,
         body: DiscoverBody(),
       ),
     );
@@ -51,6 +50,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final discoverCubit = context.read<DiscoverCubit>();
     final currentUserId =
         discoverCubit.discoverServices.supabase.auth.currentUser?.id;
@@ -67,18 +67,15 @@ class _DiscoverBodyState extends State<DiscoverBody> {
               children: [
                 Text(
                   "Discover People",
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  style: theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.black,
                     letterSpacing: -0.5,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   "Find interesting people to follow and build your network",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: AppColors.darkGrey),
+                  style: theme.textTheme.bodyMedium,
                 ),
               ],
             ),
@@ -89,19 +86,20 @@ class _DiscoverBodyState extends State<DiscoverBody> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.grey.withValues(alpha: 0.08),
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white.withValues(alpha: 0.08)
+                    : Colors.grey.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: TextField(
                 controller: _searchController,
-                style: const TextStyle(color: AppColors.black),
                 decoration: InputDecoration(
                   hintText: "Search by name or title...",
-                  hintStyle: TextStyle(color: AppColors.darkGrey),
-                  prefixIcon: const Icon(Icons.search, color: AppColors.black),
+                  hintStyle: TextStyle(color: theme.hintColor),
+                  prefixIcon: Icon(Icons.search, color: theme.iconTheme.color),
                   suffixIcon: _searchQuery.isNotEmpty
                       ? IconButton(
-                          icon: const Icon(Icons.clear, color: AppColors.black),
+                          icon: Icon(Icons.clear, color: theme.iconTheme.color),
                           onPressed: () => _searchController.clear(),
                         )
                       : null,
@@ -158,14 +156,9 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                     ),
                   );
                 } else if (state is DiscoverSuccess) {
-                  // Filter local list based on query
                   final filteredUsers = state.users.where((user) {
-                    final nameMatch = user.name.toLowerCase().contains(
-                      _searchQuery,
-                    );
-                    final titleMatch = (user.title ?? "")
-                        .toLowerCase()
-                        .contains(_searchQuery);
+                    final nameMatch = user.name.toLowerCase().contains(_searchQuery);
+                    final titleMatch = (user.title ?? "").toLowerCase().contains(_searchQuery);
                     return nameMatch || titleMatch;
                   }).toList();
 
@@ -177,16 +170,14 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                           Icon(
                             Icons.person_search_rounded,
                             size: 64,
-                            color: AppColors.darkGrey.withValues(alpha: 0.5),
+                            color: theme.hintColor,
                           ),
                           const SizedBox(height: 16),
                           Text(
                             _searchQuery.isNotEmpty
                                 ? "No matching users found"
                                 : "No people to discover right now",
-                            style: TextStyle(
-                              color: AppColors.darkGrey,
-                              fontSize: 16,
+                            style: theme.textTheme.bodyLarge?.copyWith(
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -201,8 +192,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                     itemBuilder: (context, index) {
                       final user = filteredUsers[index];
                       final isFollowing =
-                          user.followers?.contains(currentUserId ?? '') ??
-                          false;
+                          user.followers?.contains(currentUserId ?? '') ?? false;
 
                       return Container(
                         margin: const EdgeInsets.symmetric(
@@ -210,16 +200,14 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.white,
+                          color: theme.cardColor,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: AppColors.dividerColor.withValues(
-                              alpha: 0.3,
-                            ),
+                            color: theme.dividerColor.withValues(alpha: 0.3),
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.02),
+                              color: Colors.black.withValues(alpha: 0.04),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -237,7 +225,6 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                     ),
                                   )
                                   .then((_) {
-                                    // Refresh list when returning in case profile changes occurred
                                     discoverCubit.fetchAllUsers();
                                   });
                             },
@@ -245,41 +232,34 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                               padding: const EdgeInsets.all(12.0),
                               child: Row(
                                 children: [
-                                  // User Avatar
                                   UserAvatar(
                                     imageUrl: user.imageUrl,
                                     name: user.name,
                                     radius: 26,
                                   ),
                                   const SizedBox(width: 12),
-
-                                  // User Info
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
                                           user.name,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
+                                          style: theme.textTheme.titleSmall?.copyWith(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 15,
-                                            color: AppColors.black,
                                           ),
                                         ),
-                                        if (user.title != null &&
-                                            user.title!.isNotEmpty) ...[
+                                        if (user.title != null && user.title!.isNotEmpty) ...[
                                           const SizedBox(height: 2),
                                           Text(
                                             user.title!,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
+                                            style: theme.textTheme.bodySmall?.copyWith(
                                               fontSize: 12,
-                                              color: AppColors.black,
                                             ),
                                           ),
                                         ],
@@ -289,14 +269,12 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                             Icon(
                                               Icons.people_alt_outlined,
                                               size: 14,
-                                              color: AppColors.darkGrey,
+                                              color: theme.hintColor,
                                             ),
                                             const SizedBox(width: 4),
                                             Text(
                                               "${user.followersCount} followers",
-                                              style: TextStyle(
-                                                fontSize: 11,
-                                                color: AppColors.darkGrey,
+                                              style: theme.textTheme.labelSmall?.copyWith(
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             ),
@@ -306,8 +284,6 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                     ),
                                   ),
                                   const SizedBox(width: 8),
-
-                                  // Follow Button
                                   MainButton(
                                     onPressed: () {
                                       discoverCubit.toggleFollowUser(user.id);

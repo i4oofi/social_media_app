@@ -158,10 +158,7 @@ class _LoginFormState extends State<LoginForm> {
                   alignment: Alignment.topRight,
                   child: TextButton(
                     onPressed: () => _showForgetPasswordDialog(context),
-                    child: Text(
-                      'Forget Password?',
-                      style: TextStyle(color: AppColors.black),
-                    ),
+                    child: Text('Forget Password?'),
                   ),
                 ),
               ],
@@ -257,10 +254,9 @@ class _LoginFormState extends State<LoginForm> {
             children: [
               Text(
                 'Don\'t have an account?',
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: AppColors.black,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w400),
               ),
               TextButton(
                 onPressed: () {

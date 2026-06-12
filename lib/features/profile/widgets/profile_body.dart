@@ -126,19 +126,19 @@ class ProfileDetails extends StatelessWidget {
               _ActivityChip(
                 icon: Icons.photo_library_outlined,
                 label: '${user.postsCount ?? 0} posts shared',
-                color: AppColors.black,
+                color: Theme.of(context).textTheme.bodyLarge?.color ?? AppColors.black,
               ),
               const SizedBox(height: 8),
               _ActivityChip(
                 icon: Icons.favorite_border_rounded,
                 label: '${user.followersCount ?? 0} people follow this account',
-                color: AppColors.black,
+                color: Theme.of(context).textTheme.bodyLarge?.color ?? AppColors.black,
               ),
               const SizedBox(height: 8),
               _ActivityChip(
                 icon: Icons.visibility_outlined,
                 label: '${user.followingCount ?? 0} accounts being followed',
-                color: AppColors.black,
+                color: Theme.of(context).textTheme.bodyLarge?.color ?? AppColors.black,
               ),
             ],
           ),
@@ -167,9 +167,9 @@ class _DetailsSectionCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.grey.withValues(alpha: 0.3), width: 1),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,21 +179,20 @@ class _DetailsSectionCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: AppColors.black),
+                Icon(icon, size: 20, color: theme.iconTheme.color),
                 const SizedBox(width: 10),
                 Text(
                   title,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.black,
                   ),
                 ),
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(height: 20, thickness: 0.5),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(height: 20, thickness: 0.5, color: theme.dividerColor.withValues(alpha: 0.5)),
           ),
           // ── Section Content ──
           Padding(
@@ -231,14 +230,14 @@ class _DetailRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: AppColors.darkGrey),
+          Icon(icon, size: 20, color: theme.hintColor),
           const SizedBox(width: 12),
           SizedBox(
             width: 110,
             child: Text(
               label,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppColors.darkGrey,
+                color: theme.hintColor,
               ),
             ),
           ),
@@ -248,7 +247,7 @@ class _DetailRow extends StatelessWidget {
               value,
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w500,
-                color: isSubtle ? AppColors.grey : AppColors.black,
+                color: isSubtle ? theme.hintColor : theme.textTheme.bodyLarge?.color,
                 fontStyle: isSubtle ? FontStyle.italic : FontStyle.normal,
               ),
             ),
@@ -278,7 +277,9 @@ class _ActivityChip extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.grey.withValues(alpha: 0.1),
+        color: theme.brightness == Brightness.dark
+            ? Colors.white.withValues(alpha: 0.05)
+            : AppColors.grey.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(

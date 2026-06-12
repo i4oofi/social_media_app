@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:social_media_app/core/app_constants.dart';
 import 'package:social_media_app/core/services/supabase_database_services.dart';
 import 'package:social_media_app/core/theme/app_tables_names.dart';
-import 'package:social_media_app/core/models/comment_model.dart';
-import 'package:social_media_app/core/models/comment_request_body.dart';
+import 'package:social_media_app/core/theme/app_colors.dart';
+import 'package:social_media_app/core/shared/widgets/app_toast.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 import 'package:social_media_app/features/home/models/post_request_body.dart';
 import 'package:social_media_app/features/home/models/story_model.dart';
@@ -136,7 +136,7 @@ class HomeServices {
     }
   }
 
-  Future<void> createStory(String authorId, File image) async {
+  Future<void> createStory(String authorId, File image, {bool isPrivate = false}) async {
     try {
       final fileName = 'private/${DateTime.now().millisecondsSinceEpoch}.jpg';
       final path = await supabaseStorageClient
@@ -150,14 +150,35 @@ class HomeServices {
             ),
           );
       final imageUrl = '${AppConstants.supabaseStorageUrl}/$path';
-      await supabaseServices.insertRow(
-        table: AppTablesNames.stories,
-        values: {
-          'author_id': authorId,
-          'image_url': imageUrl,
-          'created_at': DateTime.now().toUtc().toIso8601String(),
-        },
-      );
+      try {
+        await supabaseServices.insertRow(
+          table: AppTablesNames.stories,
+          values: {
+            'author_id': authorId,
+            'image_url': imageUrl,
+            'created_at': DateTime.now().toUtc().toIso8601String(),
+            'is_private': isPrivate,
+          },
+        );
+      } catch (dbError) {
+        final errorStr = dbError.toString();
+        if (errorStr.contains('is_private') || errorStr.contains('PGRST204')) {
+          await supabaseServices.insertRow(
+            table: AppTablesNames.stories,
+            values: {
+              'author_id': authorId,
+              'image_url': imageUrl,
+              'created_at': DateTime.now().toUtc().toIso8601String(),
+            },
+          );
+          AppToast.showToast(
+            msg: "Story uploaded. Note: Please add 'is_private' column to stories table in Supabase.",
+            backgroundColor: AppColors.primaryColor,
+          );
+        } else {
+          rethrow;
+        }
+      }
     } catch (e) {
       rethrow;
     }

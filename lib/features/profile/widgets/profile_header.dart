@@ -4,21 +4,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
+import 'package:social_media_app/core/theme/app_theme.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/auth/widgets/main_button.dart';
 import 'package:social_media_app/features/profile/cubit/profile_cubit/profile_cubit.dart';
 import 'package:social_media_app/features/profile/models/edit_profile_screen_args.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key, required this.userData, this.isPrivate = true});
+  const ProfileHeader({
+    super.key,
+    required this.userData,
+    this.isPrivate = true,
+  });
   final UserData userData;
   final bool isPrivate;
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     final profileCubit = context.read<ProfileCubit>();
     final size = MediaQuery.sizeOf(context);
-    final currentUserId = profileCubit.coreAuthServices.supabase.auth.currentUser?.id;
-    final isFollowing = userData.followers?.contains(currentUserId ?? '') ?? false;
+    final currentUserId =
+        profileCubit.coreAuthServices.supabase.auth.currentUser?.id;
+    final isFollowing =
+        userData.followers?.contains(currentUserId ?? '') ?? false;
 
     return Column(
       children: [
@@ -112,7 +120,9 @@ class ProfileHeader extends StatelessWidget {
                         Navigator.of(context, rootNavigator: true)
                             .pushNamed(
                               AppRoutes.editProfile,
-                              arguments: EditProfileScreenArgs(userData: userData),
+                              arguments: EditProfileScreenArgs(
+                                userData: userData,
+                              ),
                             )
                             .then((value) async {
                               await profileCubit.fetchUserProfile();
@@ -125,7 +135,7 @@ class ProfileHeader extends StatelessWidget {
                       height: 50,
                       width: 50,
                       decoration: BoxDecoration(
-                        color: AppColors.white,
+                        color: Colors.transparent,
                         border: Border.all(color: AppColors.grey, width: 2),
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -134,7 +144,10 @@ class ProfileHeader extends StatelessWidget {
                         onPressed: () {
                           Scaffold.of(context).openDrawer();
                         },
-                        icon: const Icon(Icons.settings, color: AppColors.black),
+                        icon: Icon(
+                          Icons.settings,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
                       ),
                     ),
                   ],
@@ -159,9 +172,7 @@ class ProfileHeader extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context, rootNavigator: true).pushNamed(
                           AppRoutes.chatRoomScreen,
-                          arguments: {
-                            'otherUserId': userData.id,
-                          },
+                          arguments: {'otherUserId': userData.id},
                         );
                       },
                     ),
@@ -210,7 +221,10 @@ class _CoverPlaceholder extends StatelessWidget {
           ),
         ),
         child: const Center(
-          child: CircularProgressIndicator(color: Colors.white54, strokeWidth: 2),
+          child: CircularProgressIndicator(
+            color: Colors.white54,
+            strokeWidth: 2,
+          ),
         ),
       );
     }
@@ -291,11 +305,7 @@ class _CoverPlaceholder extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           stops: [0.0, 0.5, 1.0],
-          colors: [
-            Color(0xFF1a1a2e),
-            Color(0xFF16213e),
-            Color(0xFF0f3460),
-          ],
+          colors: [Color(0xFF1a1a2e), Color(0xFF16213e), Color(0xFF0f3460)],
         ),
       ),
       child: Stack(

@@ -8,6 +8,7 @@ import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/profile/models/edit_profile_screen_args.dart';
 import 'package:social_media_app/features/settings/cubit/settings_cubit.dart';
 import 'package:social_media_app/core/shared/widgets/app_toast.dart';
+import 'package:social_media_app/core/cubit/theme_cubit/theme_cubit.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -15,7 +16,6 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: AppColors.white,
       body: SettingsDrawer(),
     );
   }
@@ -27,7 +27,6 @@ class SettingsDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: AppColors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(24),
@@ -80,6 +79,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
   @override
   Widget build(BuildContext context) {
     final settingsCubit = context.read<SettingsCubit>();
+    final theme = Theme.of(context);
 
     return Column(
       children: [
@@ -88,10 +88,12 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
           width: double.infinity,
           padding: const EdgeInsets.fromLTRB(20, 60, 20, 24),
           decoration: BoxDecoration(
-            color: Colors.grey.withValues(alpha: 0.04),
+            color: theme.brightness == Brightness.dark
+                ? Colors.white.withValues(alpha: 0.02)
+                : Colors.grey.withValues(alpha: 0.04),
             border: Border(
               bottom: BorderSide(
-                color: AppColors.dividerColor.withValues(alpha: 0.2),
+                color: theme.dividerColor,
               ),
             ),
           ),
@@ -117,7 +119,6 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.black,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -127,7 +128,9 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 12,
-                              color: AppColors.darkGrey,
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.grey[400]
+                                  : AppColors.darkGrey,
                             ),
                           ),
                         ],
@@ -142,7 +145,46 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             children: [
+              // Theme Mode Toggle
+              BlocBuilder<ThemeCubit, ThemeMode>(
+                builder: (context, themeMode) {
+                  final isDark = themeMode == ThemeMode.dark ||
+                      (themeMode == ThemeMode.system &&
+                          MediaQuery.platformBrightnessOf(context) ==
+                              Brightness.dark);
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      leading: Icon(
+                        isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white
+                            : AppColors.black,
+                        size: 22,
+                      ),
+                      title: const Text(
+                        "Dark Mode",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      trailing: Switch.adaptive(
+                        value: isDark,
+                        activeColor: AppColors.primaryColor,
+                        onChanged: (val) {
+                          context.read<ThemeCubit>().toggleTheme(val);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
               _buildDrawerTile(
+                context: context,
                 icon: Icons.person_outline_rounded,
                 title: "Edit Profile",
                 onTap: () {
@@ -162,13 +204,16 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                 },
               ),
               _buildDrawerTile(
+                context: context,
                 icon: Icons.bookmark_border_rounded,
                 title: "Saved Posts",
                 onTap: () {
                   Navigator.of(context).pop();
+                  Navigator.pushNamed(context, AppRoutes.savedPosts);
                 },
               ),
               _buildDrawerTile(
+                context: context,
                 icon: Icons.lock_outline_rounded,
                 title: "Privacy & Security",
                 onTap: () {
@@ -176,6 +221,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                 },
               ),
               _buildDrawerTile(
+                context: context,
                 icon: Icons.notifications_none_rounded,
                 title: "Notifications",
                 onTap: () {
@@ -183,6 +229,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                 },
               ),
               _buildDrawerTile(
+                context: context,
                 icon: Icons.help_outline_rounded,
                 title: "Help & Support",
                 onTap: () {
@@ -199,7 +246,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
           decoration: BoxDecoration(
             border: Border(
               top: BorderSide(
-                color: AppColors.dividerColor.withValues(alpha: 0.2),
+                color: theme.dividerColor,
               ),
             ),
           ),
@@ -266,30 +313,38 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
   }
 
   Widget _buildDrawerTile({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: ListTile(
         onTap: onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        leading: Icon(icon, color: AppColors.black, size: 22),
+        leading: Icon(
+          icon,
+          color: theme.brightness == Brightness.dark ? Colors.white : AppColors.black,
+          size: 22,
+        ),
         title: Text(
           title,
           style: const TextStyle(
-            color: AppColors.black,
             fontWeight: FontWeight.w600,
             fontSize: 14,
           ),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
-          color: AppColors.darkGrey.withValues(alpha: 0.5),
+          color: theme.brightness == Brightness.dark
+              ? Colors.white.withValues(alpha: 0.4)
+              : AppColors.darkGrey.withValues(alpha: 0.5),
           size: 14,
         ),
       ),
     );
   }
 }
+

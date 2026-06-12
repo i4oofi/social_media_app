@@ -7,6 +7,8 @@ class StoryModel {
   final String id;
   final String createdAt;
   final String authorName;
+  final String? authorProfileImage;
+  final bool isPrivate;
 
   StoryModel({
     required this.imageUrl,
@@ -14,6 +16,8 @@ class StoryModel {
     required this.id,
     required this.createdAt,
     this.authorName = '',
+    this.authorProfileImage,
+    this.isPrivate = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +26,7 @@ class StoryModel {
       'author_id': authorId,
       'id': id,
       'created_at': createdAt,
+      'is_private': isPrivate,
     };
   }
 
@@ -31,6 +36,7 @@ class StoryModel {
       authorId: map['author_id'] as String,
       id: map['id'] as String,
       createdAt: map['created_at'] as String,
+      isPrivate: map['is_private'] as bool? ?? false,
     );
   }
 
@@ -45,6 +51,8 @@ class StoryModel {
     String? id,
     String? createdAt,
     String? authorName,
+    String? authorProfileImage,
+    bool? isPrivate,
   }) {
     return StoryModel(
       imageUrl: imageUrl ?? this.imageUrl,
@@ -52,6 +60,8 @@ class StoryModel {
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       authorName: authorName ?? this.authorName,
+      authorProfileImage: authorProfileImage ?? this.authorProfileImage,
+      isPrivate: isPrivate ?? this.isPrivate,
     );
   }
 }

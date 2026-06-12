@@ -77,7 +77,6 @@ class _PostWritingCardState extends State<PostWritingCard> {
                   "What's on your head?",
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.w500,
-                    color: AppColors.black,
                   ),
                 ),
               ),
@@ -100,7 +99,6 @@ class _PostWritingCardState extends State<PostWritingCard> {
                       "Photo",
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.w500,
-                        color: AppColors.black,
                       ),
                     ),
                   ],
@@ -124,7 +122,6 @@ class _PostWritingCardState extends State<PostWritingCard> {
                       "Video",
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.w500,
-                        color: AppColors.black,
                       ),
                     ),
                   ],

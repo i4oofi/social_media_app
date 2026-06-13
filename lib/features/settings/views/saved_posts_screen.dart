@@ -16,11 +16,8 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
   @override
   void initState() {
     super.initState();
-    // Make sure we have the latest posts loaded
-    final homeCubit = context.read<HomeCubit>();
-    if (homeCubit.state is! PostLoaded) {
-      homeCubit.fetchPosts();
-    }
+    // Fetch the detailed saved posts from DB
+    context.read<PostsCubit>().fetchSavedPostsDetails();
   }
 
   @override
@@ -34,76 +31,76 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, homeState) {
-          if (homeState is PostLoading) {
+      body: BlocBuilder<PostsCubit, PostsState>(
+        buildWhen: (previous, current) => 
+          current is FetchingSavedPostsDetails ||
+          current is SavedPostsDetailsFetched ||
+          current is SavedPostsDetailsError,
+        builder: (context, postsState) {
+          if (postsState is FetchingSavedPostsDetails) {
             return const Center(child: CircularProgressIndicator.adaptive());
           }
 
-          List<PostModel> allPosts = [];
-          if (homeState is PostLoaded) {
-            allPosts = homeState.posts;
-          } else if (homeState is PostError) {
+          if (postsState is SavedPostsDetailsError) {
             return Center(
               child: Text(
-                'Failed to load posts: ${homeState.error}',
+                'Failed to load posts: ${postsState.error}',
                 style: const TextStyle(color: Colors.red),
               ),
             );
           }
 
-          return BlocBuilder<PostsCubit, PostsState>(
-            builder: (context, postsState) {
-              final savedIds = context.read<PostsCubit>().savedPostIds;
-              final savedPosts = allPosts.where((post) => savedIds.contains(post.id)).toList();
+          if (postsState is SavedPostsDetailsFetched) {
+            final savedPosts = postsState.savedPosts;
 
-              if (savedPosts.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.bookmark_border_rounded,
-                        size: 64,
+            if (savedPosts.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.bookmark_border_rounded,
+                      size: 64,
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.grey[600]
+                          : Colors.grey[400],
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'No saved posts yet',
+                      style: TextStyle(
+                        fontSize: 16,
                         color: theme.brightness == Brightness.dark
-                            ? Colors.grey[600]
-                            : Colors.grey[400],
+                            ? Colors.grey[400]
+                            : Colors.grey[600],
+                        fontWeight: FontWeight.w500,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'No saved posts yet',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: theme.brightness == Brightness.dark
-                              ? Colors.grey[400]
-                              : Colors.grey[600],
-                          fontWeight: FontWeight.w500,
-                        ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Posts you bookmark will appear here',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.grey[500]
+                            : Colors.grey[500],
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Posts you bookmark will appear here',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: theme.brightness == Brightness.dark
-                              ? Colors.grey[500]
-                              : Colors.grey[500],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-
-              return ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: savedPosts.length,
-                itemBuilder: (context, index) {
-                  return PostCard(post: savedPosts[index]);
-                },
+                    ),
+                  ],
+                ),
               );
-            },
-          );
+            }
+
+            return ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: savedPosts.length,
+              itemBuilder: (context, index) {
+                return PostCard(post: savedPosts[index]);
+              },
+            );
+          }
+
+          return const SizedBox.shrink();
         },
       ),
     );

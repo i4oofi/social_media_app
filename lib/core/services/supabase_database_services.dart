@@ -223,29 +223,35 @@ class SupabaseDatabaseServices {
   }
 
 
-  /// Fetches multiple rows from [table], applying optional filters and sorting.
-  ///
-  /// - [table]: the table to query.
-  /// - [builder]: function to map each row into a model.
-  /// - [primaryKey]: optional column to extract IDs for each row.
-  /// - [filter]: optional function to apply query filters.
-  /// - [sort]: optional comparator to sort the result list.
-  ///
-  /// Returns a [List] of mapped model instances or throws a [PostgrestException].
   Future<List<T>> fetchRows<T>({
     required String table,
     required T Function(Map<String, dynamic> data, String id) builder,
     String? primaryKey,
     PostgrestFilterBuilder Function(PostgrestFilterBuilder query)? filter,
     int Function(T a, T b)? sort,
+    int? limit,
+    int? offset,
+    String? orderBy,
+    bool ascending = false,
   }) async {
     try {
       // Build the base select query
-      var query = _db.from(table).select() as PostgrestFilterBuilder;
+      dynamic query = _db.from(table).select();
       if (filter != null) {
         // Apply any additional filters
-        query = filter(query);
+        query = filter(query as PostgrestFilterBuilder);
       }
+      
+      if (orderBy != null) {
+        query = query.order(orderBy, ascending: ascending);
+      }
+      
+      if (limit != null && offset != null) {
+        query = query.range(offset, offset + limit - 1);
+      } else if (limit != null) {
+        query = query.limit(limit);
+      }
+
       // Execute and cast to list
       final rows = (await query) as List<dynamic>;
       final list = rows.map((e) {

@@ -23,8 +23,14 @@ final class PostLoading extends HomeState {}
 
 final class PostLoaded extends HomeState {
   final List<PostModel> posts;
+  final bool hasReachedMax;
+  final bool isLoadingMore;
 
-  PostLoaded({required this.posts});
+  PostLoaded({
+    required this.posts,
+    this.hasReachedMax = false,
+    this.isLoadingMore = false,
+  });
 }
 
 final class PostError extends HomeState {

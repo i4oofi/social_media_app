@@ -64,3 +64,15 @@ final class SavedPostsLoaded extends PostsState {
   SavedPostsLoaded({required this.savedPostIds});
 }
 
+final class FetchingSavedPostsDetails extends PostsState {}
+
+final class SavedPostsDetailsFetched extends PostsState {
+  final List<PostModel> savedPosts;
+  SavedPostsDetailsFetched({required this.savedPosts});
+}
+
+final class SavedPostsDetailsError extends PostsState {
+  final String error;
+  SavedPostsDetailsError({required this.error});
+}
+

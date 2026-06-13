@@ -10,6 +10,7 @@ import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/core/models/comment_model.dart';
 import 'package:social_media_app/core/models/notification_model.dart';
 import 'package:social_media_app/core/services/notification_services.dart';
+import 'package:social_media_app/features/home/models/post_model.dart';
 
 part 'posts_state.dart';
 
@@ -44,6 +45,35 @@ class PostsCubit extends Cubit<PostsState> {
       await prefs.setStringList('saved_posts_keys', savedPostIds);
       emit(SavedPostsLoaded(savedPostIds: List.from(savedPostIds)));
     } catch (_) {}
+  }
+
+  Future<void> fetchSavedPostsDetails() async {
+    try {
+      emit(FetchingSavedPostsDetails());
+      final rawPosts = await postServices.fetchSavedPosts(savedPostIds);
+      List<PostModel> posts = [];
+      for (var post in rawPosts) {
+        final userData = await coreAuthServices.getUserData(post.authorId);
+        final comments = await postServices.fetchComments(post.id);
+        if (userData != null) {
+          post = post.copyWith(
+            authorName: userData.name,
+            authorProfileImage: userData.imageUrl,
+            isLiked: true, // Assuming if they saved it, we just want to show standard info, or check current user likes.
+            commentCount: comments.length,
+          );
+          
+          final currentUser = await coreAuthServices.getCurrentUserData();
+          if(currentUser != null) {
+            post = post.copyWith(isLiked: post.likes?.contains(currentUser.id) ?? false);
+          }
+        }
+        posts.add(post);
+      }
+      emit(SavedPostsDetailsFetched(savedPosts: posts));
+    } catch (e) {
+      emit(SavedPostsDetailsError(error: e.toString()));
+    }
   }
 
 

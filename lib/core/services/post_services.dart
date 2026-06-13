@@ -27,6 +27,22 @@ class PostServices {
     }
   }
 
+  Future<List<PostModel>> fetchSavedPosts(List<String> postIds) async {
+    try {
+      if (postIds.isEmpty) return [];
+      return await supabaseServices.fetchRows(
+        table: AppTablesNames.posts,
+        builder: (data, id) {
+          return PostModel.fromMap(data);
+        },
+        primaryKey: 'id',
+        filter: (query) => query.inFilter('id', postIds),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<PostModel> likePost(String postId, String userId) async {
     try {
       var post = await supabaseServices.fetchRow(

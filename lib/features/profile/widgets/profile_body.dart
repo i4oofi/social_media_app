@@ -325,11 +325,24 @@ class ProfilePosts extends StatelessWidget {
         }
         if (state is ProfilePostsSuccess) {
           final posts = state.posts;
+          final isLoadingMore = state.isLoadingMore;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: ListView.builder(
-              itemCount: posts.length,
+              itemCount: posts.length + (isLoadingMore ? 1 : 0),
               itemBuilder: (context, index) {
+                if (index == posts.length) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Center(
+                      child: CircularProgressIndicator.adaptive(
+                        valueColor: AlwaysStoppedAnimation(
+                          AppColors.primaryColor,
+                        ),
+                      ),
+                    ),
+                  );
+                }
                 final post = posts[index];
                 return Column(children: [PostCard(post: post)]);
               },

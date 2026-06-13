@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/shared/widgets/post_card.dart';
 import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
+import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 
@@ -15,6 +16,7 @@ class PostsSection extends StatefulWidget {
 class _PostsSectionState extends State<PostsSection> {
   List<PostModel> _posts = [];
   bool _isLoading = true;
+  bool _isLoadingMore = false;
   String? _error;
 
   @override
@@ -28,17 +30,20 @@ class _PostsSectionState extends State<PostsSection> {
         if (state is PostLoading) {
           setState(() {
             _isLoading = true;
+            _isLoadingMore = false;
             _error = null;
           });
         } else if (state is PostLoaded) {
           setState(() {
             _posts = state.posts;
+            _isLoadingMore = state.isLoadingMore;
             _isLoading = false;
             _error = null;
           });
         } else if (state is PostError) {
           setState(() {
             _isLoading = false;
+            _isLoadingMore = false;
             _error = state.error;
           });
         }
@@ -68,8 +73,20 @@ class _PostsSectionState extends State<PostsSection> {
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _posts.length,
+                      itemCount: _posts.length + (_isLoadingMore ? 1 : 0),
                       itemBuilder: (context, index) {
+                        if (index == _posts.length) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 24),
+                            child: Center(
+                              child: CircularProgressIndicator.adaptive(
+                                valueColor: AlwaysStoppedAnimation(
+                                  AppColors.primaryColor,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
                         return PostCard(post: _posts[index]);
                       },
                     ),

@@ -13,7 +13,7 @@ class ProfileServices {
   final supabaseServices = SupabaseDatabaseServices.instance;
   final supabaseStorageClient = Supabase.instance.client.storage;
 
-  Future<List<PostModel>> fetchUserPosts(String userId) async {
+  Future<List<PostModel>> fetchUserPosts(String userId, {int limit = 10, int offset = 0}) async {
     try {
       return await supabaseServices.fetchRows(
         table: AppTablesNames.posts,
@@ -21,6 +21,10 @@ class ProfileServices {
           return PostModel.fromMap(data);
         },
         primaryKey: 'id',
+        orderBy: 'created_at',
+        ascending: false,
+        limit: limit,
+        offset: offset,
         filter: (query) => query.eq('author_id', userId),
       );
     } catch (e) {

@@ -16,7 +16,6 @@ class ProfileScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         final cubit = ProfileCubit();
-        // Initial load — NOT silent → shows full shimmer.
         cubit.fetchUserProfile(userId: userId);
         cubit.fetchUserPosts(userId: userId);
         return cubit;
@@ -33,15 +32,14 @@ class _ProfileScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileCubit, ProfileState>(
-      // Only rebuild the root when profile data (or loading) changes.
-      // ProfileRefreshing keeps the old ProfileSuccess UI alive.
       buildWhen: (previous, current) =>
           current is ProfileLoading ||
           current is ProfileSuccess ||
           current is ProfileFailure,
       builder: (context, state) {
-        // ── Full-page shimmer on first load ──────────────────────────────
-        if (state is ProfileLoading) {
+        if (state is ProfileLoading ||
+            state is ProfileInitial ||
+            state is ProfilePostsLoading) {
           return const Scaffold(body: SafeArea(child: ProfileHeaderShimmer()));
         }
 
@@ -81,52 +79,61 @@ class _ProfileScreenContent extends StatelessWidget {
                 child: RefreshIndicator(
                   // Silent refresh — does NOT emit ProfileLoading
                   onRefresh: () => cubit.refreshProfile(userId: userId),
-                  child: NestedScrollView(
-                    // Must be AlwaysScrollable so RefreshIndicator
-                    // can be triggered even when content fills the screen.
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    headerSliverBuilder: (context, innerBoxIsScrolled) {
-                      return [
-                        SliverToBoxAdapter(
-                          child: Column(
-                            children: [
-                              ProfileHeader(
-                                userData: userData,
-                                isPrivate: isPrivate,
-                              ),
-                              const SizedBox(height: 24),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 24),
-                                child: Column(
-                                  children: [
-                                    ProfileStatsCard(userData: userData),
-                                    const SizedBox(height: 16),
-                                  ],
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      if (scrollInfo.metrics.pixels >=
+                          scrollInfo.metrics.maxScrollExtent - 200) {
+                        cubit.loadMoreUserPosts(userId: userId);
+                      }
+                      return false;
+                    },
+                    child: NestedScrollView(
+                      // Must be AlwaysScrollable so RefreshIndicator
+                      // can be triggered even when content fills the screen.
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      headerSliverBuilder: (context, innerBoxIsScrolled) {
+                        return [
+                          SliverToBoxAdapter(
+                            child: Column(
+                              children: [
+                                ProfileHeader(
+                                  userData: userData,
+                                  isPrivate: isPrivate,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SliverPersistentHeader(
-                          pinned: true,
-                          delegate: _TabBarDelegate(
-                            TabBar(
-                              dividerColor: Colors.transparent,
-                              tabs: const [
-                                Tab(text: 'Details'),
-                                Tab(text: 'Posts'),
+                                const SizedBox(height: 24),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 24),
+                                  child: Column(
+                                    children: [
+                                      ProfileStatsCard(userData: userData),
+                                      const SizedBox(height: 16),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                        ),
-                      ];
-                    },
-                    body: TabBarView(
-                      children: [
-                        ProfileDetails(user: userData, isPrivate: isPrivate),
-                        ProfilePosts(user: userData),
-                      ],
+                          SliverPersistentHeader(
+                            pinned: true,
+                            delegate: _TabBarDelegate(
+                              TabBar(
+                                dividerColor: Colors.transparent,
+                                tabs: const [
+                                  Tab(text: 'Details'),
+                                  Tab(text: 'Posts'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ];
+                      },
+                      body: TabBarView(
+                        children: [
+                          ProfileDetails(user: userData, isPrivate: isPrivate),
+                          ProfilePosts(user: userData),
+                        ],
+                      ),
                     ),
                   ),
                 ),

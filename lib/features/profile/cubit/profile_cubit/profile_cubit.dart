@@ -33,6 +33,12 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  int _postOffset = 0;
+  final int _postLimit = 10;
+  bool _hasReachedMax = false;
+  List<PostModel> _userPosts = [];
+  bool _isLoadingMore = false;
+
   Future<void> fetchUserPosts({String? userId, bool silent = false}) async {
     if (!silent) emit(ProfilePostsLoading());
     try {
@@ -47,7 +53,21 @@ class ProfileCubit extends Cubit<ProfileState> {
         emit(ProfilePostsFailure("User not found"));
         return;
       }
-      final rawUserPosts = await profileServices.fetchUserPosts(userModel.id);
+      
+      _postOffset = 0;
+      _hasReachedMax = false;
+      _userPosts.clear();
+
+      final rawUserPosts = await profileServices.fetchUserPosts(
+        userModel.id,
+        limit: _postLimit,
+        offset: _postOffset,
+      );
+      
+      if (rawUserPosts.length < _postLimit) {
+        _hasReachedMax = true;
+      }
+
       final List<PostModel> userPosts = [];
       for (var rawPost in rawUserPosts) {
         final postAuthor = await coreAuthServices.getUserData(rawPost.authorId);
@@ -62,9 +82,78 @@ class ProfileCubit extends Cubit<ProfileState> {
         }
         userPosts.add(rawPost);
       }
-      emit(ProfilePostsSuccess(userPosts));
+      
+      _userPosts = userPosts;
+      _postOffset += _postLimit;
+
+      emit(ProfilePostsSuccess(List.from(_userPosts), hasReachedMax: _hasReachedMax));
     } catch (e) {
       emit(ProfilePostsFailure(e.toString()));
+    }
+  }
+
+  Future<void> loadMoreUserPosts({String? userId}) async {
+    if (_hasReachedMax || _isLoadingMore) return;
+
+    try {
+      _isLoadingMore = true;
+      emit(ProfilePostsSuccess(List.from(_userPosts), hasReachedMax: _hasReachedMax, isLoadingMore: true));
+      
+      final currentAuthUser = await coreAuthServices.getCurrentUserData();
+      final UserData? userModel;
+      if (userId == null) {
+        userModel = currentAuthUser;
+      } else {
+        userModel = await coreAuthServices.getUserData(userId);
+      }
+      
+      if (userModel == null) {
+        _isLoadingMore = false;
+        emit(ProfilePostsSuccess(List.from(_userPosts), hasReachedMax: _hasReachedMax, isLoadingMore: false));
+        return;
+      }
+
+      final rawUserPosts = await profileServices.fetchUserPosts(
+        userModel.id,
+        limit: _postLimit,
+        offset: _postOffset,
+      );
+      
+      if (rawUserPosts.isEmpty) {
+        _hasReachedMax = true;
+        _isLoadingMore = false;
+        emit(ProfilePostsSuccess(List.from(_userPosts), hasReachedMax: _hasReachedMax, isLoadingMore: false));
+        return;
+      }
+      
+      if (rawUserPosts.length < _postLimit) {
+        _hasReachedMax = true;
+      }
+
+      final List<PostModel> newPosts = [];
+      for (var rawPost in rawUserPosts) {
+        final postAuthor = await coreAuthServices.getUserData(rawPost.authorId);
+        final comments = await profileServices.fetchComments(rawPost.id);
+        rawPost = rawPost.copyWith(commentCount: comments.length);
+        if (postAuthor != null) {
+          rawPost = rawPost.copyWith(
+            authorName: postAuthor.name,
+            authorProfileImage: postAuthor.imageUrl,
+            isLiked: currentAuthUser != null ? rawPost.likes?.contains(currentAuthUser.id) : false,
+          );
+        }
+        newPosts.add(rawPost);
+      }
+      
+      _userPosts.addAll(newPosts);
+      _postOffset += _postLimit;
+
+      _isLoadingMore = false;
+      emit(ProfilePostsSuccess(List.from(_userPosts), hasReachedMax: _hasReachedMax, isLoadingMore: false));
+    } catch (e) {
+      // Don't emit failure state to avoid destroying current loaded posts
+      _isLoadingMore = false;
+      emit(ProfilePostsSuccess(List.from(_userPosts), hasReachedMax: _hasReachedMax, isLoadingMore: false));
     }
   }
 

@@ -28,7 +28,7 @@ class HomeServices {
     }
   }
 
-  Future<List<PostModel>> fetchPosts() async {
+  Future<List<PostModel>> fetchPosts({int limit = 10, int offset = 0}) async {
     try {
       return await supabaseServices.fetchRows(
         table: AppTablesNames.posts,
@@ -36,6 +36,10 @@ class HomeServices {
           return PostModel.fromMap(data);
         },
         primaryKey: 'id',
+        orderBy: 'created_at',
+        ascending: false,
+        limit: limit,
+        offset: offset,
       );
     } catch (e) {
       rethrow;

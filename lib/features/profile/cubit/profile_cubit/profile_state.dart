@@ -23,7 +23,10 @@ final class ProfilePostsLoading extends ProfileState {}
 
 final class ProfilePostsSuccess extends ProfileState {
   final List<PostModel> posts;
-  ProfilePostsSuccess(this.posts);
+  final bool hasReachedMax;
+  final bool isLoadingMore;
+  
+  ProfilePostsSuccess(this.posts, {this.hasReachedMax = false, this.isLoadingMore = false});
 }
 
 final class ProfilePostsFailure extends ProfileState {

@@ -55,10 +55,28 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  int _postOffset = 0;
+  final int _postLimit = 10;
+  bool _hasReachedMax = false;
+  List<PostModel> _allPosts = [];
+  bool _isLoadingMore = false;
+
   Future<void> fetchPosts() async {
     try {
       emit(PostLoading());
-      final rawPosts = await homeServices.fetchPosts();
+      _postOffset = 0;
+      _hasReachedMax = false;
+      _allPosts.clear();
+      
+      final rawPosts = await homeServices.fetchPosts(
+        limit: _postLimit,
+        offset: _postOffset,
+      );
+      
+      if (rawPosts.length < _postLimit) {
+        _hasReachedMax = true;
+      }
+
       List<PostModel> posts = [];
       for (var post in rawPosts) {
         final userData = await coreAuthServices.getUserData(post.authorId);
@@ -73,10 +91,64 @@ class HomeCubit extends Cubit<HomeState> {
         }
         posts.add(post);
       }
+      
+      _allPosts = posts;
+      _postOffset += _postLimit;
 
-      emit(PostLoaded(posts: posts));
+      emit(PostLoaded(posts: List.from(_allPosts), hasReachedMax: _hasReachedMax));
     } catch (e) {
       emit(PostError(error: e.toString()));
+    }
+  }
+
+  Future<void> loadMorePosts() async {
+    if (_hasReachedMax || _isLoadingMore) return;
+    
+    try {
+      _isLoadingMore = true;
+      emit(PostLoaded(posts: List.from(_allPosts), hasReachedMax: _hasReachedMax, isLoadingMore: true));
+
+      final rawPosts = await homeServices.fetchPosts(
+        limit: _postLimit,
+        offset: _postOffset,
+      );
+      
+      if (rawPosts.isEmpty) {
+        _hasReachedMax = true;
+        _isLoadingMore = false;
+        emit(PostLoaded(posts: List.from(_allPosts), hasReachedMax: _hasReachedMax, isLoadingMore: false));
+        return;
+      }
+      
+      if (rawPosts.length < _postLimit) {
+        _hasReachedMax = true;
+      }
+
+      List<PostModel> newPosts = [];
+      for (var post in rawPosts) {
+        final userData = await coreAuthServices.getUserData(post.authorId);
+        final comments = await postServices.fetchComments(post.id);
+        if (userData != null) {
+          post = post.copyWith(
+            authorName: userData.name,
+            authorProfileImage: userData.imageUrl,
+            isLiked: post.likes?.contains(userData.id) ?? false,
+            commentCount: comments.length,
+          );
+        }
+        newPosts.add(post);
+      }
+
+      _allPosts.addAll(newPosts);
+      _postOffset += _postLimit;
+
+      _isLoadingMore = false;
+      emit(PostLoaded(posts: List.from(_allPosts), hasReachedMax: _hasReachedMax, isLoadingMore: false));
+    } catch (e) {
+      // Don't emit PostError as it might disrupt the currently loaded posts.
+      // Could potentially emit a specific pagination error state or just log.
+      _isLoadingMore = false;
+      emit(PostLoaded(posts: List.from(_allPosts), hasReachedMax: _hasReachedMax, isLoadingMore: false));
     }
   }
 

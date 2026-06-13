@@ -29,20 +29,29 @@ class HomeScreen extends StatelessWidget {
                 onRefresh: () async {
                   await context.read<HomeCubit>().refresh();
                 },
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 16),
-                        const HomeScreenHeader(),
-                        const SizedBox(height: 16),
-                        const PostWritingCard(),
-                        const SizedBox(height: 24),
-                        const StoriesSection(),
-                        const PostsSection(),
-                      ],
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (ScrollNotification scrollInfo) {
+                    if (scrollInfo.metrics.pixels >=
+                        scrollInfo.metrics.maxScrollExtent - 200) {
+                      context.read<HomeCubit>().loadMorePosts();
+                    }
+                    return false;
+                  },
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 16),
+                          const HomeScreenHeader(),
+                          const SizedBox(height: 16),
+                          const PostWritingCard(),
+                          const SizedBox(height: 24),
+                          const StoriesSection(),
+                          const PostsSection(),
+                        ],
+                      ),
                     ),
                   ),
                 ),

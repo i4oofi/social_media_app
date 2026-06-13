@@ -209,7 +209,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                 title: "Saved Posts",
                 onTap: () {
                   Navigator.of(context).pop();
-                  Navigator.pushNamed(context, AppRoutes.savedPosts);
+                  Navigator.of(context , rootNavigator: true).pushNamed(AppRoutes.savedPosts);
                 },
               ),
               _buildDrawerTile(

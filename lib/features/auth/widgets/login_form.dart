@@ -54,7 +54,6 @@ class _LoginFormState extends State<LoginForm> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: AppColors.backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -76,9 +75,13 @@ class _LoginFormState extends State<LoginForm> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text(
+              child: Text(
                 'Cancel',
-                style: TextStyle(color: AppColors.black),
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
               ),
             ),
             ElevatedButton(
@@ -158,7 +161,12 @@ class _LoginFormState extends State<LoginForm> {
                   alignment: Alignment.topRight,
                   child: TextButton(
                     onPressed: () => _showForgetPasswordDialog(context),
-                    child: Text('Forget Password?'),
+                    child: Text(
+                      'Forget Password?',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
                   ),
                 ),
               ],

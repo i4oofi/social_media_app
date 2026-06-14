@@ -101,10 +101,27 @@ class HomeServices {
         file: finalFileUrl ?? post.file,
       );
 
-      await supabaseServices.insertRow(
-        table: AppTablesNames.posts,
-        values: post.toMap(),
-      );
+      try {
+        await supabaseServices.insertRow(
+          table: AppTablesNames.posts,
+          values: post.toMap(),
+        );
+      } catch (dbError) {
+        final errorStr = dbError.toString();
+        if (errorStr.contains('is_private') || errorStr.contains('PGRST204')) {
+          final mapWithoutPrivate = post.toMap()..remove('is_private');
+          await supabaseServices.insertRow(
+            table: AppTablesNames.posts,
+            values: mapWithoutPrivate,
+          );
+          AppToast.showToast(
+            msg: "Post created. Note: Please add 'is_private' column to posts table in Supabase.",
+            backgroundColor: AppColors.primaryColor,
+          );
+        } else {
+          rethrow;
+        }
+      }
     } catch (e) {
       rethrow;
     }

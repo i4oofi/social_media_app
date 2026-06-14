@@ -12,6 +12,7 @@ import 'package:social_media_app/features/profile/views/profile_screen.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
+import 'package:social_media_app/features/profile/cubit/profile_cubit/profile_cubit.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 
 class PostCard extends StatelessWidget {
@@ -39,7 +40,13 @@ class PostCard extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.pop(dialogContext);
-              context.read<HomeCubit>().deletePost(post.id);
+              try {
+                context.read<HomeCubit>().deletePost(post.id);
+              } catch (_) {
+                try {
+                  context.read<ProfileCubit>().deletePost(post.id, userId: post.authorId);
+                } catch (_) {}
+              }
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
@@ -69,7 +76,13 @@ class PostCard extends StatelessWidget {
               final newText = controller.text.trim();
               if (newText.isNotEmpty) {
                 Navigator.pop(dialogContext);
-                context.read<HomeCubit>().editPost(post.id, newText);
+                try {
+                  context.read<HomeCubit>().editPost(post.id, newText);
+                } catch (_) {
+                  try {
+                    context.read<ProfileCubit>().editPost(post.id, newText, userId: post.authorId);
+                  } catch (_) {}
+                }
               }
             },
             child: const Text('Save'),
@@ -121,12 +134,28 @@ class PostCard extends StatelessWidget {
                             post.authorName ?? 'No Name',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          Text(
-                            DateFormat(
-                              "h:mm a",
-                            ).format(DateTime.parse(post.createdAt)).toString(),
-                            style: Theme.of(context).textTheme.labelMedium!
-                                .copyWith(color: AppColors.darkGrey),
+                          Row(
+                            children: [
+                              Text(
+                                DateFormat(
+                                  "h:mm a",
+                                ).format(DateTime.parse(post.createdAt)).toString(),
+                                style: Theme.of(context).textTheme.labelMedium!
+                                    .copyWith(color: AppColors.darkGrey),
+                              ),
+                              const SizedBox(width: 8),
+                              Icon(
+                                post.isPrivate ? Icons.lock : Icons.public,
+                                size: 12,
+                                color: AppColors.darkGrey,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                post.isPrivate ? "Private" : "Public",
+                                style: Theme.of(context).textTheme.labelSmall!
+                                    .copyWith(color: AppColors.darkGrey),
+                              ),
+                            ],
                           ),
                         ],
                       ),

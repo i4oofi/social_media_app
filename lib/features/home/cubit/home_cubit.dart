@@ -23,6 +23,12 @@ class HomeCubit extends Cubit<HomeState> {
   File? currentImage;
   File? currentFile;
   File? currentVideo;
+  bool isPostPrivate = false;
+
+  void togglePostPrivacy() {
+    isPostPrivate = !isPostPrivate;
+    emit(PostPrivacyToggled(isPrivate: isPostPrivate));
+  }
   Future<void> fetchStories() async {
     try {
       emit(StoryLoading());
@@ -77,15 +83,18 @@ class HomeCubit extends Cubit<HomeState> {
         _hasReachedMax = true;
       }
 
+      final currentUser = await coreAuthServices.getCurrentUserData();
+
       List<PostModel> posts = [];
       for (var post in rawPosts) {
+        if (post.isPrivate) continue;
         final userData = await coreAuthServices.getUserData(post.authorId);
         final comments = await postServices.fetchComments(post.id);
         if (userData != null) {
           post = post.copyWith(
             authorName: userData.name,
             authorProfileImage: userData.imageUrl,
-            isLiked: post.likes?.contains(userData.id) ?? false,
+            isLiked: currentUser != null ? post.likes?.contains(currentUser.id) ?? false : false,
             commentCount: comments.length,
           );
         }
@@ -124,15 +133,18 @@ class HomeCubit extends Cubit<HomeState> {
         _hasReachedMax = true;
       }
 
+      final currentUser = await coreAuthServices.getCurrentUserData();
+
       List<PostModel> newPosts = [];
       for (var post in rawPosts) {
+        if (post.isPrivate) continue;
         final userData = await coreAuthServices.getUserData(post.authorId);
         final comments = await postServices.fetchComments(post.id);
         if (userData != null) {
           post = post.copyWith(
             authorName: userData.name,
             authorProfileImage: userData.imageUrl,
-            isLiked: post.likes?.contains(userData.id) ?? false,
+            isLiked: currentUser != null ? post.likes?.contains(currentUser.id) ?? false : false,
             commentCount: comments.length,
           );
         }
@@ -158,7 +170,7 @@ class HomeCubit extends Cubit<HomeState> {
       if (currentUser != null) {
         emit(PostCreating());
         await homeServices.createPost(
-          PostRequestBody(text: text, authorId: currentUser.id),
+          PostRequestBody(text: text, authorId: currentUser.id, isPrivate: isPostPrivate),
           currentImage,
           currentVideo,
           currentFile,

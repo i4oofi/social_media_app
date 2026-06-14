@@ -136,7 +136,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               current is PostCreateInitialData,
                           builder: (context, state) {
                             if (state is PostCreateInitialLoading) {
-                              return const CircularProgressIndicator.adaptive();
+                              return const Center(child: CircularProgressIndicator.adaptive());
                             } else if (state is PostCreateInitialData) {
                               final userData = state.user;
                               return Row(
@@ -190,23 +190,31 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                         ),
                                       ),
                                       SizedBox(height: 2),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.public,
-                                            size: 14,
-                                            color: AppColors.dividerColor,
-                                          ),
-                                          SizedBox(width: 4),
-                                          Text(
-                                            "Public",
-                                            style: TextStyle(
-                                              color: AppColors.dividerColor,
-                                              fontSize: 12,
-                                              fontFamily: 'SF Pro Text',
+                                      BlocBuilder<HomeCubit, HomeState>(
+                                        buildWhen: (previous, current) => current is PostPrivacyToggled,
+                                        builder: (context, state) {
+                                          return GestureDetector(
+                                            onTap: () => homeCubit.togglePostPrivacy(),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  homeCubit.isPostPrivate ? Icons.lock : Icons.public,
+                                                  size: 14,
+                                                  color: AppColors.dividerColor,
+                                                ),
+                                                SizedBox(width: 4),
+                                                Text(
+                                                  homeCubit.isPostPrivate ? "Private" : "Public",
+                                                  style: TextStyle(
+                                                    color: AppColors.dividerColor,
+                                                    fontSize: 12,
+                                                    fontFamily: 'SF Pro Text',
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
+                                          );
+                                        },
                                       ),
                                     ],
                                   ),
@@ -221,7 +229,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         BlocBuilder<HomeCubit, HomeState>(
                           builder: (context, state) {
                             if (state is PickingImage) {
-                              return const CircularProgressIndicator.adaptive();
+                              return const Center(child: CircularProgressIndicator.adaptive());
                             } else if (homeCubit.currentImage != null) {
                               return Container(
                                 width: double.infinity,
@@ -278,7 +286,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         BlocBuilder<HomeCubit, HomeState>(
                           builder: (context, state) {
                             if (state is PickingVideo) {
-                              return const CircularProgressIndicator.adaptive();
+                              return const Center(child: CircularProgressIndicator.adaptive());
                             } else if (homeCubit.currentVideo != null) {
                               return Container(
                                 width: double.infinity,
@@ -329,7 +337,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         BlocBuilder<HomeCubit, HomeState>(
                           builder: (context, state) {
                             if (state is FileUploading) {
-                              return const CircularProgressIndicator.adaptive();
+                              return const Center(child: CircularProgressIndicator.adaptive());
                             } else if (homeCubit.currentFile != null) {
                               return Container(
                                 margin: const EdgeInsets.only(bottom: 16),

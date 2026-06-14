@@ -103,3 +103,9 @@ final class ImageCleared extends HomeState {}
 final class VideoCleared extends HomeState {}
 final class FileCleared extends HomeState {}
 
+final class PostPrivacyToggled extends HomeState {
+  final bool isPrivate;
+
+  PostPrivacyToggled({required this.isPrivate});
+}
+

@@ -4,6 +4,7 @@ import 'package:social_media_app/core/services/core_auth_services.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 import 'package:social_media_app/features/profile/services/profile_services.dart';
+import 'package:social_media_app/core/services/post_services.dart';
 
 part 'profile_state.dart';
 
@@ -11,6 +12,8 @@ class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit() : super(ProfileInitial());
   final coreAuthServices = CoreAuthServices();
   final profileServices = ProfileServices();
+  final postServices = PostServices();
+
   Future<void> fetchUserProfile({String? userId, bool silent = false}) async {
     if (!silent) {
       emit(ProfileLoading());
@@ -73,6 +76,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       final List<PostModel> userPosts = [];
       for (var rawPost in rawUserPosts) {
+        if (rawPost.isPrivate && currentAuthUser?.id != userModel.id) continue;
         final postAuthor = await coreAuthServices.getUserData(rawPost.authorId);
         final comments = await profileServices.fetchComments(rawPost.id);
         rawPost = rawPost.copyWith(commentCount: comments.length);
@@ -135,6 +139,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       final List<PostModel> newPosts = [];
       for (var rawPost in rawUserPosts) {
+        if (rawPost.isPrivate && currentAuthUser?.id != userModel.id) continue;
         final postAuthor = await coreAuthServices.getUserData(rawPost.authorId);
         final comments = await profileServices.fetchComments(rawPost.id);
         rawPost = rawPost.copyWith(commentCount: comments.length);
@@ -197,6 +202,26 @@ class ProfileCubit extends Cubit<ProfileState> {
       await fetchUserProfile(userId: targetUserId, silent: true);
     } catch (e) {
       emit(ProfileFailure(e.toString()));
+    }
+  }
+
+  Future<void> deletePost(String postId, {String? userId}) async {
+    try {
+      emit(ProfilePostsLoading());
+      await postServices.deletePost(postId);
+      await fetchUserPosts(userId: userId);
+    } catch (e) {
+      emit(ProfilePostsFailure(e.toString()));
+    }
+  }
+
+  Future<void> editPost(String postId, String text, {String? userId}) async {
+    try {
+      emit(ProfilePostsLoading());
+      await postServices.editPost(postId, text);
+      await fetchUserPosts(userId: userId);
+    } catch (e) {
+      emit(ProfilePostsFailure(e.toString()));
     }
   }
 }

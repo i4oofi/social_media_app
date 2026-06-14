@@ -7,12 +7,14 @@ class PostRequestBody {
   final String? imageUrl;
   final String? video;
   final String? file;
+  final bool isPrivate;
   PostRequestBody({
     required this.text,
     required this.authorId,
     this.imageUrl,
     this.video,
     this.file,
+    this.isPrivate = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +24,7 @@ class PostRequestBody {
       'image_url': imageUrl,
       'video': video,
       'file': file,
+      'is_private': isPrivate,
     };
   }
 
@@ -33,6 +36,7 @@ class PostRequestBody {
     String? imageUrl,
     String? video,
     String? file,
+    bool? isPrivate,
   }) {
     return PostRequestBody(
       text: text ?? this.text,
@@ -40,6 +44,7 @@ class PostRequestBody {
       imageUrl: imageUrl ?? this.imageUrl,
       video: video ?? this.video,
       file: file ?? this.file,
+      isPrivate: isPrivate ?? this.isPrivate,
     );
   }
 }

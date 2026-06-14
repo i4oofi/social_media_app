@@ -13,6 +13,7 @@ class PostModel {
   final List<String>? likes;
   final int? commentCount;
   final bool isLiked;
+  final bool isPrivate;
 
   const PostModel({
     required this.id,
@@ -26,6 +27,7 @@ class PostModel {
     this.likes,
     this.commentCount = 0,
     this.isLiked = false,
+    this.isPrivate = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -37,6 +39,7 @@ class PostModel {
       'video': video,
       'created_at': createdAt,
       'likes': likes,
+      'is_private': isPrivate,
     };
   }
 
@@ -60,6 +63,7 @@ class PostModel {
       commentCount: map['comments'] != null
           ? map['comments'] as int
           : null,
+      isPrivate: map['is_private'] != null ? map['is_private'] as bool : false,
     );
   }
 
@@ -80,6 +84,7 @@ class PostModel {
     List<String>? likes,
     int? commentCount,
     bool? isLiked,
+    bool? isPrivate,
   }) {
     return PostModel(
       id: id ?? this.id,
@@ -93,6 +98,7 @@ class PostModel {
       likes: likes ?? this.likes,
       commentCount: commentCount ?? this.commentCount,
       isLiked: isLiked ?? this.isLiked,
+      isPrivate: isPrivate ?? this.isPrivate,
     );
   }
 }

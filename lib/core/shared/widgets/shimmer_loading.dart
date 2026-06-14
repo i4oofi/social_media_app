@@ -128,7 +128,6 @@ class DiscoverUserShimmer extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.dividerColor.withValues(alpha: 0.3),

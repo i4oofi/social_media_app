@@ -27,7 +27,10 @@ class CommentSection extends StatelessWidget {
         }
         if (state is CommentsFetched) {
           final comments = state.comments;
-          if (comments.isEmpty) {
+          final parentComments = comments
+              .where((c) => c.parentId == null)
+              .toList();
+          if (parentComments.isEmpty && comments.isEmpty) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 32),
               child: Center(
@@ -65,12 +68,37 @@ class CommentSection extends StatelessWidget {
           }
           return ListView.separated(
             separatorBuilder: (context, index) => const SizedBox(height: 12),
-            itemCount: comments.length,
+            itemCount: parentComments.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              final comment = comments[index];
-              return CommentWidget(comment: comment);
+              final parentComment = parentComments[index];
+              final replies = comments
+                  .where((c) => c.parentId == parentComment.id)
+                  .toList();
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommentWidget(comment: parentComment),
+                  if (replies.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 48.0, top: 8.0),
+                      child: ListView.separated(
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 8),
+                        itemCount: replies.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, rIndex) {
+                          return CommentWidget(
+                            comment: replies[rIndex],
+                            isReply: true,
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              );
             },
           );
         }
@@ -93,7 +121,8 @@ class CommentSection extends StatelessWidget {
 
 class CommentWidget extends StatelessWidget {
   final CommentModel comment;
-  const CommentWidget({super.key, required this.comment});
+  final bool isReply;
+  const CommentWidget({super.key, required this.comment, this.isReply = false});
 
   @override
   Widget build(BuildContext context) {
@@ -101,34 +130,38 @@ class CommentWidget extends StatelessWidget {
     final hasImage = comment.image != null && comment.image!.isNotEmpty;
     final hasAuthorImage =
         comment.authorImage != null && comment.authorImage!.isNotEmpty;
+    final avatarSize = isReply ? 28.0 : 36.0;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 12,
         children: [
           // Author Avatar with placeholder fallback
-          _buildAvatar(context, hasAuthorImage),
+          _buildAvatar(context, hasAuthorImage, avatarSize),
 
           // Comment Content Bubble
           Expanded(
-            child: DecoratedBox(
-              decoration: BoxDecoration(color: AppColors.babyBlue5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.transparent),
+                  child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 14,
                       vertical: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceVariant.withOpacity(0.35),
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(16),
-                        bottomLeft: Radius.circular(16),
-                        bottomRight: Radius.circular(16),
+                      color: AppColors.babyBlue5.withOpacity(0.5),
+                      borderRadius: BorderRadius.only(
+                        topRight: const Radius.circular(16),
+                        bottomLeft: const Radius.circular(16),
+                        bottomRight: const Radius.circular(16),
+                        topLeft: isReply
+                            ? const Radius.circular(16)
+                            : const Radius.circular(0),
                       ),
                     ),
                     child: Column(
@@ -142,7 +175,9 @@ class CommentWidget extends StatelessWidget {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => ProfileScreen(userId: comment.authorId),
+                                      builder: (context) => ProfileScreen(
+                                        userId: comment.authorId,
+                                      ),
                                     ),
                                   );
                                 },
@@ -210,8 +245,95 @@ class CommentWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4, left: 8),
+                  child: Row(
+                    children: [
+                      BlocBuilder<PostsCubit, PostsState>(
+                        buildWhen: (previous, current) {
+                          return (current is CommentLiking &&
+                                  current.commentId == comment.id) ||
+                              (current is CommentLiked &&
+                                  current.commentId == comment.id) ||
+                              (current is CommentLikeError &&
+                                  current.commentId == comment.id);
+                        },
+                        builder: (context, state) {
+                          final isOptimisticLiked = state is CommentLiked
+                              ? state.isLiked
+                              : state is CommentLiking
+                              ? !comment.isLiked
+                              : comment.isLiked;
+
+                          final optimisticLikesCount = state is CommentLiked
+                              ? state.likesCount
+                              : state is CommentLiking
+                              ? (comment.isLiked
+                                    ? (comment.likes?.length ?? 1) - 1
+                                    : (comment.likes?.length ?? 0) + 1)
+                              : comment.likes?.length ?? 0;
+
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              InkWell(
+                                onTap: state is CommentLiking
+                                    ? null
+                                    : () {
+                                        context.read<PostsCubit>().likeComment(
+                                          comment.id,
+                                        );
+                                      },
+                                child: Text(
+                                  'Like',
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    fontWeight: isOptimisticLiked
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    color: isOptimisticLiked
+                                        ? AppColors.primaryColor
+                                        : theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                              if (optimisticLikesCount > 0) ...[
+                                const SizedBox(width: 4),
+                                Icon(
+                                  Icons.favorite,
+                                  size: 12,
+                                  color: isOptimisticLiked
+                                      ? AppColors.primaryColor
+                                      : theme.colorScheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(width: 2),
+                                Text(
+                                  optimisticLikesCount.toString(),
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 16),
+                      InkWell(
+                        onTap: () {
+                          context.read<PostsCubit>().setReplyingTo(comment);
+                        },
+                        child: Text(
+                          'Reply',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -219,7 +341,7 @@ class CommentWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar(BuildContext context, bool hasAuthorImage) {
+  Widget _buildAvatar(BuildContext context, bool hasAuthorImage, double size) {
     final theme = Theme.of(context);
     final nameInitials =
         (comment.authorName != null && comment.authorName!.isNotEmpty)
@@ -235,8 +357,8 @@ class CommentWidget extends StatelessWidget {
         );
       },
       child: Container(
-        width: 36,
-        height: 36,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: theme.colorScheme.primaryContainer,

@@ -25,6 +25,12 @@ class PostsCubit extends Cubit<PostsState> {
   File? currentImage;
   File? currentFile;
   List<String> savedPostIds = [];
+  CommentModel? replyingToComment;
+
+  void setReplyingTo(CommentModel? comment) {
+    replyingToComment = comment;
+    emit(ReplyingToComment(comment: comment));
+  }
 
   Future<void> loadSavedPosts() async {
     try {
@@ -126,7 +132,7 @@ class PostsCubit extends Cubit<PostsState> {
     }
   }
 
-  Future<void> addComment(String postId, String text) async {
+  Future<void> addComment(String postId, String text, {String? parentId}) async {
     try {
       final currentUser = await coreAuthServices.getCurrentUserData();
       if (currentUser != null) {
@@ -136,6 +142,7 @@ class PostsCubit extends Cubit<PostsState> {
           text: text,
           authorId: currentUser.id,
           image: currentImage,
+          parentId: parentId,
         );
         emit(CommentAdded());
         try {
@@ -162,12 +169,14 @@ class PostsCubit extends Cubit<PostsState> {
       emit(CommentsFetching());
       final rawComments = await postServices.fetchComments(postId);
       List<CommentModel> comments = [];
+      final currentUser = await coreAuthServices.getCurrentUserData();
       for (var comment in rawComments) {
         final userData = await coreAuthServices.getUserData(comment.authorId);
         if (userData != null) {
           comment = comment.copyWith(
             authorName: userData.name,
             authorImage: userData.imageUrl,
+            isLiked: currentUser != null ? (comment.likes?.contains(currentUser.id) ?? false) : false,
           );
         }
         comments.add(comment);
@@ -175,6 +184,38 @@ class PostsCubit extends Cubit<PostsState> {
       emit(CommentsFetched(comments: comments));
     } catch (e) {
       emit(CommentsError(error: e.toString()));
+    }
+  }
+
+  Future<void> likeComment(String commentId) async {
+    try {
+      final currentUser = await coreAuthServices.getCurrentUserData();
+      if (currentUser != null) {
+        emit(CommentLiking(commentId: commentId));
+        final updatedComment = await postServices.likeComment(commentId, currentUser.id);
+        final isLiked = updatedComment.likes?.contains(currentUser.id) ?? false;
+        emit(
+          CommentLiked(
+            commentId: commentId,
+            likesCount: updatedComment.likes?.length ?? 0,
+            isLiked: isLiked,
+          ),
+        );
+        if (isLiked) {
+          final notification = NotificationModel(
+            id: '',
+            createdAt: '',
+            receiverId: updatedComment.authorId,
+            senderId: currentUser.id,
+            type: 'like',
+            postId: updatedComment.postId,
+            isRead: false,
+          );
+          await NotificationServices().createNotification(notification);
+        }
+      }
+    } catch (e) {
+      emit(CommentLikeError(error: e.toString(), commentId: commentId));
     }
   }
 }

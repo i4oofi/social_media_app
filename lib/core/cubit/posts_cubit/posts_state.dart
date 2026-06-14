@@ -59,6 +59,29 @@ final class CommentsError extends PostsState {
   CommentsError({required this.error});
 }
 
+final class CommentLiking extends PostsState {
+  final String commentId;
+  CommentLiking({required this.commentId});
+}
+
+final class CommentLiked extends PostsState {
+  final String commentId;
+  final int likesCount;
+  final bool isLiked;
+  CommentLiked({required this.commentId, this.likesCount = 0, required this.isLiked});
+}
+
+final class CommentLikeError extends PostsState {
+  final String error;
+  final String commentId;
+  CommentLikeError({required this.error, required this.commentId});
+}
+
+final class ReplyingToComment extends PostsState {
+  final CommentModel? comment;
+  ReplyingToComment({required this.comment});
+}
+
 final class SavedPostsLoaded extends PostsState {
   final List<String> savedPostIds;
   SavedPostsLoaded({required this.savedPostIds});

@@ -6,21 +6,25 @@ class CommentRequestBody {
   final String text;
   final String postId;
   final String? image;
+  final String? parentId;
 
   CommentRequestBody({
     required this.authorId,
     required this.text,
     required this.postId,
     this.image,
+    this.parentId,
   });
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    final map = <String, dynamic>{
       'author_id': authorId,
       'text': text,
       'post_id': postId,
-      'image': image,
     };
+    if (image != null) map['image'] = image;
+    if (parentId != null) map['parent_id'] = parentId;
+    return map;
   }
 
   factory CommentRequestBody.fromMap(Map<String, dynamic> map) {
@@ -29,6 +33,7 @@ class CommentRequestBody {
       text: map['text'] as String,
       postId: map['post_id'] as String,
       image: map['image'] != null ? map['image'] as String : null,
+      parentId: map['parent_id'] != null ? map['parent_id'] as String : null,
     );
   }
 

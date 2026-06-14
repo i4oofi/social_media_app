@@ -15,9 +15,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SettingsDrawer(),
-    );
+    return const Scaffold(body: SettingsDrawer());
   }
 }
 
@@ -91,11 +89,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
             color: theme.brightness == Brightness.dark
                 ? Colors.white.withValues(alpha: 0.02)
                 : Colors.grey.withValues(alpha: 0.04),
-            border: Border(
-              bottom: BorderSide(
-                color: theme.dividerColor,
-              ),
-            ),
+            border: Border(bottom: BorderSide(color: theme.dividerColor)),
           ),
           child: _isLoadingUser
               ? const Center(child: CircularProgressIndicator.adaptive())
@@ -148,7 +142,8 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
               // Theme Mode Toggle
               BlocBuilder<ThemeCubit, ThemeMode>(
                 builder: (context, themeMode) {
-                  final isDark = themeMode == ThemeMode.dark ||
+                  final isDark =
+                      themeMode == ThemeMode.dark ||
                       (themeMode == ThemeMode.system &&
                           MediaQuery.platformBrightnessOf(context) ==
                               Brightness.dark);
@@ -159,7 +154,9 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       leading: Icon(
-                        isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                        isDark
+                            ? Icons.dark_mode_rounded
+                            : Icons.light_mode_rounded,
                         color: theme.brightness == Brightness.dark
                             ? Colors.white
                             : AppColors.black,
@@ -190,8 +187,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                 onTap: () {
                   if (_userData != null) {
                     Navigator.of(context).pop(); // Close drawer
-                    Navigator.pushNamed(
-                      context,
+                    Navigator.of(context, rootNavigator: true).pushNamed(
                       AppRoutes.editProfile,
                       arguments: EditProfileScreenArgs(userData: _userData!),
                     );
@@ -209,7 +205,10 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                 title: "Saved Posts",
                 onTap: () {
                   Navigator.of(context).pop();
-                  Navigator.of(context , rootNavigator: true).pushNamed(AppRoutes.savedPosts);
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).pushNamed(AppRoutes.savedPosts);
                 },
               ),
               _buildDrawerTile(
@@ -244,11 +243,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(
-                color: theme.dividerColor,
-              ),
-            ),
+            border: Border(top: BorderSide(color: theme.dividerColor)),
           ),
           child: BlocConsumer<SettingsCubit, SettingsState>(
             listenWhen: (previous, current) =>
@@ -326,15 +321,14 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         leading: Icon(
           icon,
-          color: theme.brightness == Brightness.dark ? Colors.white : AppColors.black,
+          color: theme.brightness == Brightness.dark
+              ? Colors.white
+              : AppColors.black,
           size: 22,
         ),
         title: Text(
           title,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
@@ -347,4 +341,3 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
     );
   }
 }
-

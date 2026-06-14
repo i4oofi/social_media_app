@@ -12,8 +12,11 @@ class ProfileCubit extends Cubit<ProfileState> {
   final coreAuthServices = CoreAuthServices();
   final profileServices = ProfileServices();
   Future<void> fetchUserProfile({String? userId, bool silent = false}) async {
-    if (!silent) emit(ProfileLoading());
-    else emit(ProfileRefreshing());
+    if (!silent) {
+      emit(ProfileLoading());
+    } else {
+      emit(ProfileRefreshing());
+    }
     try {
       final UserData? userModel;
       if (userId == null) {
@@ -167,11 +170,31 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       final currentAuthUser = await coreAuthServices.getCurrentUserData();
       if (currentAuthUser == null) return;
+
+      // Optimistic update for smooth UI
+      if (state is ProfileSuccess) {
+        final currentUserData = (state as ProfileSuccess).user;
+        final currentFollowers = List<String>.from(currentUserData.followers ?? []);
+        
+        if (currentFollowers.contains(currentAuthUser.id)) {
+          currentFollowers.remove(currentAuthUser.id);
+        } else {
+          currentFollowers.add(currentAuthUser.id);
+        }
+        
+        final updatedUser = currentUserData.copyWith(
+          followers: currentFollowers,
+          followersCount: currentFollowers.length,
+        );
+        emit(ProfileSuccess(updatedUser));
+      }
+
       await profileServices.toggleFollowUser(
         currentUserId: currentAuthUser.id,
         targetUserId: targetUserId,
       );
-      await fetchUserProfile(userId: targetUserId);
+      // Fetch silently to ensure consistency without full screen shimmer
+      await fetchUserProfile(userId: targetUserId, silent: true);
     } catch (e) {
       emit(ProfileFailure(e.toString()));
     }

@@ -29,11 +29,12 @@ class HomeScreenHeader extends StatelessWidget {
             ),
             IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.notifications);
+                Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).pushNamed(AppRoutes.notifications);
               },
-              icon: const Icon(
-                Icons.notifications_none_outlined,
-              ),
+              icon: const Icon(Icons.notifications_none_outlined),
               iconSize: 30,
             ),
             IconButton(
@@ -43,9 +44,7 @@ class HomeScreenHeader extends StatelessWidget {
                   rootNavigator: true,
                 ).pushNamed(AppRoutes.inboxScreen);
               },
-              icon: const Icon(
-                Icons.chat_bubble_outline_rounded,
-              ),
+              icon: const Icon(Icons.chat_bubble_outline_rounded),
               iconSize: 30,
             ),
           ],

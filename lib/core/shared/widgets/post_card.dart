@@ -28,7 +28,9 @@ class PostCard extends StatelessWidget {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Delete Post'),
-        content: const Text('Are you sure you want to delete this post? This action cannot be undone.'),
+        content: const Text(
+          'Are you sure you want to delete this post? This action cannot be undone.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
@@ -55,9 +57,7 @@ class PostCard extends StatelessWidget {
         content: TextField(
           controller: controller,
           maxLines: 4,
-          decoration: const InputDecoration(
-            hintText: 'What is on your mind?',
-          ),
+          decoration: const InputDecoration(hintText: 'What is on your mind?'),
         ),
         actions: [
           TextButton(
@@ -101,7 +101,8 @@ class PostCard extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => ProfileScreen(userId: post.authorId),
+                        builder: (context) =>
+                            ProfileScreen(userId: post.authorId),
                       ),
                     );
                   },
@@ -124,9 +125,8 @@ class PostCard extends StatelessWidget {
                             DateFormat(
                               "h:mm a",
                             ).format(DateTime.parse(post.createdAt)).toString(),
-                            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                              color: AppColors.darkGrey,
-                            ),
+                            style: Theme.of(context).textTheme.labelMedium!
+                                .copyWith(color: AppColors.darkGrey),
                           ),
                         ],
                       ),
@@ -157,9 +157,16 @@ class PostCard extends StatelessWidget {
                         value: 'delete',
                         child: Row(
                           children: [
-                            Icon(Icons.delete_outline_rounded, color: Colors.red, size: 20),
+                            Icon(
+                              Icons.delete_outline_rounded,
+                              color: Colors.red,
+                              size: 20,
+                            ),
                             SizedBox(width: 8),
-                            Text('Delete Post', style: TextStyle(color: Colors.red)),
+                            Text(
+                              'Delete Post',
+                              style: TextStyle(color: Colors.red),
+                            ),
                           ],
                         ),
                       ),
@@ -173,11 +180,10 @@ class PostCard extends StatelessWidget {
               onTap: isDetailView
                   ? null
                   : () {
-                      Navigator.pushNamed(
+                      Navigator.of(
                         context,
-                        AppRoutes.postDetailScreen,
-                        arguments: post,
-                      );
+                        rootNavigator: true,
+                      ).pushNamed(AppRoutes.postDetailScreen, arguments: post);
                     },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,7 +209,10 @@ class PostCard extends StatelessWidget {
                           height: 200,
                           width: double.infinity,
                           color: Colors.grey[200],
-                          child: const Icon(Icons.broken_image, color: Colors.grey),
+                          child: const Icon(
+                            Icons.broken_image,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ),
@@ -213,10 +222,7 @@ class PostCard extends StatelessWidget {
                     CustomVideoPlayer(videoUrl: post.video!),
                     const SizedBox(height: 12),
                   ],
-                  Text(
-                    post.text,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
+                  Text(post.text, style: Theme.of(context).textTheme.bodyLarge),
                 ],
               ),
             ),
@@ -226,51 +232,45 @@ class PostCard extends StatelessWidget {
                 BlocBuilder<PostsCubit, PostsState>(
                   bloc: postsCubit,
                   buildWhen: (previous, current) {
-                    return (current is PostLiking && current.postId == post.id) ||
+                    return (current is PostLiking &&
+                            current.postId == post.id) ||
                         (current is PostLiked && current.postId == post.id) ||
                         (current is PostLikeError && current.postId == post.id);
                   },
                   builder: (context, state) {
+                    final isOptimisticLiked = state is PostLiked
+                        ? state.isLiked
+                        : state is PostLiking
+                        ? !post.isLiked
+                        : post.isLiked;
+
+                    final optimisticLikesCount = state is PostLiked
+                        ? state.likesCount
+                        : state is PostLiking
+                        ? (post.isLiked
+                              ? (post.likes?.length ?? 1) - 1
+                              : (post.likes?.length ?? 0) + 1)
+                        : post.likes?.length ?? 0;
+
                     return Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        state is PostLiking
-                            ? const SizedBox(
-                                width: 48,
-                                height: 48,
-                                child: Padding(
-                                  padding: EdgeInsets.all(14.0),
-                                  child: CircularProgressIndicator.adaptive(
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                              )
-                            : IconButton(
-                                onPressed: () async {
+                        IconButton(
+                          onPressed: state is PostLiking
+                              ? null
+                              : () async {
                                   await postsCubit.likePost(post.id);
                                 },
-                                icon: Icon(
-                                  state is PostLiked
-                                      ? state.isLiked
-                                            ? Icons.favorite
-                                            : Icons.favorite_border
-                                      : post.isLiked
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  color: state is PostLiked
-                                      ? state.isLiked
-                                            ? AppColors.primaryColor
-                                            : null
-                                      : post.isLiked
-                                      ? AppColors.primaryColor
-                                      : null,
-                                ),
-                              ),
-                        Text(
-                          state is PostLiked
-                              ? state.likesCount.toString()
-                              : '${post.likes?.length ?? 0}',
+                          icon: Icon(
+                            isOptimisticLiked
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: isOptimisticLiked
+                                ? AppColors.primaryColor
+                                : null,
+                          ),
                         ),
+                        Text(optimisticLikesCount.toString()),
                       ],
                     );
                   },
@@ -310,7 +310,9 @@ class PostCard extends StatelessWidget {
                         postsCubit.toggleSavePost(post.id);
                       },
                       icon: Icon(
-                        isSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+                        isSaved
+                            ? Icons.bookmark_rounded
+                            : Icons.bookmark_border_rounded,
                         color: isSaved ? AppColors.primaryColor : null,
                       ),
                     );

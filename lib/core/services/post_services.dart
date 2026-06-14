@@ -78,6 +78,7 @@ class PostServices {
     required String text,
     required File? image,
     required String postId,
+    String? parentId,
   }) async {
     try {
       String? imageUrl;
@@ -97,11 +98,42 @@ class PostServices {
         image: imageUrl != null
             ? '${AppConstants.supabaseStorageUrl}/$imageUrl'
             : null,
+        parentId: parentId,
       );
       await supabaseServices.insertRow(
         table: AppTablesNames.comments,
         values: comment.toMap(),
       );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<CommentModel> likeComment(String commentId, String userId) async {
+    try {
+      var comment = await supabaseServices.fetchRow(
+        table: AppTablesNames.comments,
+        id: commentId,
+        builder: (data, id) {
+          return CommentModel.fromMap(data);
+        },
+        primaryKey: 'id',
+      );
+      if (comment.likes != null && comment.likes!.contains(userId)) {
+        comment.likes?.remove(userId);
+        comment = comment.copyWith(isLiked: false);
+      } else {
+        comment = comment.copyWith(likes: comment.likes ?? []);
+        comment.likes?.add(userId);
+        comment = comment.copyWith(isLiked: true);
+      }
+      await supabaseServices.updateRow(
+        table: AppTablesNames.comments,
+        column: 'id',
+        values: comment.toMap(),
+        value: commentId,
+      );
+      return comment;
     } catch (e) {
       rethrow;
     }

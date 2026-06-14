@@ -10,6 +10,9 @@ class CommentModel {
   final String? image;
   final String? authorName;
   final String? authorImage;
+  final List<String>? likes;
+  final bool isLiked;
+  final String? parentId;
 
   CommentModel({
     required this.id,
@@ -20,6 +23,9 @@ class CommentModel {
     this.authorName,
     this.authorImage,
     this.image,
+    this.likes,
+    this.isLiked = false,
+    this.parentId,
   });
 
   Map<String, dynamic> toMap() {
@@ -30,6 +36,8 @@ class CommentModel {
       'text': text,
       'post_id': postId,
       'image': image,
+      'likes': likes,
+      'parent_id': parentId,
     };
   }
 
@@ -41,6 +49,8 @@ class CommentModel {
       text: map['text'] as String,
       postId: map['post_id'] as String,
       image: map['image'] as String?,
+      likes: map['likes'] != null ? List<String>.from(map['likes'] as List) : null,
+      parentId: map['parent_id'] as String?,
     );
   }
 
@@ -58,6 +68,9 @@ class CommentModel {
     String? image,
     String? authorName,
     String? authorImage,
+    List<String>? likes,
+    bool? isLiked,
+    String? parentId,
   }) {
     return CommentModel(
       id: id ?? this.id,
@@ -68,6 +81,9 @@ class CommentModel {
       image: image ?? this.image,
       authorName: authorName ?? this.authorName,
       authorImage: authorImage ?? this.authorImage,
+      likes: likes ?? this.likes,
+      isLiked: isLiked ?? this.isLiked,
+      parentId: parentId ?? this.parentId,
     );
   }
 }

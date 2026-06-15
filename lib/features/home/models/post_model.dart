@@ -14,6 +14,8 @@ class PostModel {
   final int? commentCount;
   final bool isLiked;
   final bool isPrivate;
+  final bool isReel;
+  final bool? isFollowingAuthor;
 
   const PostModel({
     required this.id,
@@ -28,6 +30,8 @@ class PostModel {
     this.commentCount = 0,
     this.isLiked = false,
     this.isPrivate = false,
+    this.isReel = false,
+    this.isFollowingAuthor,
   });
 
   Map<String, dynamic> toMap() {
@@ -40,6 +44,7 @@ class PostModel {
       'created_at': createdAt,
       'likes': likes,
       'is_private': isPrivate,
+      'is_reel': isReel,
     };
   }
 
@@ -64,6 +69,8 @@ class PostModel {
           ? map['comments'] as int
           : null,
       isPrivate: map['is_private'] != null ? map['is_private'] as bool : false,
+      isReel: map['is_reel'] != null ? map['is_reel'] as bool : false,
+      isFollowingAuthor: map['is_following_author'] != null ? map['is_following_author'] as bool : null,
     );
   }
 
@@ -85,6 +92,8 @@ class PostModel {
     int? commentCount,
     bool? isLiked,
     bool? isPrivate,
+    bool? isReel,
+    bool? isFollowingAuthor,
   }) {
     return PostModel(
       id: id ?? this.id,
@@ -99,6 +108,8 @@ class PostModel {
       commentCount: commentCount ?? this.commentCount,
       isLiked: isLiked ?? this.isLiked,
       isPrivate: isPrivate ?? this.isPrivate,
+      isReel: isReel ?? this.isReel,
+      isFollowingAuthor: isFollowingAuthor ?? this.isFollowingAuthor,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:social_media_app/features/discover/views/discover_screen.dart';
 import 'package:social_media_app/features/home/views/home_screen.dart';
 import 'package:social_media_app/features/profile/views/profile_screen.dart';
+import 'package:social_media_app/features/reels/views/reels_screen.dart';
 import 'package:social_media_app/core/services/core_auth_services.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -57,6 +58,15 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
           item: ItemConfig(
             icon: const Icon(Icons.group_add_rounded),
             title: "Discover",
+            activeForegroundColor: activeColor,
+            inactiveForegroundColor: inactiveColor,
+          ),
+        ),
+        PersistentTabConfig(
+          screen: const ReelsScreen(),
+          item: ItemConfig(
+            icon: const Icon(Icons.video_collection_rounded),
+            title: "Reels",
             activeForegroundColor: activeColor,
             inactiveForegroundColor: inactiveColor,
           ),

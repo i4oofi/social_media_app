@@ -178,5 +178,24 @@ class PostServices {
       rethrow;
     }
   }
+
+  Future<List<PostModel>> fetchReels({int limit = 10, int offset = 0}) async {
+    try {
+      return await supabaseServices.fetchRows(
+        table: AppTablesNames.posts,
+        builder: (data, id) {
+          return PostModel.fromMap(data);
+        },
+        primaryKey: 'id',
+        filter: (query) => query.not('video', 'is', null).eq('is_private', false),
+        orderBy: 'created_at',
+        ascending: false,
+        limit: limit,
+        offset: offset,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
 

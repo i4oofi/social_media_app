@@ -19,7 +19,9 @@ class NotificationServices {
           .toList();
     } catch (dbError) {
       final errorStr = dbError.toString();
-      if (errorStr.contains('PGRST205') || errorStr.contains('Could not find') || errorStr.contains('does not exist')) {
+      if (errorStr.contains('PGRST205') ||
+          errorStr.contains('Could not find') ||
+          errorStr.contains('does not exist')) {
         return [];
       }
       rethrow;

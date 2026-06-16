@@ -56,6 +56,8 @@ class NotificationModel {
       type: map['type'] ?? '',
       postId: map['post_id'],
       isRead: map['is_read'] ?? false,
+      senderName: map['sender_name'],
+      senderImageUrl: map['sender_image_url'],
     );
   }
 
@@ -66,6 +68,8 @@ class NotificationModel {
       'type': type,
       'post_id': postId,
       'is_read': isRead,
+      'sender_name': senderName,
+      'sender_image_url': senderImageUrl,
     };
   }
 }

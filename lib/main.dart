@@ -11,6 +11,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:social_media_app/core/cubit/theme_cubit/theme_cubit.dart';
 import 'package:social_media_app/core/cubit/notification_cubit/notification_cubit.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:social_media_app/firebase_options.dart';
+import 'package:social_media_app/core/services/push_notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +21,12 @@ void main() async {
     url: AppConstants.supabaseUrl,
     anonKey: AppConstants.supabaseAnonKey,
   );
+  
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
+  await PushNotificationService.init();
   
   final prefs = await SharedPreferences.getInstance();
   final bool onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;

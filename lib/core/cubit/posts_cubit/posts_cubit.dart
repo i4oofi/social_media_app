@@ -106,6 +106,8 @@ class PostsCubit extends Cubit<PostsState> {
             type: 'like',
             postId: postId,
             isRead: false,
+            senderName: currentUser.name,
+            senderImageUrl: currentUser.imageUrl,
           );
           await NotificationServices().createNotification(notification);
         }
@@ -155,6 +157,8 @@ class PostsCubit extends Cubit<PostsState> {
             type: 'comment',
             postId: postId,
             isRead: false,
+            senderName: currentUser.name,
+            senderImageUrl: currentUser.imageUrl,
           );
           await NotificationServices().createNotification(notification);
         } catch (_) {}
@@ -210,6 +214,8 @@ class PostsCubit extends Cubit<PostsState> {
             type: 'like',
             postId: updatedComment.postId,
             isRead: false,
+            senderName: currentUser.name,
+            senderImageUrl: currentUser.imageUrl,
           );
           await NotificationServices().createNotification(notification);
         }

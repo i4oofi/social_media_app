@@ -13,50 +13,38 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        final cubit = HomeCubit();
-        cubit.fetchStories();
-        cubit.fetchPosts();
-        return cubit;
-      },
-      child: Scaffold(
-        drawer: const SettingsDrawer(),
-        body: SafeArea(
-          child: Builder(
-            builder: (context) {
-              return RefreshIndicator(
-                onRefresh: () async {
-                  await context.read<HomeCubit>().refresh();
-                },
-                child: NotificationListener<ScrollNotification>(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels >=
-                        scrollInfo.metrics.maxScrollExtent - 200) {
-                      context.read<HomeCubit>().loadMorePosts();
-                    }
-                    return false;
-                  },
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 16),
-                          const HomeScreenHeader(),
-                          const SizedBox(height: 16),
-                          const PostWritingCard(),
-                          const SizedBox(height: 24),
-                          const StoriesSection(),
-                          const PostsSection(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
+    return Scaffold(
+      drawer: const SettingsDrawer(),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await context.read<HomeCubit>().refresh();
+          },
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollInfo) {
+              if (scrollInfo.metrics.pixels >=
+                  scrollInfo.metrics.maxScrollExtent - 200) {
+                context.read<HomeCubit>().loadMorePosts();
+              }
+              return false;
             },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 16),
+                    const HomeScreenHeader(),
+                    const SizedBox(height: 16),
+                    const PostWritingCard(),
+                    const SizedBox(height: 24),
+                    const StoriesSection(),
+                    const PostsSection(),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),

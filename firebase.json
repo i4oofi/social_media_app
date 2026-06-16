@@ -1,0 +1,25 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "push-notifications-social-app",
+                    "appId": "1:827217192511:android:5995c6215b184665dffa8a",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "push-notifications-social-app",
+                    "configurations": {
+                        "android": "1:827217192511:android:5995c6215b184665dffa8a",
+                        "ios": "1:827217192511:ios:8e4763cf316af37adffa8a",
+                        "macos": "1:827217192511:ios:8e4763cf316af37adffa8a",
+                        "web": "1:827217192511:web:524abf723a49f670dffa8a",
+                        "windows": "1:827217192511:web:45580c794e69ed68dffa8a"
+                    }
+                }
+            }
+        }
+    }
+}

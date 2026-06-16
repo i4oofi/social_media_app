@@ -181,6 +181,8 @@ class ProfileServices {
           senderId: currentUserId,
           type: 'follow',
           isRead: false,
+          senderName: currentUser.name,
+          senderImageUrl: currentUser.imageUrl,
         );
         await NotificationServices().createNotification(notification);
       }

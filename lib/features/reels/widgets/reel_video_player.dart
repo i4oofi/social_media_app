@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class ReelVideoPlayer extends StatefulWidget {
   final String videoUrl;
@@ -14,6 +15,7 @@ class _ReelVideoPlayerState extends State<ReelVideoPlayer> {
   late VideoPlayerController _controller;
   bool _isPlaying = true;
   bool _isInitialized = false;
+  bool _wasPlaying = false;
 
   @override
   void initState() {
@@ -39,16 +41,42 @@ class _ReelVideoPlayerState extends State<ReelVideoPlayer> {
       if (_controller.value.isPlaying) {
         _controller.pause();
         _isPlaying = false;
+        _wasPlaying = false;
       } else {
         _controller.play();
         _isPlaying = true;
+        _wasPlaying = true;
       }
     });
   }
 
+  void _handleVisibilityChanged(VisibilityInfo info) {
+    if (!mounted || !_isInitialized) return;
+    
+    if (info.visibleFraction <= 0.05) {
+      if (_controller.value.isPlaying) {
+        _wasPlaying = true;
+        _controller.pause();
+        setState(() {
+          _isPlaying = false;
+        });
+      }
+    } else {
+      if (_wasPlaying && !_controller.value.isPlaying) {
+        _controller.play();
+        setState(() {
+          _isPlaying = true;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return VisibilityDetector(
+      key: Key(widget.videoUrl),
+      onVisibilityChanged: _handleVisibilityChanged,
+      child: GestureDetector(
       onTap: _togglePlayPause,
       child: Stack(
         alignment: Alignment.center,
@@ -81,6 +109,7 @@ class _ReelVideoPlayerState extends State<ReelVideoPlayer> {
             ),
         ],
       ),
+    ),
     );
   }
 }

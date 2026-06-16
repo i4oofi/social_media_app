@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
+import 'package:social_media_app/features/profile/views/profile_screen.dart';
 import 'package:social_media_app/features/reels/cubit/reels_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -30,20 +31,33 @@ class ReelInfoOverlay extends StatelessWidget {
         children: [
           Row(
             children: [
-              UserAvatar(
-                imageUrl: reel.authorProfileImage,
-                name: reel.authorName ?? 'Unknown',
-                radius: 18,
+              GestureDetector( onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProfileScreen(userId: reel.authorId),
+                      ),
+                    );
+                  },
+                child: Row(
+                children: [
+                  UserAvatar(
+                    imageUrl: reel.authorProfileImage,
+                    name: reel.authorName ?? 'Unknown',
+                    radius: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    reel.authorName ?? 'Unknown',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 8),
-              Text(
-                reel.authorName ?? 'Unknown',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
+             ),
               if (!isOwner) ...[
                 const SizedBox(width: 10),
                 GestureDetector(

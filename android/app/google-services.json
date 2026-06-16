@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "827217192511",
+    "project_id": "push-notifications-social-app",
+    "storage_bucket": "push-notifications-social-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827217192511:android:5995c6215b184665dffa8a",
+        "android_client_info": {
+          "package_name": "com.example.social_media_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmcM394b1iAlKRw7AIaC_-lSZho9Q6O8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -13,6 +13,7 @@ class UserData {
   final num? followingCount;
   final List<String>? followers;
   final List<String>? following;
+  final String? fcmToken;
 
   UserData({
     required this.id,
@@ -26,6 +27,7 @@ class UserData {
     this.followingCount = 0,
     this.followers = const [],
     this.following = const [],
+    this.fcmToken,
   });
 
   Map<String, dynamic> toMap() {
@@ -40,6 +42,7 @@ class UserData {
       'following_count': followingCount,
       'followers': followers,
       'following': following,
+      'fcm_token': fcmToken,
     };
   }
 
@@ -64,6 +67,7 @@ class UserData {
       following: map['following'] != null
           ? List<String>.from(map['following'] as List<dynamic>)
           : [],
+      fcmToken: map['fcm_token'] != null ? map['fcm_token'] as String : null,
     );
   }
 
@@ -85,6 +89,7 @@ class UserData {
     num? followingCount,
     List<String>? followers,
     List<String>? following,
+    String? fcmToken,
   }) {
     return UserData(
       id: id ?? this.id,
@@ -98,6 +103,7 @@ class UserData {
       followingCount: followingCount ?? this.followingCount,
       followers: followers ?? this.followers,
       following: following ?? this.following,
+      fcmToken: fcmToken ?? this.fcmToken,
     );
   }
 }

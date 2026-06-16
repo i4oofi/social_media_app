@@ -70,6 +70,8 @@ class ProfileServices {
   Future<void> updateProfile({
     required String userId,
     required String? name,
+    required String? userName,
+    required String? dob,
     String? title,
     String? imageUrl,
     String? coverUrl,
@@ -100,6 +102,8 @@ class ProfileServices {
 
       final data = <String, dynamic>{
         'name': name,
+        'user_name': userName,
+        'dob': dob,
         'title': title,
         'image_url': finalImageUrl,
         'cover_url': finalCoverUrl,

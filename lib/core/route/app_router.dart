@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/shared/views/custom_bottom_navbar.dart';
 import 'package:social_media_app/features/auth/views/auth_screen.dart';
+import 'package:social_media_app/features/auth/views/complete_profile_screen.dart';
+import 'package:social_media_app/features/auth/views/email_verification_screen.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
 import 'package:social_media_app/features/home/views/create_post_screen.dart';
 import 'package:social_media_app/features/onboarding/views/onboarding_screen.dart';
@@ -29,6 +31,10 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => AuthScreen(initialIndex: initialIndex),
         );
+      case AppRoutes.completeProfileScreen:
+        return MaterialPageRoute(builder: (_) => const CompleteProfileScreen());
+      case AppRoutes.emailVerificationScreen:
+        return MaterialPageRoute(builder: (_) => const EmailVerificationScreen());
       case AppRoutes.customBottomNavbar:
         return MaterialPageRoute(builder: (_) => const CustomBottomNavbar());
       case AppRoutes.createPost:

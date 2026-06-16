@@ -49,6 +49,8 @@ class EditProfileCubit extends Cubit<EditProfileState> {
 
   Future<void> editProfile({
     required String? name,
+    required String? userName,
+    required String? dob,
     required String? title,
     required String? existingImageUrl,
     required String? existingCoverUrl,
@@ -63,6 +65,8 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       await profileServices.updateProfile(
         userId: user.id,
         name: name,
+        userName: userName,
+        dob: dob,
         title: title,
         imageUrl: existingImageUrl,
         coverUrl: existingCoverUrl,

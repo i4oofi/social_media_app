@@ -69,6 +69,12 @@ class ProfileDetails extends StatelessWidget {
                 value: user.title ?? 'No bio yet',
                 isSubtle: user.title == null,
               ),
+              _DetailRow(
+                icon: Icons.cake_outlined,
+                label: 'Date of Birth',
+                value: user.dob ?? 'Unknown',
+                isSubtle: user.dob == null || user.dob!.isEmpty,
+              ),
             ],
           ),
           const SizedBox(height: 14),

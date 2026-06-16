@@ -177,11 +177,13 @@ class _LoginFormState extends State<LoginForm> {
             listenWhen: (previous, current) =>
                 current is AuthLoading ||
                 current is AuthFailure ||
-                current is AuthSuccess,
+                current is AuthSuccess ||
+                current is AuthIncompleteProfile,
             buildWhen: (previous, current) =>
                 current is AuthLoading ||
                 current is AuthFailure ||
-                current is AuthSuccess,
+                current is AuthSuccess ||
+                current is AuthIncompleteProfile,
             listener: (context, state) {
               if (state is AuthFailure) {
                 AppToast.showToast(
@@ -193,6 +195,12 @@ class _LoginFormState extends State<LoginForm> {
                 Navigator.pushReplacementNamed(
                   context,
                   AppRoutes.customBottomNavbar,
+                );
+              }
+              if (state is AuthIncompleteProfile) {
+                Navigator.pushReplacementNamed(
+                  context,
+                  AppRoutes.completeProfileScreen,
                 );
               }
             },

@@ -14,18 +14,17 @@ class AuthServices {
   Future<void> signUpWithEmail(
     String email,
     String password,
-    String name,
   ) async {
     try {
       final response = await supabase.auth.signUp(
         email: email,
         password: password,
-        data: {'name': name},
       );
       if (response.user == null) {
         throw Exception('User is null');
       }
-      await _setUserData(name, email, response.user!.id);
+      // Note: We don't create the user record here anymore.
+      // It will be created in completeUserProfile.
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -51,15 +50,129 @@ class AuthServices {
     return user;
   }
 
-  Future<void> _setUserData(String name, String email, String userId) async {
+  Future<bool> checkUserExistsInDb(String userId) async {
     try {
-      final userData = UserData(id: userId, name: name, email: email);
-      await supabaseDatabaseServices.insertRow(
+      final user = await supabaseDatabaseServices.fetchRowOptional(
+        table: AppTablesNames.users,
+        primaryKey: 'id',
+        id: userId,
+        builder: (data, id) => data,
+      );
+      // If user exists but dob is empty, it means it's a dummy row from CoreAuthServices and profile is incomplete
+      if (user != null) {
+        final dob = user['dob'] as String?;
+        return dob != null && dob.isNotEmpty;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> checkUsernameUnique(String username) async {
+    try {
+      final users = await supabaseDatabaseServices.fetchRows(
+        table: AppTablesNames.users,
+        filter: (query) => query.eq('user_name', username),
+        builder: (data, id) => data,
+      );
+      return users.isEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<String> _uploadImage({
+    required dynamic imageFile,
+    required String bucket,
+    required String userId,
+    required String prefix,
+  }) async {
+    final path = '$userId/$prefix-${DateTime.now().millisecondsSinceEpoch}.jpg';
+    await supabase.storage
+        .from(bucket)
+        .upload(
+          path,
+          imageFile,
+          fileOptions: const FileOptions(cacheControl: '3600', upsert: true),
+        );
+    final publicUrl = supabase.storage.from(bucket).getPublicUrl(path);
+    return publicUrl;
+  }
+
+  Future<void> completeUserProfile({
+    required String userId,
+    required String name,
+    required String userName,
+    required String dob,
+    required String email,
+    required dynamic profileImageFile,
+    String? title,
+    dynamic coverImageFile,
+  }) async {
+    try {
+      String? profileImageUrl;
+      String? coverImageUrl;
+
+      if (profileImageFile != null) {
+        profileImageUrl = await _uploadImage(
+          imageFile: profileImageFile,
+          bucket: 'avatars',
+          userId: userId,
+          prefix: 'profile',
+        );
+      }
+
+      if (coverImageFile != null) {
+        coverImageUrl = await _uploadImage(
+          imageFile: coverImageFile,
+          bucket: 'covers',
+          userId: userId,
+          prefix: 'cover',
+        );
+      }
+
+      final userData = UserData(
+        id: userId,
+        name: name,
+        userName: userName,
+        dob: dob,
+        email: email,
+        title: title,
+        imageUrl: profileImageUrl,
+        coverUrl: coverImageUrl,
+      );
+
+      // Upsert in case CoreAuthServices self-healing already created a partial row
+      await supabaseDatabaseServices.upsertRow(
         table: AppTablesNames.users,
         values: userData.toMap(),
+        onConflict: 'id',
       );
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<bool> checkEmailVerified() async {
+    final user = supabase.auth.currentUser;
+    if (user != null) {
+      // Refresh the session to get the latest user data (including email confirmation status)
+      final res = await supabase.auth.refreshSession();
+      if (res.user != null) {
+        return res.user!.emailConfirmedAt != null;
+      }
+    }
+    return false;
+  }
+
+  Future<void> resendVerificationEmail() async {
+    final user = supabase.auth.currentUser;
+    if (user != null && user.email != null) {
+      await supabase.auth.resend(
+        type: OtpType.signup,
+        email: user.email,
+      );
     }
   }
 
@@ -73,17 +186,35 @@ class AuthServices {
 
 Future<void> signInWithGoogle() async {
   try {
-    await google.GoogleSignIn.instance.initialize(
+    final googleSignIn = google.GoogleSignIn(
       serverClientId: "722087504847-9vak50ldillkgnucuu01li1en0nd2e34.apps.googleusercontent.com",
+      scopes: ['email', 'profile'],
     );
 
-    final googleUser =
-        await google.GoogleSignIn.instance.authenticate();
+    // Sign out first to always show the account picker
+    await googleSignIn.signOut();
 
-    print('USER: ${googleUser.email}');
+    final googleUser = await googleSignIn.signIn();
+    if (googleUser == null) {
+      // User cancelled the sign-in dialog
+      throw Exception('Google sign-in cancelled');
+    }
 
+    final googleAuth = await googleUser.authentication;
+    final idToken = googleAuth.idToken;
+    final accessToken = googleAuth.accessToken;
+
+    if (idToken == null) {
+      throw Exception('Google ID token is null. Make sure your SHA-1/SHA-256 fingerprints and OAuth client are set up correctly in Google Cloud Console.');
+    }
+
+    await supabase.auth.signInWithIdToken(
+      provider: OAuthProvider.google,
+      idToken: idToken,
+      accessToken: accessToken,
+    );
   } catch (e, st) {
-    print('ERROR => $e');
+    print('Google Sign-In ERROR => $e');
     print('STACK => $st');
     rethrow;
   }

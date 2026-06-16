@@ -49,6 +49,8 @@ class CoreAuthServices {
         } else {
           // No row exists with this email either. Insert a brand new row.
           userData = UserData(
+            userName: name,
+            dob: '',
             id: currentUserId,
             name: name,
             email: email,

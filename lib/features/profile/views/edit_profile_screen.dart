@@ -35,7 +35,9 @@ class EditProfileBody extends StatefulWidget {
 
 class _EditProfileBodyState extends State<EditProfileBody> {
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
 
   // Local preview paths (null = not yet picked, use network URL)
   String? _localProfileImagePath;
@@ -45,14 +47,44 @@ class _EditProfileBodyState extends State<EditProfileBody> {
   void initState() {
     super.initState();
     _nameController.text = widget.userData.name;
+    _userNameController.text = widget.userData.userName ?? '';
     _titleController.text = widget.userData.title ?? '';
+    _dobController.text = widget.userData.dob ?? '';
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _userNameController.dispose();
     _titleController.dispose();
+    _dobController.dispose();
     super.dispose();
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primaryColor,
+              onPrimary: AppColors.white,
+              onSurface: AppColors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() {
+        _dobController.text = "${picked.toLocal()}".split(' ')[0];
+      });
+    }
   }
 
   @override
@@ -124,9 +156,30 @@ class _EditProfileBodyState extends State<EditProfileBody> {
                       ),
                       const SizedBox(height: 16),
                       _buildTextField(
+                        controller: _userNameController,
+                        label: 'Username',
+                        icon: Icons.alternate_email,
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _dobController,
+                        readOnly: true,
+                        onTap: () => _selectDate(context),
+                        decoration: InputDecoration(
+                          labelText: 'Date of Birth',
+                          prefixIcon: const Icon(Icons.cake_outlined, color: AppColors.primaryColor),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: AppColors.primaryColor, width: 2),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildTextField(
                         controller: _titleController,
                         label: 'Title / Bio',
-                        icon: Icons.work_outline,
+                        icon: Icons.short_text,
                       ),
                       const SizedBox(height: 32),
                       Padding(
@@ -139,6 +192,8 @@ class _EditProfileBodyState extends State<EditProfileBody> {
                               : () async {
                                   await editProfileCubit.editProfile(
                                     name: _nameController.text,
+                                    userName: _userNameController.text,
+                                    dob: _dobController.text,
                                     title: _titleController.text,
                                     existingImageUrl: widget.userData.imageUrl,
                                     existingCoverUrl: widget.userData.coverUrl,

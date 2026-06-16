@@ -98,14 +98,19 @@ class ProfileHeader extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                userData.name,
+                '@${userData.userName}',
                 style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: AppColors.primaryColor,
                 ),
               ),
+              const SizedBox(height: 4),
               Text(
-                userData.title ?? 'No title',
-                style: Theme.of(context).textTheme.bodyLarge,
+                userData.name,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: AppColors.darkGrey,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               const SizedBox(height: 16),
               if (isPrivate)

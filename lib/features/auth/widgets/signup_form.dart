@@ -17,10 +17,11 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   bool _isObscure = true;
+  bool _isConfirmObscure = true;
 
   InputDecoration _buildInputDecoration(String label, {Widget? suffixIcon}) {
     return InputDecoration(
@@ -58,17 +59,6 @@ class _SignUpFormState extends State<SignUpForm> {
           children: [
             SizedBox(height: 4),
             TextFormField(
-              controller: _usernameController,
-              decoration: _buildInputDecoration('Full Name'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter your full name';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 16),
-            TextFormField(
               controller: _emailController,
               decoration: _buildInputDecoration('Email'),
               validator: (value) {
@@ -102,16 +92,47 @@ class _SignUpFormState extends State<SignUpForm> {
                 return null;
               },
             ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: _confirmPasswordController,
+              decoration: _buildInputDecoration(
+                'Confirm Password',
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isConfirmObscure ? Icons.visibility : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isConfirmObscure = !_isConfirmObscure;
+                    });
+                  },
+                ),
+              ),
+              obscureText: _isConfirmObscure,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please confirm your password';
+                }
+                if (value != _passwordController.text) {
+                  return 'Passwords do not match';
+                }
+                return null;
+              },
+            ),
             SizedBox(height: 32),
             BlocConsumer<AuthCubit, AuthState>(
               listenWhen: (previous, current) =>
                   current is AuthLoading ||
                   current is AuthFailure ||
-                  current is AuthSuccess,
+                  current is AuthSuccess ||
+                  current is AuthSignUpSuccess ||
+                  current is AuthIncompleteProfile,
               buildWhen: (previous, current) =>
                   current is AuthLoading ||
                   current is AuthFailure ||
-                  current is AuthSuccess,
+                  current is AuthSuccess ||
+                  current is AuthSignUpSuccess ||
+                  current is AuthIncompleteProfile,
               listener: (context, state) {
                 if (state is AuthFailure) {
                   debugPrint(state.message);
@@ -126,6 +147,18 @@ class _SignUpFormState extends State<SignUpForm> {
                     AppRoutes.customBottomNavbar,
                   );
                 }
+                if (state is AuthSignUpSuccess) {
+                  Navigator.pushReplacementNamed(
+                    context,
+                    AppRoutes.emailVerificationScreen,
+                  );
+                }
+                if (state is AuthIncompleteProfile) {
+                  Navigator.pushReplacementNamed(
+                    context,
+                    AppRoutes.completeProfileScreen,
+                  );
+                }
               },
               builder: (context, state) {
                 if (state is AuthLoading) {
@@ -137,7 +170,6 @@ class _SignUpFormState extends State<SignUpForm> {
                       await authCubit.signUpWithEmail(
                         _emailController.text,
                         _passwordController.text,
-                        _usernameController.text,
                       );
                     }
                   },

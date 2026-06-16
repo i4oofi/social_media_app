@@ -11,11 +11,41 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signUpWithEmail(
     String email,
     String password,
-    String username,
   ) async {
     emit(AuthLoading());
     try {
-      await authServices.signUpWithEmail(email, password, username);
+      await authServices.signUpWithEmail(email, password);
+      emit(AuthSignUpSuccess());
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
+    }
+  }
+
+  Future<void> completeProfile({
+    required String name,
+    required String userName,
+    required String dob,
+    required dynamic profileImageFile,
+    String? title,
+    dynamic coverImageFile,
+  }) async {
+    emit(AuthLoading());
+    try {
+      final user = authServices.fetchUserRaw();
+      if (user == null) {
+        throw Exception('User is not authenticated');
+      }
+      
+      await authServices.completeUserProfile(
+        userId: user.id,
+        email: user.email ?? '',
+        name: name,
+        userName: userName,
+        dob: dob,
+        title: title,
+        profileImageFile: profileImageFile,
+        coverImageFile: coverImageFile,
+      );
       emit(AuthSuccess());
     } catch (e) {
       emit(AuthFailure(e.toString()));
@@ -26,7 +56,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       await authServices.signInWithEmail(email, password);
-      emit(AuthSuccess());
+      await _checkUserProfileCompletion();
     } catch (e) {
       emit(AuthFailure(e.toString()));
     }
@@ -47,10 +77,12 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  void checkUserAuth() {
-    final userData = authServices.fetchUserRaw();
-    if (userData != null) {
-      emit(AuthSuccess());
+  Future<void> checkUserAuth() async {
+    final user = authServices.fetchUserRaw();
+    if (user != null) {
+      await _checkUserProfileCompletion();
+    } else {
+      emit(AuthInitial());
     }
   }
 
@@ -58,7 +90,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       await authServices.signInWithMagicLink(email);
-      emit(AuthSuccess());
+      await _checkUserProfileCompletion();
     } catch (e) {
       emit(AuthFailure(e.toString()));
     }
@@ -68,7 +100,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       await authServices.signInWithGoogle();
-      emit(AuthSuccess());
+      await _checkUserProfileCompletion();
     } catch (e) {
       emit(AuthFailure(e.toString()));
     }
@@ -78,7 +110,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       await authServices.signInWithApple();
-      emit(AuthSuccess());
+      await _checkUserProfileCompletion();
     } catch (e) {
       emit(AuthFailure(e.toString()));
     }
@@ -88,7 +120,25 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       await authServices.signInWithFacebook();
-      emit(AuthSuccess());
+      await _checkUserProfileCompletion();
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
+    }
+  }
+
+  Future<void> _checkUserProfileCompletion() async {
+    try {
+      final user = authServices.fetchUserRaw();
+      if (user != null) {
+        final exists = await authServices.checkUserExistsInDb(user.id);
+        if (exists) {
+          emit(AuthSuccess());
+        } else {
+          emit(AuthIncompleteProfile());
+        }
+      } else {
+        emit(AuthInitial());
+      }
     } catch (e) {
       emit(AuthFailure(e.toString()));
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 
 class MainButton extends StatelessWidget {
@@ -9,7 +10,7 @@ class MainButton extends StatelessWidget {
   final double? width;
   final String? text;
   final bool transparent;
-  const MainButton({
+  MainButton({
     super.key,
     this.onPressed,
     this.child,
@@ -38,16 +39,16 @@ class MainButton extends StatelessWidget {
               : AppColors.white,
           side: BorderSide(
             color: transparent ? AppColors.grey : Colors.transparent,
-            width: 2,
+            width: 2.w,
           ),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           elevation: 0,
         ),
         child: isLoading
-            ? const CircularProgressIndicator(color: AppColors.white)
+            ? CircularProgressIndicator(color: AppColors.white)
             : text != null
-            ? Text(text!, style: const TextStyle())
+            ? Text(text!, style: TextStyle())
             : child,
       ),
     );

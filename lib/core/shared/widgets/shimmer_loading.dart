@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 
@@ -7,7 +8,7 @@ import 'package:social_media_app/core/theme/app_colors.dart';
 /// A base shimmer-animated container.
 /// Use this to build any shaped placeholder element.
 class ShimmerBox extends StatelessWidget {
-  const ShimmerBox({
+  ShimmerBox({
     super.key,
     required this.width,
     required this.height,
@@ -48,46 +49,46 @@ class PostShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: EdgeInsets.only(bottom: 8.h),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Author row
             Row(
               children: [
-                ShimmerBox(width: 40, height: 40, isCircle: true),
-                const SizedBox(width: 10),
+                ShimmerBox(width: 40.w, height: 40.h, isCircle: true),
+                SizedBox(width: 10.w),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ShimmerBox(width: 120, height: 13, borderRadius: 6),
-                    const SizedBox(height: 6),
-                    ShimmerBox(width: 72, height: 11, borderRadius: 6),
+                    ShimmerBox(width: 120.w, height: 13.h, borderRadius: 6),
+                    SizedBox(height: 6.h),
+                    ShimmerBox(width: 72.w, height: 11.h, borderRadius: 6),
                   ],
                 ),
               ],
             ),
-            const SizedBox(height: 14),
+            SizedBox(height: 14.h),
             // Image placeholder
-            ShimmerBox(width: double.infinity, height: 180, borderRadius: 10),
-            const SizedBox(height: 12),
+            ShimmerBox(width: double.infinity, height: 180.h, borderRadius: 10),
+            SizedBox(height: 12.h),
             // Text lines
-            ShimmerBox(width: double.infinity, height: 13, borderRadius: 6),
-            const SizedBox(height: 6),
-            ShimmerBox(width: 200, height: 13, borderRadius: 6),
-            const SizedBox(height: 14),
+            ShimmerBox(width: double.infinity, height: 13.h, borderRadius: 6),
+            SizedBox(height: 6.h),
+            ShimmerBox(width: 200.w, height: 13.h, borderRadius: 6),
+            SizedBox(height: 14.h),
             // Like / Comment row
             Row(
               children: [
-                ShimmerBox(width: 28, height: 28, isCircle: true),
-                const SizedBox(width: 6),
-                ShimmerBox(width: 24, height: 11, borderRadius: 6),
-                const SizedBox(width: 16),
-                ShimmerBox(width: 28, height: 28, isCircle: true),
-                const SizedBox(width: 6),
-                ShimmerBox(width: 24, height: 11, borderRadius: 6),
+                ShimmerBox(width: 28.w, height: 28.h, isCircle: true),
+                SizedBox(width: 6.w),
+                ShimmerBox(width: 24.w, height: 11.h, borderRadius: 6),
+                SizedBox(width: 16.w),
+                ShimmerBox(width: 28.w, height: 28.h, isCircle: true),
+                SizedBox(width: 6.w),
+                ShimmerBox(width: 24.w, height: 11.h, borderRadius: 6),
               ],
             ),
           ],
@@ -108,9 +109,9 @@ class StoryShimmer extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ShimmerBox(width: 68, height: 68, isCircle: true),
-        const SizedBox(height: 6),
-        ShimmerBox(width: 52, height: 10, borderRadius: 6),
+        ShimmerBox(width: 68.w, height: 68.h, isCircle: true),
+        SizedBox(height: 6.h),
+        ShimmerBox(width: 52.w, height: 10.h, borderRadius: 6),
       ],
     );
   }
@@ -125,32 +126,32 @@ class DiscoverUserShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: AppColors.dividerColor.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
         children: [
-          ShimmerBox(width: 52, height: 52, isCircle: true),
-          const SizedBox(width: 12),
+          ShimmerBox(width: 52.w, height: 52.h, isCircle: true),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ShimmerBox(width: 120, height: 13, borderRadius: 6),
-                const SizedBox(height: 6),
-                ShimmerBox(width: 80, height: 11, borderRadius: 6),
-                const SizedBox(height: 6),
-                ShimmerBox(width: 60, height: 10, borderRadius: 6),
+                ShimmerBox(width: 120.w, height: 13.h, borderRadius: 6),
+                SizedBox(height: 6.h),
+                ShimmerBox(width: 80.w, height: 11.h, borderRadius: 6),
+                SizedBox(height: 6.h),
+                ShimmerBox(width: 60.w, height: 10.h, borderRadius: 6),
               ],
             ),
           ),
-          const SizedBox(width: 12),
-          ShimmerBox(width: 90, height: 32, borderRadius: 20),
+          SizedBox(width: 12.w),
+          ShimmerBox(width: 90.w, height: 32.h, borderRadius: 20),
         ],
       ),
     );
@@ -172,31 +173,39 @@ class ProfileHeaderShimmer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Cover image
-              ShimmerBox(width: double.infinity, height: 200, borderRadius: 0),
+              ShimmerBox(
+                width: double.infinity,
+                height: 200.h,
+                borderRadius: 0,
+              ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     // Avatar + follow button row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        ShimmerBox(width: 90, height: 90, isCircle: true),
-                        ShimmerBox(width: 110, height: 36, borderRadius: 20),
+                        ShimmerBox(width: 90.w, height: 90.h, isCircle: true),
+                        ShimmerBox(
+                          width: 110.w,
+                          height: 36.h,
+                          borderRadius: 20,
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     // Name
-                    ShimmerBox(width: 160, height: 18, borderRadius: 8),
-                    const SizedBox(height: 8),
+                    ShimmerBox(width: 160.w, height: 18.h, borderRadius: 8),
+                    SizedBox(height: 8.h),
                     // Bio
-                    ShimmerBox(width: 220, height: 13, borderRadius: 6),
-                    const SizedBox(height: 6),
-                    ShimmerBox(width: 180, height: 13, borderRadius: 6),
-                    const SizedBox(height: 20),
+                    ShimmerBox(width: 220.w, height: 13.h, borderRadius: 6),
+                    SizedBox(height: 6.h),
+                    ShimmerBox(width: 180.w, height: 13.h, borderRadius: 6),
+                    SizedBox(height: 20.h),
                     // Stats row
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -206,7 +215,7 @@ class ProfileHeaderShimmer extends StatelessWidget {
                         _statShimmer(),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                   ],
                 ),
               ),
@@ -220,9 +229,9 @@ class ProfileHeaderShimmer extends StatelessWidget {
   Widget _statShimmer() {
     return Column(
       children: [
-        ShimmerBox(width: 50, height: 20, borderRadius: 6),
-        const SizedBox(height: 4),
-        ShimmerBox(width: 60, height: 11, borderRadius: 6),
+        ShimmerBox(width: 50.w, height: 20.h, borderRadius: 6),
+        SizedBox(height: 4.h),
+        ShimmerBox(width: 60.w, height: 11.h, borderRadius: 6),
       ],
     );
   }
@@ -237,11 +246,11 @@ class InboxChatShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
       child: Row(
         children: [
-          ShimmerBox(width: 56, height: 56, isCircle: true),
-          const SizedBox(width: 12),
+          ShimmerBox(width: 56.w, height: 56.h, isCircle: true),
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,12 +258,12 @@ class InboxChatShimmer extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ShimmerBox(width: 130, height: 14, borderRadius: 6),
-                    ShimmerBox(width: 48, height: 11, borderRadius: 6),
+                    ShimmerBox(width: 130.w, height: 14.h, borderRadius: 6),
+                    ShimmerBox(width: 48.w, height: 11.h, borderRadius: 6),
                   ],
                 ),
-                const SizedBox(height: 8),
-                ShimmerBox(width: 200, height: 12, borderRadius: 6),
+                SizedBox(height: 8.h),
+                ShimmerBox(width: 200.w, height: 12.h, borderRadius: 6),
               ],
             ),
           ),

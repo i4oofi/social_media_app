@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
@@ -20,8 +21,8 @@ class CommentSection extends StatelessWidget {
           current is CommentsError,
       builder: (context, state) {
         if (state is CommentsFetching) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 24.h),
             child: Center(child: CircularProgressIndicator()),
           );
         }
@@ -32,19 +33,19 @@ class CommentSection extends StatelessWidget {
               .toList();
           if (parentComments.isEmpty && comments.isEmpty) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32),
+              padding: EdgeInsets.symmetric(vertical: 32.h),
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
                       Icons.chat_bubble_outline,
-                      size: 40,
+                      size: 40.h,
                       color: Theme.of(
                         context,
                       ).colorScheme.outline.withOpacity(0.5),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Text(
                       'No comments yet',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -52,7 +53,7 @@ class CommentSection extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     Text(
                       'Be the first to share your thoughts!',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -67,7 +68,7 @@ class CommentSection extends StatelessWidget {
             );
           }
           return ListView.separated(
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            separatorBuilder: (context, index) => SizedBox(height: 12.h),
             itemCount: parentComments.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -82,10 +83,10 @@ class CommentSection extends StatelessWidget {
                   CommentWidget(comment: parentComment),
                   if (replies.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(left: 48.0, top: 8.0),
+                      padding: EdgeInsets.only(left: 48.w, top: 8.h),
                       child: ListView.separated(
                         separatorBuilder: (context, index) =>
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8.h),
                         itemCount: replies.length,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -104,12 +105,9 @@ class CommentSection extends StatelessWidget {
         }
         if (state is CommentsError) {
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: EdgeInsets.symmetric(vertical: 24.h),
             child: Center(
-              child: Text(
-                state.error,
-                style: const TextStyle(color: Colors.red),
-              ),
+              child: Text(state.error, style: TextStyle(color: Colors.red)),
             ),
           );
         }
@@ -122,6 +120,7 @@ class CommentSection extends StatelessWidget {
 class CommentWidget extends StatelessWidget {
   final CommentModel comment;
   final bool isReply;
+
   const CommentWidget({super.key, required this.comment, this.isReply = false});
 
   @override
@@ -130,124 +129,115 @@ class CommentWidget extends StatelessWidget {
     final hasImage = comment.image != null && comment.image!.isNotEmpty;
     final hasAuthorImage =
         comment.authorImage != null && comment.authorImage!.isNotEmpty;
-    final avatarSize = isReply ? 28.0 : 36.0;
+    final avatarSize = isReply ? 28.w : 36.w;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 12,
         children: [
-          // Author Avatar with placeholder fallback
           _buildAvatar(context, hasAuthorImage, avatarSize),
-
-          // Comment Content Bubble
+          SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                DecoratedBox(
-                  decoration: BoxDecoration(color: Colors.transparent),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 12,
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 14.w,
+                    vertical: 12.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.babyBlue5.withOpacity(0.5),
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(16.r),
+                      bottomLeft: Radius.circular(16.r),
+                      bottomRight: Radius.circular(16.r),
+                      topLeft: isReply ? Radius.circular(16.r) : Radius.zero,
                     ),
-                    decoration: BoxDecoration(
-                      color: AppColors.babyBlue5.withOpacity(0.5),
-                      borderRadius: BorderRadius.only(
-                        topRight: const Radius.circular(16),
-                        bottomLeft: const Radius.circular(16),
-                        bottomRight: const Radius.circular(16),
-                        topLeft: isReply
-                            ? const Radius.circular(16)
-                            : const Radius.circular(0),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => ProfileScreen(
-                                        userId: comment.authorId,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  comment.authorName ?? 'Anonymous',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.titleSmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: theme.colorScheme.onSurface,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProfileScreen(userId: comment.authorId),
                                   ),
+                                );
+                              },
+                              child: Text(
+                                comment.authorName ?? 'Anonymous',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: theme.colorScheme.onSurface,
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Text(
-                              _formatDateTime(comment.createdAt),
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant
-                                    .withOpacity(0.6),
-                                fontSize: 11,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          comment.text,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withOpacity(0.9),
-                            height: 1.3,
                           ),
-                        ),
-                        if (hasImage) ...[
-                          const SizedBox(height: 10),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: CachedNetworkImage(
-                              imageUrl: comment.image!,
-                              fit: BoxFit.cover,
-                              maxHeightDiskCache: 600,
-                              placeholder: (context, url) => Container(
-                                height: 160,
-                                width: double.infinity,
-                                color: theme.colorScheme.surfaceVariant,
-                                child: const Center(
-                                  child: SizedBox(
-                                    height: 24,
-                                    width: 24,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                height: 160,
-                                width: double.infinity,
-                                color: theme.colorScheme.surfaceVariant,
-                                child: const Icon(Icons.broken_image, size: 32),
-                              ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            _formatDateTime(comment.createdAt),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant
+                                  .withOpacity(0.6),
+                              fontSize: 11.sp,
                             ),
                           ),
                         ],
+                      ),
+                      SizedBox(height: 6.h),
+                      Text(
+                        comment.text,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface.withOpacity(0.9),
+                          height: 1.3,
+                        ),
+                      ),
+                      if (hasImage) ...[
+                        SizedBox(height: 10.h),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12.r),
+                          child: CachedNetworkImage(
+                            imageUrl: comment.image!,
+                            fit: BoxFit.cover,
+                            maxHeightDiskCache: 600,
+                            placeholder: (context, url) => Container(
+                              height: 160.h,
+                              width: double.infinity,
+                              color: theme.colorScheme.surfaceVariant,
+                              child: Center(
+                                child: SizedBox(
+                                  height: 24.h,
+                                  width: 24.w,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              height: 160.h,
+                              width: double.infinity,
+                              color: theme.colorScheme.surfaceVariant,
+                              child: Icon(Icons.broken_image, size: 32.h),
+                            ),
+                          ),
+                        ),
                       ],
-                    ),
+                    ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 4, left: 8),
+                  padding: EdgeInsets.only(top: 4.h, left: 8.w),
                   child: Row(
                     children: [
                       BlocBuilder<PostsCubit, PostsState>(
@@ -298,15 +288,15 @@ class CommentWidget extends StatelessWidget {
                                 ),
                               ),
                               if (optimisticLikesCount > 0) ...[
-                                const SizedBox(width: 4),
+                                SizedBox(width: 4.w),
                                 Icon(
                                   Icons.favorite,
-                                  size: 12,
+                                  size: 12.h,
                                   color: isOptimisticLiked
                                       ? AppColors.primaryColor
                                       : theme.colorScheme.onSurfaceVariant,
                                 ),
-                                const SizedBox(width: 2),
+                                SizedBox(width: 2.w),
                                 Text(
                                   optimisticLikesCount.toString(),
                                   style: theme.textTheme.labelSmall?.copyWith(
@@ -318,7 +308,7 @@ class CommentWidget extends StatelessWidget {
                           );
                         },
                       ),
-                      const SizedBox(width: 16),
+                      SizedBox(width: 16.w),
                       InkWell(
                         onTap: () {
                           context.read<PostsCubit>().setReplyingTo(comment);
@@ -364,7 +354,7 @@ class CommentWidget extends StatelessWidget {
           color: theme.colorScheme.primaryContainer,
           border: Border.all(
             color: theme.colorScheme.outline.withOpacity(0.1),
-            width: 1,
+            width: 1.w,
           ),
         ),
         child: ClipOval(
@@ -372,10 +362,10 @@ class CommentWidget extends StatelessWidget {
               ? CachedNetworkImage(
                   imageUrl: comment.authorImage!,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => const Center(
+                  placeholder: (context, url) => Center(
                     child: SizedBox(
-                      height: 16,
-                      width: 16,
+                      height: 16.h,
+                      width: 16.w,
                       child: CircularProgressIndicator(strokeWidth: 1.5),
                     ),
                   ),

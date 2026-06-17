@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/features/home/models/story_model.dart';
@@ -137,16 +138,16 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
                     fit: BoxFit.contain,
                     width: double.infinity,
                     height: double.infinity,
-                    placeholder: (context, url) => const Center(
+                    placeholder: (context, url) => Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     ),
-                    errorWidget: (context, url, error) => const Center(
+                    errorWidget: (context, url, error) => Center(
                       child: Icon(
                         Icons.broken_image_rounded,
                         color: Colors.white,
-                        size: 64,
+                        size: 64.h,
                       ),
                     ),
                   ),
@@ -158,7 +159,7 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
           // Top Overlay (Header and Progress Bars)
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -168,22 +169,22 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
                       widget.stories.length,
                       (index) => Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
+                          padding: EdgeInsets.symmetric(horizontal: 2.w),
                           child: Stack(
                             children: [
                               Container(
-                                height: 3,
+                                height: 3.h,
                                 decoration: BoxDecoration(
                                   color: Colors.white.withValues(alpha: 0.3),
-                                  borderRadius: BorderRadius.circular(2),
+                                  borderRadius: BorderRadius.circular(2.r),
                                 ),
                               ),
                               if (index < _currentIndex)
                                 Container(
-                                  height: 3,
+                                  height: 3.h,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(2),
+                                    borderRadius: BorderRadius.circular(2.r),
                                   ),
                                 )
                               else if (index == _currentIndex)
@@ -194,10 +195,10 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
                                       alignment: Alignment.centerLeft,
                                       widthFactor: _animationController.value,
                                       child: Container(
-                                        height: 3,
+                                        height: 3.h,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(2),
+                                          borderRadius: BorderRadius.circular(2.r),
                                         ),
                                       ),
                                     );
@@ -209,7 +210,7 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
 
                   // User Info Header
                   Row(
@@ -217,16 +218,16 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
                       UserAvatar(
                         imageUrl: activeStory.authorProfileImage,
                         name: activeStory.authorName,
-                        radius: 18,
+                        radius: 18.r,
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Expanded(
                         child: Text(
                           activeStory.authorName,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             shadows: [
                               Shadow(
                                 color: Colors.black54,
@@ -238,7 +239,7 @@ class _StoryViewScreenState extends State<StoryViewScreen> with SingleTickerProv
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close, color: Colors.white),
+                        icon: Icon(Icons.close, color: Colors.white),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                     ],

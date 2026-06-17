@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 
 class AppTheme {
@@ -7,7 +8,7 @@ class AppTheme {
     scaffoldBackgroundColor: AppColors.white,
     cardColor: AppColors.white,
     dividerColor: const Color(0xffF2F2F7),
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       scrolledUnderElevation: 0,
       backgroundColor: AppColors.white,
       foregroundColor: AppColors.black,
@@ -16,28 +17,28 @@ class AppTheme {
     ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: AppColors.grey, width: 1),
+        borderRadius: BorderRadius.circular(10.r),
+        borderSide: BorderSide(color: AppColors.grey, width: 1.w),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(color: AppColors.grey, width: 1),
+        borderSide: BorderSide(color: AppColors.grey, width: 1.w),
       ),
-      focusedBorder: const OutlineInputBorder(
+      focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(color: AppColors.primaryColor, width: 1),
+        borderSide: BorderSide(color: AppColors.primaryColor, width: 1.w),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(10)),
         borderSide: BorderSide(color: AppColors.grey),
       ),
-      errorBorder: const OutlineInputBorder(
+      errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(color: AppColors.black, width: 1),
+        borderSide: BorderSide(color: AppColors.black, width: 1.w),
       ),
-      disabledBorder: const OutlineInputBorder(
+      disabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(color: AppColors.black, width: 1),
+        borderSide: BorderSide(color: AppColors.black, width: 1.w),
       ),
     ),
   );
@@ -56,28 +57,28 @@ class AppTheme {
     ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Colors.grey, width: 1),
+        borderRadius: BorderRadius.circular(10.r),
+        borderSide: BorderSide(color: Colors.grey, width: 1.w),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(10)),
-        borderSide: const BorderSide(color: Colors.grey, width: 1),
+        borderSide: BorderSide(color: Colors.grey, width: 1.w),
       ),
-      focusedBorder: const OutlineInputBorder(
+      focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(color: AppColors.primaryColor, width: 1),
+        borderSide: BorderSide(color: AppColors.primaryColor, width: 1.w),
       ),
       focusedErrorBorder: const OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
         borderSide: BorderSide(color: Colors.grey),
       ),
-      errorBorder: const OutlineInputBorder(
+      errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(color: Colors.red, width: 1),
+        borderSide: BorderSide(color: Colors.red, width: 1.w),
       ),
-      disabledBorder: const OutlineInputBorder(
+      disabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        borderSide: BorderSide(color: Colors.grey, width: 1),
+        borderSide: BorderSide(color: Colors.grey, width: 1.w),
       ),
     ),
   );

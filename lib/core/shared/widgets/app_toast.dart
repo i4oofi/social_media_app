@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 
@@ -16,7 +17,7 @@ class AppToast {
       timeInSecForIosWeb: 1,
       backgroundColor: backgroundColor ?? AppColors.primaryColor,
       textColor: textColor ?? AppColors.white,
-      fontSize: 16.0,
+      fontSize: 16.0.sp,
     );
   }
 }

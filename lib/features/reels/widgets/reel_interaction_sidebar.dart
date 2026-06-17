@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
@@ -9,7 +10,7 @@ import 'package:social_media_app/features/home/widgets/comments_sheet.dart';
 class ReelInteractionSidebar extends StatelessWidget {
   final PostModel reel;
 
-  const ReelInteractionSidebar({super.key, required this.reel});
+  ReelInteractionSidebar({super.key, required this.reel});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class ReelInteractionSidebar extends StatelessWidget {
             context.read<ReelsCubit>().toggleLike(reel.id);
           },
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20.h),
         // Comment Button
         _InteractionButton(
           icon: Icons.comment_outlined,
@@ -52,7 +53,7 @@ class ReelInteractionSidebar extends StatelessWidget {
             );
           },
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20.h),
         // Share Button
         _InteractionButton(
           icon: Icons.share_outlined,
@@ -62,7 +63,7 @@ class ReelInteractionSidebar extends StatelessWidget {
             // TODO: Implement share action
           },
         ),
-        const SizedBox(height: 40),
+        SizedBox(height: 40.h),
       ],
     );
   }
@@ -87,13 +88,13 @@ class _InteractionButton extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          Icon(icon, color: color, size: 30),
-          const SizedBox(height: 5),
+          Icon(icon, color: color, size: 30.h),
+          SizedBox(height: 5.h),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 12,
+              fontSize: 12.sp,
               fontWeight: FontWeight.bold,
             ),
           ),

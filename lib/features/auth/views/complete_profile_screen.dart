@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
@@ -116,20 +117,20 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
           ? AppColors.darkGrey.withOpacity(0.2) 
           : AppColors.babyBlue5,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         borderSide: BorderSide.none,
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColors.babyBlue15, width: 1),
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide(color: AppColors.babyBlue15, width: 1.w),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.primaryColor, width: 1.5),
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide(color: AppColors.primaryColor, width: 1.5.w),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.red, width: 1),
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide(color: AppColors.red, width: 1.w),
       ),
     );
   }
@@ -139,7 +140,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Complete Profile'),
+        title: Text('Complete Profile'),
         automaticallyImplyLeading: false,
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
@@ -156,19 +157,19 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
           return Form(
             key: _formKey,
             child: ListView(
-              padding: const EdgeInsets.all(24.0),
+              padding: EdgeInsets.all(24.0.w),
               children: [
                 // Cover Image
                 GestureDetector(
                   onTap: _pickCoverImage,
                   child: Container(
-                    height: 150,
+                    height: 150.h,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: theme.brightness == Brightness.dark 
                           ? AppColors.darkGrey 
                           : AppColors.babyBlue15,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                       image: _coverImage != null
                           ? DecorationImage(
                               image: FileImage(_coverImage!),
@@ -177,13 +178,13 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                           : null,
                     ),
                     child: _coverImage == null
-                        ? const Center(
-                            child: Icon(Icons.camera_alt, color: AppColors.white, size: 40),
+                        ? Center(
+                            child: Icon(Icons.camera_alt, color: AppColors.white, size: 40.h),
                           )
                         : null,
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
                 
                 // Profile Image (overlapping cover)
                 Center(
@@ -194,32 +195,32 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                       alignment: Alignment.center,
                       children: [
                         CircleAvatar(
-                          radius: 50,
+                          radius: 50.r,
                           backgroundColor: theme.brightness == Brightness.dark 
                               ? AppColors.darkGrey 
                               : AppColors.babyBlue15,
                           backgroundImage: _profileImage != null ? FileImage(_profileImage!) : null,
                           child: _profileImage == null
-                              ? const Icon(Icons.person, size: 50, color: AppColors.white)
+                              ? Icon(Icons.person, size: 50.h, color: AppColors.white)
                               : null,
                         ),
                         Positioned(
                           bottom: 0,
                           right: 0,
                           child: Container(
-                            padding: const EdgeInsets.all(4),
+                            padding: EdgeInsets.all(4.w),
                             decoration: const BoxDecoration(
                               color: AppColors.primaryColor,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.edit, color: AppColors.white, size: 20),
+                            child: Icon(Icons.edit, color: AppColors.white, size: 20.h),
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: 32.h),
 
                 // Form Fields
                 TextFormField(
@@ -227,15 +228,15 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                   decoration: _buildInputDecoration('Full Name'),
                   validator: (value) => value!.isEmpty ? 'Required' : null,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 TextFormField(
                   controller: _usernameController,
                   decoration: _buildInputDecoration('Username').copyWith(
                     errorText: _usernameError.isNotEmpty ? _usernameError : null,
                     suffixIcon: _isCheckingUsername 
-                        ? const Padding(
-                            padding: EdgeInsets.all(12.0),
+                        ? Padding(
+                            padding: EdgeInsets.all(12.0.w),
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : null,
@@ -249,25 +250,25 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 TextFormField(
                   controller: _dobController,
                   readOnly: true,
                   onTap: () => _selectDate(context),
                   decoration: _buildInputDecoration('Date of Birth').copyWith(
-                    suffixIcon: const Icon(Icons.calendar_today, color: AppColors.primaryColor),
+                    suffixIcon: Icon(Icons.calendar_today, color: AppColors.primaryColor),
                   ),
                   validator: (value) => value!.isEmpty ? 'Required' : null,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 TextFormField(
                   controller: _bioController,
                   decoration: _buildInputDecoration('Bio (Optional)'),
                   maxLines: 3,
                 ),
-                const SizedBox(height: 40),
+                SizedBox(height: 40.h),
 
                 MainButton(
                   isLoading: isLoading,
@@ -290,7 +291,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                       );
                     }
                   },
-                  child: const Text('Complete Profile'),
+                  child: Text('Complete Profile'),
                 ),
               ],
             ),

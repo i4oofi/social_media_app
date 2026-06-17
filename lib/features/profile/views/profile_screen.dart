@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
 import 'package:social_media_app/features/profile/cubit/profile_cubit/profile_cubit.dart';
@@ -50,12 +51,12 @@ class _ProfileScreenContent extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                  const SizedBox(height: 12),
+                  Icon(Icons.error_outline, size: 48.h, color: Colors.red),
+                  SizedBox(height: 12.h),
                   Text(
                     state.message,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.red),
+                    style: TextStyle(color: Colors.red),
                   ),
                 ],
               ),
@@ -100,14 +101,14 @@ class _ProfileScreenContent extends StatelessWidget {
                                   userData: userData,
                                   isPrivate: isPrivate,
                                 ),
-                                const SizedBox(height: 24),
+                                SizedBox(height: 24.h),
                                 Padding(
                                   padding:
-                                      const EdgeInsets.symmetric(horizontal: 24),
+                                      EdgeInsets.symmetric(horizontal: 24.w),
                                   child: Column(
                                     children: [
                                       ProfileStatsCard(userData: userData),
-                                      const SizedBox(height: 16),
+                                      SizedBox(height: 16.h),
                                     ],
                                   ),
                                 ),

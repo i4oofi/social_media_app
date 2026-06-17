@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
@@ -31,14 +32,14 @@ class HomeScreen extends StatelessWidget {
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: EdgeInsets.symmetric(horizontal: 18.w),
                 child: Column(
                   children: [
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     const HomeScreenHeader(),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     const PostWritingCard(),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
                     const StoriesSection(),
                     const PostsSection(),
                   ],

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
@@ -139,7 +140,7 @@ class _StoriesSectionState extends State<StoriesSection> {
             child: _isLoading && _stories.isEmpty
                 ? ListView.separated(
                     scrollDirection: Axis.horizontal,
-                    separatorBuilder: (_, __) => const SizedBox(width: 14),
+                    separatorBuilder: (_, __) => SizedBox(width: 14.w),
                     itemCount: 5,
                     itemBuilder: (_, __) => const StoryShimmer(),
                   )
@@ -162,7 +163,7 @@ class _StoriesSectionState extends State<StoriesSection> {
                           : groupedStories;
 
                       return ListView.separated(
-                        separatorBuilder: (context, index) => const SizedBox(width: 14),
+                        separatorBuilder: (context, index) => SizedBox(width: 14.w),
                         scrollDirection: Axis.horizontal,
                         itemCount: otherGroups.length + 1,
                         itemBuilder: (context, index) {
@@ -210,7 +211,7 @@ class _StoriesSectionState extends State<StoriesSection> {
                     },
                   ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
         ],
       ),
     );
@@ -257,7 +258,7 @@ class StoryItem extends StatelessWidget {
           onTap: onTap,
           onLongPress: onLongPress,
           child: Container(
-            padding: const EdgeInsets.all(2.5),
+            padding: EdgeInsets.all(2.5.w),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: hasStories
@@ -276,12 +277,12 @@ class StoryItem extends StatelessWidget {
               border: !hasStories
                   ? Border.all(
                       color: AppColors.dividerColor.withValues(alpha: 0.3),
-                      width: 1.5,
+                      width: 1.5.w,
                     )
                   : null,
             ),
               child: Container(
-                padding: const EdgeInsets.all(2),
+                padding: EdgeInsets.all(2.w),
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
                   shape: BoxShape.circle,
@@ -289,16 +290,16 @@ class StoryItem extends StatelessWidget {
                 child: Stack(
                   children: [
                     CircleAvatar(
-                      radius: 29,
+                      radius: 29.r,
                       backgroundColor: Colors.grey.withValues(alpha: 0.08),
                       backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty
                           ? CachedNetworkImageProvider(avatarUrl)
                           : null,
                       child: avatarUrl != null && avatarUrl.isNotEmpty
                           ? null
-                          : const Icon(
+                          : Icon(
                               Icons.person,
-                              size: 29,
+                              size: 29.h,
                               color: AppColors.dividerColor,
                             ),
                     ),
@@ -307,15 +308,15 @@ class StoryItem extends StatelessWidget {
                         bottom: 0,
                         right: 0,
                         child: Container(
-                          padding: const EdgeInsets.all(1.5),
+                          padding: EdgeInsets.all(1.5.w),
                           decoration: BoxDecoration(
                             color: Theme.of(context).scaffoldBackgroundColor,
                             shape: BoxShape.circle,
                           ),
-                          child: const CircleAvatar(
-                            radius: 9,
+                          child: CircleAvatar(
+                            radius: 9.r,
                             backgroundColor: AppColors.primaryColor,
-                            child: Icon(Icons.add, size: 13, color: Colors.white),
+                            child: Icon(Icons.add, size: 13.h, color: Colors.white),
                           ),
                         ),
                       ),
@@ -324,9 +325,9 @@ class StoryItem extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           SizedBox(
-            width: 74,
+            width: 74.w,
             child: Text(
               displayName,
               textAlign: TextAlign.center,
@@ -334,7 +335,7 @@ class StoryItem extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.w600,
-                    fontSize: 11,
+                    fontSize: 11.sp,
                   ),
             ),
           ),

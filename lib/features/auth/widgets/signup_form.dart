@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:social_media_app/core/app_assets.dart';
@@ -31,20 +32,20 @@ class _SignUpFormState extends State<SignUpForm> {
       fillColor: AppColors.babyBlue5,
       suffixIcon: suffixIcon,
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         borderSide: BorderSide.none,
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColors.babyBlue15, width: 1),
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide(color: AppColors.babyBlue15, width: 1.w),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.primaryColor, width: 1.5),
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide(color: AppColors.primaryColor, width: 1.5.w),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.red, width: 1),
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide(color: AppColors.red, width: 1.w),
       ),
     );
   }
@@ -57,7 +58,7 @@ class _SignUpFormState extends State<SignUpForm> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 4),
+            SizedBox(height: 4.h),
             TextFormField(
               controller: _emailController,
               decoration: _buildInputDecoration('Email'),
@@ -68,7 +69,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 return null;
               },
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 16.h),
             TextFormField(
               controller: _passwordController,
               decoration: _buildInputDecoration(
@@ -92,7 +93,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 return null;
               },
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 16.h),
             TextFormField(
               controller: _confirmPasswordController,
               decoration: _buildInputDecoration(
@@ -119,7 +120,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 return null;
               },
             ),
-            SizedBox(height: 32),
+            SizedBox(height: 32.h),
             BlocConsumer<AuthCubit, AuthState>(
               listenWhen: (previous, current) =>
                   current is AuthLoading ||
@@ -177,14 +178,14 @@ class _SignUpFormState extends State<SignUpForm> {
                 );
               },
             ),
-            SizedBox(height: 32),
+            SizedBox(height: 32.h),
             Row(
               children: [
                 Expanded(
                   child: Divider(color: AppColors.black, thickness: 1.5),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
                   child: Text('Or signin with'),
                 ),
                 Expanded(
@@ -192,7 +193,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -200,31 +201,31 @@ class _SignUpFormState extends State<SignUpForm> {
                   onTap: () => authCubit.signInWithGoogle(),
                   child: SvgPicture.asset(
                     AppAssets.googleIcon,
-                    width: 50,
-                    height: 50,
+                    width: 50.w,
+                    height: 50.h,
                   ),
                 ),
-                SizedBox(width: 32),
+                SizedBox(width: 32.w),
                 InkWell(
                   onTap: () => authCubit.signInWithFacebook(),
                   child: SvgPicture.asset(
                     AppAssets.facebookIcon,
-                    width: 50,
-                    height: 50,
+                    width: 50.w,
+                    height: 50.h,
                   ),
                 ),
-                SizedBox(width: 32),
+                SizedBox(width: 32.w),
                 InkWell(
                   onTap: () => authCubit.signInWithApple(),
                   child: SvgPicture.asset(
                     AppAssets.appleIcon,
-                    width: 50,
-                    height: 50,
+                    width: 50.w,
+                    height: 50.h,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

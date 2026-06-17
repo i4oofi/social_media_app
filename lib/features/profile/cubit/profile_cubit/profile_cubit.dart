@@ -14,6 +14,12 @@ class ProfileCubit extends Cubit<ProfileState> {
   final profileServices = ProfileServices();
   final postServices = PostServices();
 
+  @override
+  void emit(ProfileState state) {
+    if (isClosed) return;
+    super.emit(state);
+  }
+
   Future<void> fetchUserProfile({String? userId, bool silent = false}) async {
     if (!silent) {
       emit(ProfileLoading());

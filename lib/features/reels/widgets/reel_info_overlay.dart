@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
@@ -9,7 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class ReelInfoOverlay extends StatelessWidget {
   final PostModel reel;
 
-  const ReelInfoOverlay({super.key, required this.reel});
+  ReelInfoOverlay({super.key, required this.reel});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class ReelInfoOverlay extends StatelessWidget {
           end: Alignment.bottomCenter,
         ),
       ),
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.0.w),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,37 +45,37 @@ class ReelInfoOverlay extends StatelessWidget {
                   UserAvatar(
                     imageUrl: reel.authorProfileImage,
                     name: reel.authorName ?? 'Unknown',
-                    radius: 18,
+                    radius: 18.r,
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   Text(
                     reel.authorName ?? 'Unknown',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                     ),
                   ),
                 ],
               ),
              ),
               if (!isOwner) ...[
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 GestureDetector(
                   onTap: () {
                     context.read<ReelsCubit>().toggleFollow(reel.authorId);
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(4.r),
                     ),
                     child: Text(
                       (reel.isFollowingAuthor ?? false) ? 'Following' : 'Follow',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -83,17 +84,17 @@ class ReelInfoOverlay extends StatelessWidget {
               ]
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Text(
             reel.text,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 14,
+              fontSize: 14.sp,
             ),
           ),
-          const SizedBox(height: 20), // padding from bottom navigation
+          SizedBox(height: 20.h), // padding from bottom navigation
         ],
       ),
     );

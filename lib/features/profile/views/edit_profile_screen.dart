@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
@@ -18,7 +19,7 @@ class EditProfileScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => EditProfileCubit(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Edit Profile'), centerTitle: true),
+        appBar: AppBar(title: Text('Edit Profile'), centerTitle: true),
         body: EditProfileBody(userData: userData),
       ),
     );
@@ -145,45 +146,45 @@ class _EditProfileBodyState extends State<EditProfileBody> {
 
                 // ── Form Fields ──────────────────────────────────────────
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Column(
                     children: [
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       _buildTextField(
                         controller: _nameController,
                         label: 'Name',
                         icon: Icons.person_outline,
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       _buildTextField(
                         controller: _userNameController,
                         label: 'Username',
                         icon: Icons.alternate_email,
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       TextField(
                         controller: _dobController,
                         readOnly: true,
                         onTap: () => _selectDate(context),
                         decoration: InputDecoration(
                           labelText: 'Date of Birth',
-                          prefixIcon: const Icon(Icons.cake_outlined, color: AppColors.primaryColor),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                          prefixIcon: Icon(Icons.cake_outlined, color: AppColors.primaryColor),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: AppColors.primaryColor, width: 2),
+                            borderRadius: BorderRadius.circular(12.r),
+                            borderSide: BorderSide(color: AppColors.primaryColor, width: 2.w),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       _buildTextField(
                         controller: _titleController,
                         label: 'Title / Bio',
                         icon: Icons.short_text,
                       ),
-                      const SizedBox(height: 32),
+                      SizedBox(height: 32.h),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
                         child: MainButton(
                           isLoading: isLoading,
                           text: isLoading ? null : 'UPDATE PROFILE',
@@ -201,7 +202,7 @@ class _EditProfileBodyState extends State<EditProfileBody> {
                                 },
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
                     ],
                   ),
                 ),
@@ -223,10 +224,10 @@ class _EditProfileBodyState extends State<EditProfileBody> {
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: AppColors.primaryColor),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primaryColor, width: 2),
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(color: AppColors.primaryColor, width: 2.w),
         ),
       ),
     );
@@ -258,7 +259,7 @@ class _CoverPhotoSection extends StatelessWidget {
           // Cover image / placeholder
           Container(
             width: double.infinity,
-            height: 180,
+            height: 180.h,
             decoration: BoxDecoration(
               color: AppColors.babyBlue15,
               image: localCoverPath != null
@@ -280,15 +281,15 @@ class _CoverPhotoSection extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.add_photo_alternate_outlined,
-                        size: 40,
+                        size: 40.h,
                         color: AppColors.primaryColor.withValues(alpha: 0.7),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       Text(
                         'Add Cover Photo',
                         style: TextStyle(
                           color: AppColors.primaryColor.withValues(alpha: 0.7),
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -300,7 +301,7 @@ class _CoverPhotoSection extends StatelessWidget {
           Positioned.fill(
             child: Container(
               alignment: Alignment.bottomRight,
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
                 gradient: hasImage
                     ? LinearGradient(
@@ -314,22 +315,22 @@ class _CoverPhotoSection extends StatelessWidget {
                     : null,
               ),
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 6.h,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.black54,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20.r),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.camera_alt, color: Colors.white, size: 14),
-                    SizedBox(width: 4),
+                    Icon(Icons.camera_alt, color: Colors.white, size: 14.h),
+                    SizedBox(width: 4.w),
                     Text(
                       'Edit Cover',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: 12.sp),
                     ),
                   ],
                 ),
@@ -367,11 +368,11 @@ class _ProfileAvatarSection extends StatelessWidget {
         children: [
           // Avatar ring
           Container(
-            width: 108,
-            height: 108,
+            width: 108.w,
+            height: 108.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 4),
+              border: Border.all(color: Colors.white, width: 4.w),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.15),
@@ -385,11 +386,11 @@ class _ProfileAvatarSection extends StatelessWidget {
                   ? Image.file(
                       File(localProfilePath!),
                       fit: BoxFit.cover,
-                      width: 100,
-                      height: 100,
+                      width: 100.w,
+                      height: 100.h,
                     )
                   : UserAvatar(
-                      radius: 50,
+                      radius: 50.r,
                       imageUrl: networkImageUrl,
                       name: name,
                     ),
@@ -398,16 +399,16 @@ class _ProfileAvatarSection extends StatelessWidget {
 
           // Dark edit overlay
           Container(
-            width: 108,
-            height: 108,
+            width: 108.w,
+            height: 108.h,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.black38,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.camera_alt,
               color: Colors.white,
-              size: 28,
+              size: 28.h,
             ),
           ),
         ],

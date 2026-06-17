@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/services/post_services.dart';
 import 'package:social_media_app/features/reels/cubit/reels_cubit.dart';
@@ -39,7 +40,7 @@ class _ReelsViewState extends State<ReelsView> {
       body: BlocBuilder<ReelsCubit, ReelsState>(
         builder: (context, state) {
           if (state is ReelsLoading) {
-            return const Center(child: CircularProgressIndicator(color: Colors.white));
+            return Center(child: CircularProgressIndicator(color: Colors.white));
           }
 
           if (state is ReelsError) {
@@ -47,17 +48,17 @@ class _ReelsViewState extends State<ReelsView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, color: Colors.white54, size: 48),
-                  const SizedBox(height: 12),
+                  Icon(Icons.error_outline, color: Colors.white54, size: 48.h),
+                  SizedBox(height: 12.h),
                   Text(
                     'Error: ${state.message}',
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   ElevatedButton(
                     onPressed: () => context.read<ReelsCubit>().fetchReels(refresh: true),
-                    child: const Text('Retry'),
+                    child: Text('Retry'),
                   ),
                 ],
               ),
@@ -68,14 +69,14 @@ class _ReelsViewState extends State<ReelsView> {
             if (state.reels.isEmpty) {
               return RefreshIndicator(
                 onRefresh: () => context.read<ReelsCubit>().fetchReels(refresh: true),
-                child: const SingleChildScrollView(
+                child: SingleChildScrollView(
                   physics: AlwaysScrollableScrollPhysics(),
                   child: SizedBox(
-                    height: 400,
+                    height: 400.h,
                     child: Center(
                       child: Text(
                         'No Reels yet',
-                        style: TextStyle(color: Colors.white54, fontSize: 16),
+                        style: TextStyle(color: Colors.white54, fontSize: 16.sp),
                       ),
                     ),
                   ),
@@ -102,7 +103,7 @@ class _ReelsViewState extends State<ReelsView> {
                 },
                 itemBuilder: (context, index) {
                   if (index >= state.reels.length) {
-                    return const Center(
+                    return Center(
                       child: CircularProgressIndicator(color: Colors.white),
                     );
                   }
@@ -114,14 +115,14 @@ class _ReelsViewState extends State<ReelsView> {
                       if (reel.video != null)
                         ReelVideoPlayer(videoUrl: reel.video!)
                       else
-                        const Center(
-                          child: Icon(Icons.broken_image, color: Colors.white54, size: 64),
+                        Center(
+                          child: Icon(Icons.broken_image, color: Colors.white54, size: 64.h),
                         ),
                       Positioned(
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        height: 180,
+                        height: 180.h,
                         child: ReelInfoOverlay(reel: reel),
                       ),
                       Positioned(

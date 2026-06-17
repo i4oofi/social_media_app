@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/services/core_auth_services.dart';
@@ -84,7 +85,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
         // Drawer Header with Profile Info
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(20, 60, 20, 24),
+          padding: EdgeInsets.fromLTRB(20.w, 20.h, 60.w, 60.h),
           decoration: BoxDecoration(
             color: theme.brightness == Brightness.dark
                 ? Colors.white.withValues(alpha: 0.02)
@@ -98,9 +99,9 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                     UserAvatar(
                       imageUrl: _userData?.imageUrl,
                       name: _userData?.name ?? "",
-                      radius: 28,
+                      radius: 28.r,
                     ),
-                    const SizedBox(width: 14),
+                    SizedBox(width: 14.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,18 +111,18 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                             _userData?.name ?? "User",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          SizedBox(height: 2.h),
                           Text(
                             _userData?.title ?? "No title set",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               color: theme.brightness == Brightness.dark
                                   ? Colors.grey[400]
                                   : AppColors.darkGrey,
@@ -137,7 +138,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
         // Navigation Items
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
             children: [
               // Theme Mode Toggle
               BlocBuilder<ThemeCubit, ThemeMode>(
@@ -148,10 +149,10 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                           MediaQuery.platformBrightnessOf(context) ==
                               Brightness.dark);
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    padding: EdgeInsets.symmetric(vertical: 2.h),
                     child: ListTile(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                       leading: Icon(
                         isDark
@@ -160,13 +161,13 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
                         color: theme.brightness == Brightness.dark
                             ? Colors.white
                             : AppColors.black,
-                        size: 22,
+                        size: 22.h,
                       ),
-                      title: const Text(
+                      title: Text(
                         "Dark Mode",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 14,
+                          fontSize: 14.sp,
                         ),
                       ),
                       trailing: Switch.adaptive(
@@ -241,7 +242,7 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
 
         // Bottom section with Logout
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.w),
           decoration: BoxDecoration(
             border: Border(top: BorderSide(color: theme.dividerColor)),
           ),
@@ -277,25 +278,25 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
               return Container(
                 decoration: BoxDecoration(
                   color: AppColors.red.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: ListTile(
                   onTap: () async {
                     await settingsCubit.signOut();
                   },
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.logout_rounded,
                     color: AppColors.red,
                   ),
-                  title: const Text(
+                  title: Text(
                     "Logout",
                     style: TextStyle(
                       color: AppColors.red,
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: 14.sp,
                     ),
                   ),
                 ),
@@ -315,27 +316,27 @@ class _SettingsDrawerBodyState extends State<SettingsDrawerBody> {
   }) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: EdgeInsets.symmetric(vertical: 2.h),
       child: ListTile(
         onTap: onTap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
         leading: Icon(
           icon,
           color: theme.brightness == Brightness.dark
               ? Colors.white
               : AppColors.black,
-          size: 22,
+          size: 22.h,
         ),
         title: Text(
           title,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios_rounded,
           color: theme.brightness == Brightness.dark
               ? Colors.white.withValues(alpha: 0.4)
               : AppColors.darkGrey.withValues(alpha: 0.5),
-          size: 14,
+          size: 14.h,
         ),
       ),
     );

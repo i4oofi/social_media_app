@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media_app/core/shared/widgets/animated_empty_state.dart';
 import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
@@ -14,9 +16,7 @@ class DiscoverScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DiscoverCubit()..fetchAllUsers(),
-      child: const Scaffold(
-        body: DiscoverBody(),
-      ),
+      child: const Scaffold(body: DiscoverBody()),
     );
   }
 }
@@ -61,7 +61,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
         children: [
           // Header Section
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 20.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -72,7 +72,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                     letterSpacing: -0.5,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   "Find interesting people to follow and build your network",
                   style: theme.textTheme.bodyMedium,
@@ -83,13 +83,13 @@ class _DiscoverBodyState extends State<DiscoverBody> {
 
           // Search Bar Section
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
             child: Container(
               decoration: BoxDecoration(
                 color: theme.brightness == Brightness.dark
                     ? Colors.white.withValues(alpha: 0.08)
                     : Colors.grey.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: TextField(
                 controller: _searchController,
@@ -106,9 +106,9 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
                   ),
                 ),
               ),
@@ -131,25 +131,25 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                 } else if (state is DiscoverFailure) {
                   return Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(24.0),
+                      padding: EdgeInsets.all(24.0.w),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.error_outline_rounded,
                             color: AppColors.red,
-                            size: 48,
+                            size: 48.h,
                           ),
-                          const SizedBox(height: 12),
+                          SizedBox(height: 12.h),
                           Text(
                             state.errorMessage,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(color: AppColors.red),
+                            style: TextStyle(color: AppColors.red),
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           ElevatedButton(
                             onPressed: () => discoverCubit.fetchAllUsers(),
-                            child: const Text("Retry"),
+                            child: Text("Retry"),
                           ),
                         ],
                       ),
@@ -157,51 +157,45 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                   );
                 } else if (state is DiscoverSuccess) {
                   final filteredUsers = state.users.where((user) {
-                    final nameMatch = user.name.toLowerCase().contains(_searchQuery);
-                    final titleMatch = (user.title ?? "").toLowerCase().contains(_searchQuery);
+                    final nameMatch = user.name.toLowerCase().contains(
+                      _searchQuery,
+                    );
+                    final titleMatch = (user.title ?? "")
+                        .toLowerCase()
+                        .contains(_searchQuery);
                     return nameMatch || titleMatch;
                   }).toList();
 
                   if (filteredUsers.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.person_search_rounded,
-                            size: 64,
-                            color: theme.hintColor,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            _searchQuery.isNotEmpty
-                                ? "No matching users found"
-                                : "No people to discover right now",
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
+                    return AnimatedEmptyState(
+                      icon: Icons.person_search_rounded,
+                      title: _searchQuery.isNotEmpty
+                          ? "No matching users found"
+                          : "No people to discover",
+                      subtitle: _searchQuery.isNotEmpty
+                          ? "Try searching for a different name or title"
+                          : "Check back later for new accounts to follow",
+                      // imagePath: 'assets/images/empty_discover.gif', // uncomment when GIF is added
                     );
                   }
 
                   return ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 24, top: 4),
+                    padding: EdgeInsets.only(bottom: 24.h, top: 4.h),
                     itemCount: filteredUsers.length,
                     itemBuilder: (context, index) {
                       final user = filteredUsers[index];
                       final isFollowing =
-                          user.followers?.contains(currentUserId ?? '') ?? false;
+                          user.followers?.contains(currentUserId ?? '') ??
+                          false;
 
                       return Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 6,
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 6.h,
                         ),
                         decoration: BoxDecoration(
                           color: theme.cardColor,
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(16.r),
                           border: Border.all(
                             color: theme.dividerColor.withValues(alpha: 0.3),
                           ),
@@ -214,7 +208,7 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                           ],
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(16.r),
                           child: InkWell(
                             onTap: () {
                               Navigator.of(context)
@@ -229,69 +223,72 @@ class _DiscoverBodyState extends State<DiscoverBody> {
                                   });
                             },
                             child: Padding(
-                              padding: const EdgeInsets.all(12.0),
+                              padding: EdgeInsets.all(12.0.w),
                               child: Row(
                                 children: [
                                   UserAvatar(
                                     imageUrl: user.imageUrl,
                                     name: user.name,
-                                    radius: 26,
+                                    radius: 26.r,
                                   ),
-                                  const SizedBox(width: 12),
+                                  SizedBox(width: 12.w),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
                                           user.name,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: theme.textTheme.titleSmall?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15,
-                                          ),
+                                          style: theme.textTheme.titleSmall
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15.sp,
+                                              ),
                                         ),
-                                        if (user.title != null && user.title!.isNotEmpty) ...[
-                                          const SizedBox(height: 2),
+                                        if (user.title != null &&
+                                            user.title!.isNotEmpty) ...[
+                                          SizedBox(height: 2.h),
                                           Text(
                                             user.title!,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            style: theme.textTheme.bodySmall?.copyWith(
-                                              fontSize: 12,
-                                            ),
+                                            style: theme.textTheme.bodySmall
+                                                ?.copyWith(fontSize: 12.sp),
                                           ),
                                         ],
-                                        const SizedBox(height: 4),
+                                        SizedBox(height: 4.h),
                                         Row(
                                           children: [
                                             Icon(
                                               Icons.people_alt_outlined,
-                                              size: 14,
+                                              size: 14.h,
                                               color: theme.hintColor,
                                             ),
-                                            const SizedBox(width: 4),
+                                            SizedBox(width: 4.w),
                                             Text(
                                               "${user.followersCount} followers",
-                                              style: theme.textTheme.labelSmall?.copyWith(
-                                                fontWeight: FontWeight.w500,
-                                              ),
+                                              style: theme.textTheme.labelSmall
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
                                             ),
                                           ],
                                         ),
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
+                                  SizedBox(width: 8.w),
                                   MainButton(
                                     onPressed: () {
                                       discoverCubit.toggleFollowUser(user.id);
                                     },
                                     text: isFollowing ? 'Following' : 'Follow',
                                     transparent: isFollowing,
-                                    width: 110,
-                                    height: 32,
+                                    width: 110.w,
+                                    height: 32.h,
                                   ),
                                 ],
                               ),

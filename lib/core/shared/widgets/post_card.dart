@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
@@ -28,14 +29,14 @@ class PostCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Delete Post'),
-        content: const Text(
+        title: Text('Delete Post'),
+        content: Text(
           'Are you sure you want to delete this post? This action cannot be undone.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
+            child: Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
@@ -44,11 +45,14 @@ class PostCard extends StatelessWidget {
                 context.read<HomeCubit>().deletePost(post.id);
               } catch (_) {
                 try {
-                  context.read<ProfileCubit>().deletePost(post.id, userId: post.authorId);
+                  context.read<ProfileCubit>().deletePost(
+                    post.id,
+                    userId: post.authorId,
+                  );
                 } catch (_) {}
               }
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -60,7 +64,7 @@ class PostCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Edit Post'),
+        title: Text('Edit Post'),
         content: TextField(
           controller: controller,
           maxLines: 4,
@@ -69,7 +73,7 @@ class PostCard extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
+            child: Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
@@ -80,12 +84,16 @@ class PostCard extends StatelessWidget {
                   context.read<HomeCubit>().editPost(post.id, newText);
                 } catch (_) {
                   try {
-                    context.read<ProfileCubit>().editPost(post.id, newText, userId: post.authorId);
+                    context.read<ProfileCubit>().editPost(
+                      post.id,
+                      newText,
+                      userId: post.authorId,
+                    );
                   } catch (_) {}
                 }
               }
             },
-            child: const Text('Save'),
+            child: Text('Save'),
           ),
         ],
       ),
@@ -103,7 +111,7 @@ class PostCard extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -124,32 +132,32 @@ class PostCard extends StatelessWidget {
                       UserAvatar(
                         imageUrl: post.authorProfileImage,
                         name: post.authorName ?? '',
-                        radius: 20,
+                        radius: 20.r,
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             post.authorName ?? 'No Name',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Row(
                             children: [
                               Text(
-                                DateFormat(
-                                  "h:mm a",
-                                ).format(DateTime.parse(post.createdAt)).toString(),
+                                DateFormat("h:mm a")
+                                    .format(DateTime.parse(post.createdAt))
+                                    .toString(),
                                 style: Theme.of(context).textTheme.labelMedium!
                                     .copyWith(color: AppColors.darkGrey),
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8.w),
                               Icon(
                                 post.isPrivate ? Icons.lock : Icons.public,
-                                size: 12,
+                                size: 12.h,
                                 color: AppColors.darkGrey,
                               ),
-                              const SizedBox(width: 4),
+                              SizedBox(width: 4.w),
                               Text(
                                 post.isPrivate ? "Private" : "Public",
                                 style: Theme.of(context).textTheme.labelSmall!
@@ -172,26 +180,26 @@ class PostCard extends StatelessWidget {
                       }
                     },
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'edit',
                         child: Row(
                           children: [
-                            Icon(Icons.edit_rounded, size: 20),
-                            SizedBox(width: 8),
+                            Icon(Icons.edit_rounded, size: 20.h),
+                            SizedBox(width: 8.w),
                             Text('Edit Post'),
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'delete',
                         child: Row(
                           children: [
                             Icon(
                               Icons.delete_outline_rounded,
                               color: Colors.red,
-                              size: 20,
+                              size: 20.h,
                             ),
-                            SizedBox(width: 8),
+                            SizedBox(width: 8.w),
                             Text(
                               'Delete Post',
                               style: TextStyle(color: Colors.red),
@@ -200,7 +208,7 @@ class PostCard extends StatelessWidget {
                         ),
                       ),
                     ],
-                    icon: const Icon(Icons.more_vert_rounded),
+                    icon: Icon(Icons.more_vert_rounded),
                   ),
               ],
             ),
@@ -217,17 +225,17 @@ class PostCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   if (hasPostImage) ...[
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                       child: CachedNetworkImage(
                         imageUrl: post.imageUrl!,
                         fit: BoxFit.cover,
                         width: double.infinity,
-                        height: 200,
+                        height: 200.h,
                         placeholder: (context, url) => Container(
-                          height: 200,
+                          height: 200.h,
                           width: double.infinity,
                           color: Colors.grey[100],
                           child: const Center(
@@ -235,27 +243,24 @@ class PostCard extends StatelessWidget {
                           ),
                         ),
                         errorWidget: (context, url, error) => Container(
-                          height: 200,
+                          height: 200.h,
                           width: double.infinity,
                           color: Colors.grey[200],
-                          child: const Icon(
-                            Icons.broken_image,
-                            color: Colors.grey,
-                          ),
+                          child: Icon(Icons.broken_image, color: Colors.grey),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                   ],
                   if (hasPostVideo) ...[
                     CustomVideoPlayer(videoUrl: post.video!),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                   ],
                   Text(post.text, style: Theme.of(context).textTheme.bodyLarge),
                 ],
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Row(
               children: [
                 BlocBuilder<PostsCubit, PostsState>(
@@ -325,7 +330,7 @@ class PostCard extends StatelessWidget {
                       },
                     );
                   },
-                  icon: const Icon(Icons.comment_outlined, size: 20),
+                  icon: Icon(Icons.comment_outlined, size: 20.h),
                 ),
                 Text('${post.commentCount}'),
                 const Spacer(),

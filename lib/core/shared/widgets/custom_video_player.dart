@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -9,7 +10,7 @@ class CustomVideoPlayer extends StatefulWidget {
   final File? videoFile;
   final double? height;
 
-  const CustomVideoPlayer({
+  CustomVideoPlayer({
     super.key,
     this.videoUrl,
     this.videoFile,
@@ -123,17 +124,17 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         height: widget.height ?? 220,
         decoration: BoxDecoration(
           color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
-        child: const Center(
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.error_outline_rounded, color: AppColors.red, size: 40),
-              SizedBox(height: 8),
+              Icon(Icons.error_outline_rounded, color: AppColors.red, size: 40.h),
+              SizedBox(height: 8.h),
               Text(
                 'Error playing video',
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+                style: TextStyle(color: Colors.grey, fontSize: 14.sp),
               ),
             ],
           ),
@@ -146,7 +147,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         height: widget.height ?? 220,
         decoration: BoxDecoration(
           color: Colors.grey[100],
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
         child: const Center(child: CircularProgressIndicator.adaptive()),
       );
@@ -160,7 +161,7 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.black,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
         clipBehavior: Clip.antiAlias,
         child: AspectRatio(
@@ -205,9 +206,9 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                             alignment: Alignment.bottomCenter,
                             child: Container(
                               color: Colors.black26,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
-                                vertical: 8.0,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.0.w,
+                                vertical: 8.0.h,
                               ),
                               child: Row(
                                 children: [
@@ -226,23 +227,23 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                                   // Current time / duration
                                   Text(
                                     _formatDuration(_controller.value.position),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 12,
+                                      fontSize: 12.sp,
                                     ),
                                   ),
-                                  const Text(
+                                  Text(
                                     ' / ',
                                     style: TextStyle(
                                       color: Colors.white54,
-                                      fontSize: 12,
+                                      fontSize: 12.sp,
                                     ),
                                   ),
                                   Text(
                                     _formatDuration(_controller.value.duration),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 12,
+                                      fontSize: 12.sp,
                                     ),
                                   ),
 
@@ -251,14 +252,14 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
                                     child: VideoProgressIndicator(
                                       _controller,
                                       allowScrubbing: true,
-                                      colors: const VideoProgressColors(
+                                      colors: VideoProgressColors(
                                         playedColor: AppColors.primaryColor,
                                         bufferedColor: Colors.white24,
                                         backgroundColor: Colors.white12,
                                       ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12.0,
-                                        vertical: 8.0,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12.0.w,
+                                        vertical: 8.0.h,
                                       ),
                                     ),
                                   ),

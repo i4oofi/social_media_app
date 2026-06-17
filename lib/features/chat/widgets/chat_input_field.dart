@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media_app/core/services/file_picker_services.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
@@ -103,7 +104,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(
+                leading: Icon(
                   Icons.camera_alt_rounded,
                   color: AppColors.primaryColor,
                 ),
@@ -114,7 +115,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 },
               ),
               ListTile(
-                leading: const Icon(
+                leading: Icon(
                   Icons.photo_library_rounded,
                   color: AppColors.primaryColor,
                 ),
@@ -124,7 +125,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   _pickImage();
                 },
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
             ],
           ),
         );
@@ -136,7 +137,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       decoration: BoxDecoration(
         color: theme.cardColor,
         boxShadow: [
@@ -151,7 +152,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
         child: Row(
           children: [
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.add_circle_outline_rounded,
                 color: AppColors.primaryColor,
               ),
@@ -164,34 +165,34 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   color: theme.brightness == Brightness.dark
                       ? Colors.white.withValues(alpha: 0.08)
                       : Colors.grey.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24.r),
                 ),
                 child: TextField(
                   controller: _controller,
                   maxLines: 5,
                   minLines: 1,
-                  style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 15),
+                  style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontSize: 15.sp),
                   decoration: InputDecoration(
                     hintText: 'Type a message...',
                     hintStyle: TextStyle(color: theme.hintColor),
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 8.h,
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             widget.isSending
-                ? const SizedBox(
-                    width: 40,
-                    height: 40,
+                ? SizedBox(
+                    width: 40.w,
+                    height: 40.h,
                     child: Padding(
-                      padding: EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(8.0.w),
                       child: CircularProgressIndicator(strokeWidth: 2),
                     ),
                   )
@@ -205,7 +206,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                           : AppColors.primaryColor,
                     ),
                     child: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.send_rounded,
                         color: AppColors.white,
                       ),

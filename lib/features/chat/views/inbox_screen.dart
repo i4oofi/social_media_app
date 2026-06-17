@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
@@ -67,7 +68,10 @@ class _InboxScreenState extends State<InboxScreen> {
             ),
           ),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.iconTheme.color),
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: theme.iconTheme.color,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
           elevation: 0,
@@ -76,38 +80,44 @@ class _InboxScreenState extends State<InboxScreen> {
           children: [
             // Search Bar
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
               child: Container(
                 decoration: BoxDecoration(
                   color: theme.brightness == Brightness.dark
                       ? Colors.white.withValues(alpha: 0.08)
                       : Colors.grey.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Search chats...',
                     hintStyle: TextStyle(color: theme.hintColor),
-                    prefixIcon: Icon(Icons.search, color: theme.iconTheme.color),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: theme.iconTheme.color,
+                    ),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
-                            icon: Icon(Icons.clear, color: theme.iconTheme.color),
+                            icon: Icon(
+                              Icons.clear,
+                              color: theme.iconTheme.color,
+                            ),
                             onPressed: () => _searchController.clear(),
                           )
                         : null,
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 12.h,
                     ),
                   ),
                 ),
               ),
             ),
-            
+
             // Inbox Chats List
             Expanded(
               child: BlocBuilder<InboxCubit, InboxState>(
@@ -116,7 +126,7 @@ class _InboxScreenState extends State<InboxScreen> {
                     return ListView.separated(
                       itemCount: 7,
                       separatorBuilder: (_, index) => Divider(
-                        height: 1,
+                        height: 1.h,
                         indent: 84,
                         endIndent: 20,
                         color: theme.dividerColor.withValues(alpha: 0.5),
@@ -124,34 +134,34 @@ class _InboxScreenState extends State<InboxScreen> {
                       itemBuilder: (_, __) => const InboxChatShimmer(),
                     );
                   }
-                  
+
                   if (state is InboxFailure) {
                     return Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(24.0),
+                        padding: EdgeInsets.all(24.0.w),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.error_outline_rounded,
                               color: AppColors.red,
-                              size: 48,
+                              size: 48.h,
                             ),
-                            const SizedBox(height: 12),
+                            SizedBox(height: 12.h),
                             Text(
                               state.errorMessage,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(color: AppColors.red),
+                              style: TextStyle(color: AppColors.red),
                             ),
                           ],
                         ),
                       ),
                     );
                   }
-                  
+
                   if (state is InboxSuccess) {
                     final chats = state.chats;
-                    
+
                     // Filter chats by query
                     final filteredChats = chats.where((chat) {
                       final nameMatch = (chat.otherUser?.name ?? '')
@@ -167,10 +177,10 @@ class _InboxScreenState extends State<InboxScreen> {
                           children: [
                             Icon(
                               Icons.chat_bubble_outline_rounded,
-                              size: 64,
+                              size: 64.h,
                               color: theme.hintColor,
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16.h),
                             Text(
                               _searchQuery.isNotEmpty
                                   ? 'No matching chats'
@@ -180,18 +190,18 @@ class _InboxScreenState extends State<InboxScreen> {
                               ),
                             ),
                             if (_searchQuery.isEmpty) ...[
-                              const SizedBox(height: 12),
+                              SizedBox(height: 12.h),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.primaryColor,
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(20.r),
                                   ),
                                 ),
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: const Text(
+                                child: Text(
                                   'Discover People',
                                   style: TextStyle(color: AppColors.white),
                                 ),
@@ -203,10 +213,10 @@ class _InboxScreenState extends State<InboxScreen> {
                     }
 
                     return ListView.separated(
-                      padding: const EdgeInsets.only(bottom: 24),
+                      padding: EdgeInsets.only(bottom: 24.h),
                       itemCount: filteredChats.length,
                       separatorBuilder: (context, index) => Divider(
-                        height: 1,
+                        height: 1.h,
                         indent: 84,
                         endIndent: 20,
                         color: theme.dividerColor.withValues(alpha: 0.5),
@@ -216,14 +226,19 @@ class _InboxScreenState extends State<InboxScreen> {
                         final otherUser = chat.otherUser;
                         final unreadCount = state.unreadCounts[chat.id] ?? 0;
                         final hasUnread = unreadCount > 0;
-                        final lastMsgSenderIsMe = chat.lastMessageSenderId == state.currentUserId;
-                        
+                        final lastMsgSenderIsMe =
+                            chat.lastMessageSenderId == state.currentUserId;
+
                         String messagePreview = '';
                         if (chat.lastMessage != null) {
                           if (chat.lastMessage!.startsWith('http') &&
                               (chat.lastMessage!.contains('chat_attachments') ||
-                                  chat.lastMessage!.contains('/storage/v1/object/public'))) {
-                            messagePreview = lastMsgSenderIsMe ? 'You sent a photo' : 'Sent a photo';
+                                  chat.lastMessage!.contains(
+                                    '/storage/v1/object/public',
+                                  ))) {
+                            messagePreview = lastMsgSenderIsMe
+                                ? 'You sent a photo'
+                                : 'Sent a photo';
                           } else {
                             messagePreview = chat.lastMessage!;
                           }
@@ -239,48 +254,59 @@ class _InboxScreenState extends State<InboxScreen> {
                             );
                           },
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 12.h,
                             ),
                             child: Row(
                               children: [
                                 UserAvatar(
                                   imageUrl: otherUser?.imageUrl,
                                   name: otherUser?.name ?? 'User',
-                                  radius: 28,
+                                  radius: 28.r,
                                   showBorder: hasUnread,
                                   borderColor: AppColors.primaryColor,
                                   borderWidth: 2,
                                 ),
-                                const SizedBox(width: 12),
-                                
+                                SizedBox(width: 12.w),
+
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             otherUser?.name ?? 'User',
-                                            style: theme.textTheme.titleMedium?.copyWith(
-                                              fontWeight: hasUnread ? FontWeight.bold : FontWeight.w600,
-                                              fontSize: 16,
-                                            ),
+                                            style: theme.textTheme.titleMedium
+                                                ?.copyWith(
+                                                  fontWeight: hasUnread
+                                                      ? FontWeight.bold
+                                                      : FontWeight.w600,
+                                                  fontSize: 16.sp,
+                                                ),
                                           ),
                                           if (chat.lastMessageTime != null)
                                             Text(
-                                              _formatTime(chat.lastMessageTime!),
+                                              _formatTime(
+                                                chat.lastMessageTime!,
+                                              ),
                                               style: TextStyle(
-                                                fontSize: 12,
-                                                color: hasUnread ? AppColors.primaryColor : theme.hintColor,
-                                                fontWeight: hasUnread ? FontWeight.bold : FontWeight.normal,
+                                                fontSize: 12.sp,
+                                                color: hasUnread
+                                                    ? AppColors.primaryColor
+                                                    : theme.hintColor,
+                                                fontWeight: hasUnread
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal,
                                               ),
                                             ),
                                         ],
                                       ),
-                                      const SizedBox(height: 4),
+                                      SizedBox(height: 4.h),
                                       Row(
                                         children: [
                                           Expanded(
@@ -288,26 +314,34 @@ class _InboxScreenState extends State<InboxScreen> {
                                               messagePreview,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
-                                              style: theme.textTheme.bodyMedium?.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: hasUnread ? FontWeight.w600 : FontWeight.normal,
-                                                color: hasUnread ? theme.textTheme.bodyLarge?.color : theme.hintColor,
-                                              ),
+                                              style: theme.textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                    fontSize: 14.sp,
+                                                    fontWeight: hasUnread
+                                                        ? FontWeight.w600
+                                                        : FontWeight.normal,
+                                                    color: hasUnread
+                                                        ? theme
+                                                              .textTheme
+                                                              .bodyLarge
+                                                              ?.color
+                                                        : theme.hintColor,
+                                                  ),
                                             ),
                                           ),
                                           if (hasUnread) ...[
-                                            const SizedBox(width: 8),
+                                            SizedBox(width: 8.w),
                                             Container(
-                                              padding: const EdgeInsets.all(6),
+                                              padding: EdgeInsets.all(6.w),
                                               decoration: const BoxDecoration(
                                                 color: AppColors.primaryColor,
                                                 shape: BoxShape.circle,
                                               ),
                                               child: Text(
                                                 '$unreadCount',
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   color: AppColors.white,
-                                                  fontSize: 10,
+                                                  fontSize: 10.sp,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),

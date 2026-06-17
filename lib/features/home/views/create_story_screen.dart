@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -153,12 +154,12 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
           children: [
             // ── Top Controls Bar ─────────────────────────────────
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 8.0.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                    icon: Icon(Icons.close, color: Colors.white, size: 28.h),
                     onPressed: () => Navigator.pop(context),
                   ),
                   Row(
@@ -172,7 +173,7 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
                                   ? Icons.format_align_left
                                   : Icons.format_align_right,
                           color: Colors.white,
-                          size: 24,
+                          size: 24.h,
                         ),
                         onPressed: _changeAlignment,
                       ),
@@ -181,7 +182,7 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
                         icon: Icon(
                           _textHasBackground ? Icons.font_download : Icons.font_download_outlined,
                           color: Colors.white,
-                          size: 24,
+                          size: 24.h,
                         ),
                         onPressed: () {
                           setState(() {
@@ -191,12 +192,12 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
                       ),
                       // Image Background Picker button
                       IconButton(
-                        icon: const Icon(Icons.photo_library_outlined, color: Colors.white, size: 24),
+                        icon: Icon(Icons.photo_library_outlined, color: Colors.white, size: 24.h),
                         onPressed: _pickImage,
                       ),
                       if (_backgroundImage != null)
                         IconButton(
-                          icon: const Icon(Icons.no_photography_outlined, color: Colors.redAccent, size: 24),
+                          icon: Icon(Icons.no_photography_outlined, color: Colors.redAccent, size: 24.h),
                           onPressed: () {
                             setState(() {
                               _backgroundImage = null;
@@ -213,11 +214,11 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
             Expanded(
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                   child: AspectRatio(
                     aspectRatio: 9 / 16,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                       child: RepaintBoundary(
                         key: _repaintKey,
                         child: GestureDetector(
@@ -247,15 +248,15 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
                               // Centered Text Input Container
                               Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(32.0),
+                                  padding: EdgeInsets.all(32.0.w),
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                                     decoration: _textHasBackground
                                         ? BoxDecoration(
                                             color: _textColors[_selectedTextColorIndex] == Colors.white
                                                 ? Colors.black.withValues(alpha: 0.55)
                                                 : Colors.white.withValues(alpha: 0.7),
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(8.r),
                                           )
                                         : null,
                                     child: IntrinsicWidth(
@@ -267,12 +268,12 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
                                         textAlign: _textAlign,
                                         style: TextStyle(
                                           color: _textColors[_selectedTextColorIndex],
-                                          fontSize: 26,
+                                          fontSize: 26.sp,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                        decoration: const InputDecoration(
+                                        decoration: InputDecoration(
                                           hintText: "Type something...",
-                                          hintStyle: TextStyle(color: Colors.white54, fontSize: 26),
+                                          hintStyle: TextStyle(color: Colors.white54, fontSize: 26.sp),
                                           border: InputBorder.none,
                                           contentPadding: EdgeInsets.zero,
                                         ),
@@ -291,16 +292,16 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
               ),
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // ── Color Text Picker & Background Selector ──────────
             if (_focusNode.hasFocus)
               // Text Color Selector when editing text
               SizedBox(
-                height: 48,
+                height: 48.h,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
                   itemCount: _textColors.length,
                   itemBuilder: (context, index) {
                     final color = _textColors[index];
@@ -312,15 +313,15 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
                         });
                       },
                       child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 6),
-                        width: 32,
-                        height: 32,
+                        margin: EdgeInsets.symmetric(horizontal: 6.w),
+                        width: 32.w,
+                        height: 32.h,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: color,
                           border: Border.all(
                             color: isSelected ? Colors.white : Colors.transparent,
-                            width: 2,
+                            width: 2.w,
                           ),
                           boxShadow: [
                             if (isSelected)
@@ -335,10 +336,10 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
             else
               // Background Gradient Selector when not editing text
               SizedBox(
-                height: 48,
+                height: 48.h,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
                   itemCount: _backgroundGradients.length,
                   itemBuilder: (context, index) {
                     final isSelected = _selectedBgIndex == index;
@@ -350,9 +351,9 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
                         });
                       },
                       child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 6),
-                        width: 36,
-                        height: 36,
+                        margin: EdgeInsets.symmetric(horizontal: 6.w),
+                        width: 36.w,
+                        height: 36.h,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           gradient: LinearGradient(
@@ -371,11 +372,11 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
                 ),
               ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // ── Privacy Settings & Share Action Row ─────────────
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+              padding: EdgeInsets.fromLTRB(24.w, 24.h, 8.w, 8.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -387,15 +388,15 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
                       });
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                       decoration: BoxDecoration(
                         color: _isPrivate
                             ? Colors.green.withValues(alpha: 0.15)
                             : Colors.white.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(24.r),
                         border: Border.all(
                           color: _isPrivate ? Colors.green : Colors.transparent,
-                          width: 1,
+                          width: 1.w,
                         ),
                       ),
                       child: Row(
@@ -404,15 +405,15 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
                           Icon(
                             _isPrivate ? Icons.star : Icons.public,
                             color: _isPrivate ? Colors.green : Colors.white,
-                            size: 18,
+                            size: 18.h,
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8.w),
                           Text(
                             _isPrivate ? "Close Friends" : "Public Story",
                             style: TextStyle(
                               color: _isPrivate ? Colors.green : Colors.white,
                               fontWeight: FontWeight.w600,
-                              fontSize: 13,
+                              fontSize: 13.sp,
                             ),
                           ),
                         ],
@@ -425,30 +426,30 @@ class _CreateStoryScreenState extends State<CreateStoryScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(24.r),
                       ),
                       elevation: 2,
                     ),
                     onPressed: _isUploading ? null : () => _shareStory(homeCubit),
                     child: _isUploading
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
+                        ? SizedBox(
+                            width: 16.w,
+                            height: 16.h,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
                             ),
                           )
-                        : const Row(
+                        : Row(
                             children: [
                               Text(
                                 "Share",
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
                               ),
-                              SizedBox(width: 4),
-                              Icon(Icons.arrow_forward_ios, size: 12),
+                              SizedBox(width: 4.w),
+                              Icon(Icons.arrow_forward_ios, size: 12.h),
                             ],
                           ),
                   ),

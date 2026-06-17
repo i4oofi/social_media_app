@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:social_media_app/core/cubit/notification_cubit/notification_cubit.dart';
@@ -96,14 +97,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Notifications',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
             tooltip: 'Mark all as read',
-            icon: const Icon(Icons.done_all_rounded),
+            icon: Icon(Icons.done_all_rounded),
             onPressed: () {
               context.read<NotificationCubit>().markAllAsRead();
             },
@@ -121,10 +122,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             if (state is NotificationsError) {
               return Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16.0.w),
                   child: Text(
                     'Error: ${state.error}',
-                    style: const TextStyle(color: Colors.red),
+                    style: TextStyle(color: Colors.red),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -145,27 +146,27 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         children: [
                           Icon(
                             Icons.notifications_none_rounded,
-                            size: 64,
+                            size: 64.h,
                             color: theme.brightness == Brightness.dark
                                 ? Colors.grey[600]
                                 : Colors.grey[400],
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           Text(
                             'No notifications yet',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               color: theme.brightness == Brightness.dark
                                   ? Colors.grey[400]
                                   : Colors.grey[600],
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Text(
                             'Interactions on your posts will appear here',
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               color: theme.brightness == Brightness.dark
                                   ? Colors.grey[500]
                                   : Colors.grey[500],
@@ -190,7 +191,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   return InkWell(
                     onTap: () => _handleNotificationTap(notification),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                       color: notification.isRead
                           ? Colors.transparent
                           : AppColors.primaryColor.withValues(alpha: 0.06),
@@ -202,23 +203,23 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               UserAvatar(
                                 imageUrl: notification.senderImageUrl,
                                 name: notification.senderName ?? 'User',
-                                radius: 24,
+                                radius: 24.r,
                               ),
                               Container(
                                 decoration: BoxDecoration(
                                   color: theme.scaffoldBackgroundColor,
                                   shape: BoxShape.circle,
                                 ),
-                                padding: const EdgeInsets.all(2),
+                                padding: EdgeInsets.all(2.w),
                                 child: Icon(
                                   _getNotificationIcon(notification.type),
-                                  size: 14,
+                                  size: 14.h,
                                   color: _getNotificationIconColor(notification.type),
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(width: 16),
+                          SizedBox(width: 16.w),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,12 +228,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   text: TextSpan(
                                     style: TextStyle(
                                       color: theme.textTheme.bodyLarge?.color,
-                                      fontSize: 14,
+                                      fontSize: 14.sp,
                                     ),
                                     children: [
                                       TextSpan(
                                         text: notification.senderName ?? 'Someone',
-                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                        style: TextStyle(fontWeight: FontWeight.bold),
                                       ),
                                       const TextSpan(text: ' '),
                                       TextSpan(
@@ -241,7 +242,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4.h),
                                 Text(
                                   timeText,
                                   style: theme.textTheme.labelMedium?.copyWith(
@@ -253,8 +254,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           ),
                           if (!notification.isRead)
                             Container(
-                              width: 8,
-                              height: 8,
+                              width: 8.w,
+                              height: 8.h,
                               decoration: const BoxDecoration(
                                 color: AppColors.primaryColor,
                                 shape: BoxShape.circle,

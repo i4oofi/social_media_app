@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
@@ -28,7 +29,7 @@ class _CommentsSheetState extends State<CommentsSheet> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.0.w),
       child: Column(
         children: [
           Expanded(
@@ -39,22 +40,22 @@ class _CommentsSheetState extends State<CommentsSheet> {
                 children: [
                   Center(
                     child: SizedBox(
-                      height: 10,
-                      width: 50,
+                      height: 10.h,
+                      width: 50.w,
                       child: Divider(color: Colors.grey, thickness: 2),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text('Likes', style: Theme.of(context).textTheme.titleMedium),
-                  SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   LikeSection(post: widget.post),
-                  SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Text(
                     'Comments',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   CommentSection(post: widget.post),
-                  SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                 ],
               ),
             ),

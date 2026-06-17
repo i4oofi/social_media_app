@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -100,11 +101,11 @@ class _ReelVideoPlayerState extends State<ReelVideoPlayer> {
                 color: Colors.black45,
                 shape: BoxShape.circle,
               ),
-              padding: const EdgeInsets.all(12),
-              child: const Icon(
+              padding: EdgeInsets.all(12.w),
+              child: Icon(
                 Icons.play_arrow,
                 color: Colors.white,
-                size: 50,
+                size: 50.h,
               ),
             ),
         ],

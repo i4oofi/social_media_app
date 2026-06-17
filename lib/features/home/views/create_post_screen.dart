@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/shared/widgets/custom_video_player.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
@@ -43,7 +44,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           "Create Post",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: 20.sp,
             fontFamily: 'SF Pro Text',
           ),
         ),
@@ -53,11 +54,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.close_rounded),
+          icon: Icon(Icons.close_rounded),
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: EdgeInsets.only(right: 8.w),
             child: BlocConsumer<HomeCubit, HomeState>(
               bloc: homeCubit,
               listenWhen: (previous, current) =>
@@ -83,8 +84,8 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               },
               builder: (context, state) {
                 if (state is PostCreating) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                     child: Center(child: CircularProgressIndicator.adaptive()),
                   );
                 }
@@ -108,7 +109,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     style: TextStyle(
                       color: canPost ? AppColors.primaryColor : AppColors.grey,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontFamily: 'SF Pro Text',
                     ),
                   ),
@@ -120,7 +121,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
           child: Column(
             children: [
               Expanded(
@@ -136,23 +137,25 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                               current is PostCreateInitialData,
                           builder: (context, state) {
                             if (state is PostCreateInitialLoading) {
-                              return const Center(child: CircularProgressIndicator.adaptive());
+                              return const Center(
+                                child: CircularProgressIndicator.adaptive(),
+                              );
                             } else if (state is PostCreateInitialData) {
                               final userData = state.user;
                               return Row(
                                 children: [
                                   CircleAvatar(
-                                    radius: 22,
+                                    radius: 22.r,
                                     backgroundColor: AppColors.babyBlue15,
                                     child: userData.imageUrl == null
-                                        ? const Icon(
+                                        ? Icon(
                                             Icons.person_rounded,
                                             color: AppColors.primaryColor,
                                           )
                                         : CachedNetworkImage(
                                             imageUrl: userData.imageUrl!,
-                                            height: 44,
-                                            width: 44,
+                                            height: 44.h,
+                                            width: 44.w,
                                             fit: BoxFit.cover,
                                             imageBuilder:
                                                 (context, imageProvider) =>
@@ -166,17 +169,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                                       ),
                                                     ),
                                             errorWidget:
-                                                (
-                                                  context,
-                                                  url,
-                                                  error,
-                                                ) => const Icon(
+                                                (context, url, error) => Icon(
                                                   Icons.person_rounded,
                                                   color: AppColors.primaryColor,
                                                 ),
                                           ),
                                   ),
-                                  const SizedBox(width: 12),
+                                  SizedBox(width: 12.w),
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -184,30 +183,37 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                       Text(
                                         userData.name,
                                         style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 16.sp,
                                           fontWeight: FontWeight.bold,
                                           fontFamily: 'SF Pro Text',
                                         ),
                                       ),
-                                      SizedBox(height: 2),
+                                      SizedBox(height: 2.h),
                                       BlocBuilder<HomeCubit, HomeState>(
-                                        buildWhen: (previous, current) => current is PostPrivacyToggled,
+                                        buildWhen: (previous, current) =>
+                                            current is PostPrivacyToggled,
                                         builder: (context, state) {
                                           return GestureDetector(
-                                            onTap: () => homeCubit.togglePostPrivacy(),
+                                            onTap: () =>
+                                                homeCubit.togglePostPrivacy(),
                                             child: Row(
                                               children: [
                                                 Icon(
-                                                  homeCubit.isPostPrivate ? Icons.lock : Icons.public,
-                                                  size: 14,
+                                                  homeCubit.isPostPrivate
+                                                      ? Icons.lock
+                                                      : Icons.public,
+                                                  size: 14.h,
                                                   color: AppColors.dividerColor,
                                                 ),
-                                                SizedBox(width: 4),
+                                                SizedBox(width: 4.w),
                                                 Text(
-                                                  homeCubit.isPostPrivate ? "Private" : "Public",
+                                                  homeCubit.isPostPrivate
+                                                      ? "Private"
+                                                      : "Public",
                                                   style: TextStyle(
-                                                    color: AppColors.dividerColor,
-                                                    fontSize: 12,
+                                                    color:
+                                                        AppColors.dividerColor,
+                                                    fontSize: 12.sp,
                                                     fontFamily: 'SF Pro Text',
                                                   ),
                                                 ),
@@ -225,21 +231,23 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                             }
                           },
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         BlocBuilder<HomeCubit, HomeState>(
                           builder: (context, state) {
                             if (state is PickingImage) {
-                              return const Center(child: CircularProgressIndicator.adaptive());
+                              return const Center(
+                                child: CircularProgressIndicator.adaptive(),
+                              );
                             } else if (homeCubit.currentImage != null) {
                               return Container(
                                 width: double.infinity,
-                                margin: const EdgeInsets.only(bottom: 16),
+                                margin: EdgeInsets.only(bottom: 16.h),
                                 constraints: BoxConstraints(
                                   maxHeight:
                                       MediaQuery.of(context).size.height * 0.6,
                                 ),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(12.r),
                                   border: Border.all(
                                     color: AppColors.dividerColor.withValues(
                                       alpha: 0.2,
@@ -250,7 +258,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                   alignment: Alignment.center,
                                   children: [
                                     ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(12.r),
                                       child: Image.file(
                                         homeCubit.currentImage!,
                                         width: double.infinity,
@@ -263,7 +271,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                       child: CircleAvatar(
                                         backgroundColor: Colors.black54,
                                         child: IconButton(
-                                          icon: const Icon(
+                                          icon: Icon(
                                             Icons.close,
                                             color: Colors.white,
                                           ),
@@ -286,24 +294,26 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         BlocBuilder<HomeCubit, HomeState>(
                           builder: (context, state) {
                             if (state is PickingVideo) {
-                              return const Center(child: CircularProgressIndicator.adaptive());
+                              return const Center(
+                                child: CircularProgressIndicator.adaptive(),
+                              );
                             } else if (homeCubit.currentVideo != null) {
                               return Container(
                                 width: double.infinity,
-                                margin: const EdgeInsets.only(bottom: 16),
+                                margin: EdgeInsets.only(bottom: 16.h),
                                 constraints: BoxConstraints(
                                   maxHeight:
                                       MediaQuery.of(context).size.height * 0.6,
                                 ),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(12.r),
                                   color: Colors.black,
                                 ),
                                 child: Stack(
                                   alignment: Alignment.center,
                                   children: [
                                     ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(12.r),
                                       child: CustomVideoPlayer(
                                         videoFile: homeCubit.currentVideo!,
                                       ),
@@ -314,7 +324,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                       child: CircleAvatar(
                                         backgroundColor: Colors.black54,
                                         child: IconButton(
-                                          icon: const Icon(
+                                          icon: Icon(
                                             Icons.close,
                                             color: Colors.white,
                                           ),
@@ -337,31 +347,35 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         BlocBuilder<HomeCubit, HomeState>(
                           builder: (context, state) {
                             if (state is FileUploading) {
-                              return const Center(child: CircularProgressIndicator.adaptive());
+                              return const Center(
+                                child: CircularProgressIndicator.adaptive(),
+                              );
                             } else if (homeCubit.currentFile != null) {
                               return Container(
-                                margin: const EdgeInsets.only(bottom: 16),
+                                margin: EdgeInsets.only(bottom: 16.h),
                                 child: Stack(
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.all(12),
+                                      padding: EdgeInsets.all(12.w),
                                       decoration: BoxDecoration(
                                         color: AppColors.babyBlue5,
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(
+                                          12.r,
+                                        ),
                                       ),
                                       child: Row(
                                         children: [
-                                          const Icon(
+                                          Icon(
                                             Icons.insert_drive_file_outlined,
                                             color: AppColors.primaryColor,
                                           ),
-                                          const SizedBox(width: 8),
+                                          SizedBox(width: 8.w),
                                           Expanded(
                                             child: Text(
                                               homeCubit.currentFile!.path
                                                   .split('/')
                                                   .last,
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 fontWeight: FontWeight.w500,
                                               ),
                                               overflow: TextOverflow.ellipsis,
@@ -374,7 +388,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                                       top: 4,
                                       right: 4,
                                       child: IconButton(
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.close,
                                           color: Colors.grey,
                                         ),
@@ -402,15 +416,15 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         controller: _textController,
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
-                        style: const TextStyle(
-                          fontSize: 16,
+                        style: TextStyle(
+                          fontSize: 16.sp,
                           fontFamily: 'SF Pro Text',
                         ),
                         decoration: InputDecoration(
                           hintText: "What's on your mind?",
                           hintStyle: TextStyle(
                             color: AppColors.grey,
-                            fontSize: 16,
+                            fontSize: 16.sp,
                           ),
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
@@ -421,21 +435,21 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
 
               // "Add to your post" attachment trigger bar
               GestureDetector(
                 onTap: () => _showAttachmentBottomSheet(context),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 14.h,
                   ),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: AppColors.dividerColor.withValues(alpha: 0.3),
                     ),
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(15.r),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.03),
@@ -451,34 +465,34 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                           "Add to your post",
                           style: TextStyle(
                             color: AppColors.darkGrey,
-                            fontSize: 15,
+                            fontSize: 15.sp,
                             fontWeight: FontWeight.w500,
                             fontFamily: 'SF Pro Text',
                           ),
                         ),
                       ),
-                      const Icon(
+                      Icon(
                         Icons.camera_alt_outlined,
                         color: AppColors.primaryColor,
-                        size: 22,
+                        size: 22.h,
                       ),
-                      const SizedBox(width: 12),
-                      const Icon(
+                      SizedBox(width: 12.w),
+                      Icon(
                         Icons.image_outlined,
                         color: AppColors.primaryColor,
-                        size: 22,
+                        size: 22.h,
                       ),
-                      const SizedBox(width: 12),
-                      const Icon(
+                      SizedBox(width: 12.w),
+                      Icon(
                         Icons.video_library_outlined,
                         color: AppColors.primaryColor,
-                        size: 22,
+                        size: 22.h,
                       ),
-                      const SizedBox(width: 12),
-                      const Icon(
+                      SizedBox(width: 12.w),
+                      Icon(
                         Icons.insert_drive_file_outlined,
                         color: AppColors.primaryColor,
-                        size: 22,
+                        size: 22.h,
                       ),
                     ],
                   ),
@@ -499,7 +513,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       builder: (context) {
         return Container(
           width: double.infinity,
-          height: 630,
+          height: 630.h,
           decoration: ShapeDecoration(
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -522,39 +536,39 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Bottom sheet drag handle
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Center(
                 child: Container(
-                  width: 45,
-                  height: 5,
+                  width: 45.w,
+                  height: 5.h,
                   decoration: BoxDecoration(
                     color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
 
               // Header Title
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 32),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 32.w),
                 child: Text(
                   'Add to your post',
                   style: TextStyle(
                     color: AppColors.black,
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontFamily: 'SF Pro Text',
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               Divider(
                 color: AppColors.dividerColor.withValues(alpha: 0.3),
                 thickness: 1,
-                height: 1,
+                height: 1.h,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
 
               // Option 1: Camera (Image)
               InkWell(
@@ -564,31 +578,31 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 },
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 12,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 32.w,
+                    vertical: 12.h,
                   ),
                   child: Row(
                     children: [
                       Container(
-                        width: 28,
-                        height: 28,
+                        width: 28.w,
+                        height: 28.h,
                         clipBehavior: Clip.antiAlias,
                         decoration: const BoxDecoration(),
-                        child: const Icon(
+                        child: Icon(
                           Icons.camera_alt_outlined,
                           color: AppColors.primaryColor,
-                          size: 24,
+                          size: 24.h,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Text(
                         'Camera (Image)',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontFamily: 'SF Pro Text',
                           fontWeight: FontWeight.w500,
-                          height: 1.50,
+                          height: 1.50.h,
                         ),
                       ),
                     ],
@@ -604,31 +618,31 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 },
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 12,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 32.w,
+                    vertical: 12.h,
                   ),
                   child: Row(
                     children: [
                       Container(
-                        width: 28,
-                        height: 28,
+                        width: 28.w,
+                        height: 28.h,
                         clipBehavior: Clip.antiAlias,
                         decoration: const BoxDecoration(),
-                        child: const Icon(
+                        child: Icon(
                           Icons.videocam_outlined,
                           color: AppColors.primaryColor,
-                          size: 24,
+                          size: 24.h,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Text(
                         'Camera (Video)',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontFamily: 'SF Pro Text',
                           fontWeight: FontWeight.w500,
-                          height: 1.50,
+                          height: 1.50.h,
                         ),
                       ),
                     ],
@@ -644,31 +658,31 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 },
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 12,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 32.w,
+                    vertical: 12.h,
                   ),
                   child: Row(
                     children: [
                       Container(
-                        width: 28,
-                        height: 28,
+                        width: 28.w,
+                        height: 28.h,
                         clipBehavior: Clip.antiAlias,
                         decoration: const BoxDecoration(),
-                        child: const Icon(
+                        child: Icon(
                           Icons.image_outlined,
                           color: AppColors.primaryColor,
-                          size: 24,
+                          size: 24.h,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Text(
                         'Upload Image',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontFamily: 'SF Pro Text',
                           fontWeight: FontWeight.w500,
-                          height: 1.50,
+                          height: 1.50.h,
                         ),
                       ),
                     ],
@@ -684,31 +698,31 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 },
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 12,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 32.w,
+                    vertical: 12.h,
                   ),
                   child: Row(
                     children: [
                       Container(
-                        width: 28,
-                        height: 28,
+                        width: 28.w,
+                        height: 28.h,
                         clipBehavior: Clip.antiAlias,
                         decoration: const BoxDecoration(),
-                        child: const Icon(
+                        child: Icon(
                           Icons.video_library_outlined,
                           color: AppColors.primaryColor,
-                          size: 24,
+                          size: 24.h,
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      const Text(
+                      SizedBox(width: 8.w),
+                      Text(
                         'Upload Video',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontFamily: 'SF Pro Text',
                           fontWeight: FontWeight.w500,
-                          height: 1.50,
+                          height: 1.50.h,
                         ),
                       ),
                     ],
@@ -724,31 +738,31 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 },
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 12,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 32.w,
+                    vertical: 12.h,
                   ),
                   child: Row(
                     children: [
                       Container(
-                        width: 28,
-                        height: 28,
+                        width: 28.w,
+                        height: 28.h,
                         clipBehavior: Clip.antiAlias,
                         decoration: const BoxDecoration(),
-                        child: const Icon(
+                        child: Icon(
                           Icons.insert_drive_file_outlined,
                           color: AppColors.primaryColor,
-                          size: 24,
+                          size: 24.h,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8.w),
                       Text(
                         'Upload File',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontFamily: 'SF Pro Text',
                           fontWeight: FontWeight.w500,
-                          height: 1.50,
+                          height: 1.50.h,
                         ),
                       ),
                     ],
@@ -760,26 +774,23 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
               // Cancel Button
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 24,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 24.h),
                 child: SizedBox(
                   width: double.infinity,
-                  height: 52,
+                  height: 52.h,
                   child: TextButton(
                     onPressed: () => Navigator.pop(context),
                     style: TextButton.styleFrom(
                       backgroundColor: AppColors.babyBlue5,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(15.r),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Cancel',
                       style: TextStyle(
                         color: AppColors.primaryColor,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontFamily: 'SF Pro Text',
                         fontWeight: FontWeight.w600,
                       ),

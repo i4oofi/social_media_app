@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
@@ -73,20 +74,20 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Verify Email'),
+        title: Text('Verify Email'),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(24.0.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.mark_email_unread_outlined,
-              size: 100,
+              size: 100.h,
               color: AppColors.primaryColor,
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32.h),
             Text(
               'Check your email',
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -94,7 +95,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
               'We have sent a verification link to your email address. Please click the link to verify your account.',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -102,12 +103,12 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 48),
+            SizedBox(height: 48.h),
             MainButton(
               onPressed: () => _checkVerification(silent: false),
-              child: const Text('I have verified'),
+              child: Text('I have verified'),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             TextButton(
               onPressed: () async {
                 try {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:social_media_app/core/app_assets.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/auth/widgets/login_form.dart';
@@ -42,14 +43,14 @@ class AuthView extends StatelessWidget {
           return Scaffold(
             body: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 64,
-                  vertical: 16,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 64.w,
+                  vertical: 16.h,
                 ),
                 child: Column(
                   children: [
                     Image.asset(AppAssets.appLogo),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
                     TabBar(
                       controller: DefaultTabController.of(context),
                       tabs: tabs,
@@ -61,7 +62,7 @@ class AuthView extends StatelessWidget {
                           .copyWith(fontWeight: FontWeight.w400),
                     ),
 
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
                     Expanded(child: TabBarView(children: tabsViews)),
                   ],
                 ),

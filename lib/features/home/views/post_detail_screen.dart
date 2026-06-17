@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
 import 'package:social_media_app/core/shared/widgets/post_card.dart';
@@ -31,7 +32,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Post Details',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -46,9 +47,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     PostCard(post: widget.post),
-                    const Divider(height: 1),
+                    Divider(height: 1.h),
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(16.0.w),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -58,16 +59,16 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           LikeSection(post: widget.post),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 16.h),
                           Text(
                             'Comments',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           CommentSection(post: widget.post),
                         ],
                       ),
@@ -77,7 +78,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
               decoration: BoxDecoration(
                 color: theme.cardColor,
                 border: Border(top: BorderSide(color: theme.dividerColor)),

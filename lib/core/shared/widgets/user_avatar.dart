@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 
 class UserAvatar extends StatelessWidget {
@@ -10,7 +11,7 @@ class UserAvatar extends StatelessWidget {
   final Color? borderColor;
   final double borderWidth;
 
-  const UserAvatar({
+  UserAvatar({
     super.key,
     required this.imageUrl,
     required this.name,
@@ -82,10 +83,10 @@ class UserAvatar extends StatelessWidget {
             shape: BoxShape.circle,
             color: AppColors.dividerColor,
           ),
-          child: const Center(
+          child: Center(
             child: SizedBox(
-              width: 16,
-              height: 16,
+              width: 16.w,
+              height: 16.h,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
                 valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),

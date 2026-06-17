@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 
@@ -11,13 +12,13 @@ class ProfileStatsCard extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(
           style: BorderStyle.solid,
-          width: 1,
+          width: 1.w,
           color: AppColors.grey,
         ),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0.w),
         child: Row(
           children: [
             Expanded(
@@ -27,22 +28,22 @@ class ProfileStatsCard extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 30,
+              height: 30.h,
               child: VerticalDivider(color: AppColors.grey, thickness: 0.5),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Expanded(
               child: ProfileStatItem(
                 number: userData.followersCount ?? 0,
                 label: 'Followers',
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             SizedBox(
-              height: 30,
+              height: 30.h,
               child: VerticalDivider(color: AppColors.grey, thickness: 0.5),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Expanded(
               child: ProfileStatItem(
                 number: userData.followingCount ?? 0,
@@ -70,7 +71,7 @@ class ProfileStatItem extends StatelessWidget {
             context,
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4.h),
         Text(
           label,
           style: Theme.of(

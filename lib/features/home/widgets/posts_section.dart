@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_media_app/core/shared/widgets/animated_empty_state.dart';
 import 'package:social_media_app/core/shared/widgets/post_card.dart';
 import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
@@ -57,18 +59,20 @@ class _PostsSectionState extends State<PostsSection> {
             )
           : _error != null && _posts.isEmpty
               ? Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 40),
+                  padding: EdgeInsets.symmetric(vertical: 40.h),
                   child: Center(
                     child: Text(
                       _error!,
-                      style: const TextStyle(color: Colors.red),
+                      style: TextStyle(color: Colors.red),
                     ),
                   ),
                 )
               : _posts.isEmpty
-                  ? const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40),
-                      child: Center(child: Text('No Posts')),
+                  ? const AnimatedEmptyState(
+                      icon: Icons.post_add_rounded,
+                      title: 'No Posts',
+                      subtitle: 'Be the first one to post something!',
+                      // imagePath: 'assets/images/empty_home_posts.gif', // uncomment when GIF is added
                     )
                   : ListView.builder(
                       shrinkWrap: true,
@@ -77,7 +81,7 @@ class _PostsSectionState extends State<PostsSection> {
                       itemBuilder: (context, index) {
                         if (index == _posts.length) {
                           return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 24),
+                            padding: EdgeInsets.symmetric(vertical: 24.h),
                             child: Center(
                               child: CircularProgressIndicator.adaptive(
                                 valueColor: AlwaysStoppedAnimation(

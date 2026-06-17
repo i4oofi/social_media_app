@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/app_assets.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
@@ -46,12 +47,12 @@ class _OnboardingBodyState extends State<OnboardingBody> {
             // 1. Translucent background overlay with white border as per Figma screen container 1
             Positioned.fill(
               child: Container(
-                margin: const EdgeInsets.all(8.56),
+                margin: EdgeInsets.all(8.56.w),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.70),
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24.r),
                   border: Border.all(
-                    width: 8.56,
+                    width: 8.56.w,
                     color: Colors.white,
                   ),
                 ),
@@ -65,8 +66,8 @@ class _OnboardingBodyState extends State<OnboardingBody> {
               child: Transform.rotate(
                 angle: -3.14,
                 child: Container(
-                  width: 244.55,
-                  height: 269.81,
+                  width: 244.55.w,
+                  height: 269.81.h,
                   decoration: const ShapeDecoration(
                     color: Color(0xFFD8F1FE),
                     shape: OvalBorder(),
@@ -80,8 +81,8 @@ class _OnboardingBodyState extends State<OnboardingBody> {
               child: Transform.rotate(
                 angle: -3.14,
                 child: Container(
-                  width: 244.55,
-                  height: 269.81,
+                  width: 244.55.w,
+                  height: 269.81.h,
                   decoration: const ShapeDecoration(
                     color: Color(0xFFD8F1FE),
                     shape: OvalBorder(),
@@ -109,11 +110,11 @@ class _OnboardingBodyState extends State<OnboardingBody> {
                           );
                         }
                       },
-                      child: const Text(
+                      child: Text(
                         'Skip',
                         style: TextStyle(
                           color: AppColors.primaryColor,
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -171,26 +172,26 @@ class _OnboardingBodyState extends State<OnboardingBody> {
                           final isActive = index == pageIndex;
                           return AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            margin: EdgeInsets.symmetric(horizontal: 4.w),
                             width: isActive ? 27 : 8,
-                            height: 8,
+                            height: 8.h,
                             decoration: BoxDecoration(
                               color: isActive
                                   ? const Color(0xFF007AFF)
                                   : const Color(0xFFC4C4C4),
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(5.r),
                             ),
                           );
                         }),
                       ),
-                      const SizedBox(height: 32),
+                      SizedBox(height: 32.h),
 
                       // Navigation buttons
                       if (pageIndex == 0) ...[
                         // Screen 1: Simple "Next" button
                         SizedBox(
-                          width: 320,
-                          height: 50,
+                          width: 320.w,
+                          height: 50.h,
                           child: ElevatedButton(
                             onPressed: () {
                               _pageController.nextPage(
@@ -201,15 +202,15 @@ class _OnboardingBodyState extends State<OnboardingBody> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF007AFF),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                               ),
                               elevation: 0,
                             ),
-                            child: const Text(
+                            child: Text(
                               'Next',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w400,
                               ),
@@ -219,8 +220,8 @@ class _OnboardingBodyState extends State<OnboardingBody> {
                       ] else ...[
                         // Screen 2 & 3: "Join Now" and "Sign in" buttons
                         SizedBox(
-                          width: 320,
-                          height: 50,
+                          width: 320.w,
+                          height: 50.h,
                           child: ElevatedButton(
                             onPressed: () async {
                               await cubit.completeOnboarding();
@@ -236,22 +237,22 @@ class _OnboardingBodyState extends State<OnboardingBody> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF007AFF),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10.r),
                               ),
                               elevation: 0,
                             ),
-                            child: const Text(
+                            child: Text(
                               'Join Now',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 fontFamily: 'Inter',
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         GestureDetector(
                           onTap: () async {
                             await cubit.completeOnboarding();
@@ -264,11 +265,11 @@ class _OnboardingBodyState extends State<OnboardingBody> {
                               );
                             }
                           },
-                          child: const Text(
+                          child: Text(
                             'Sign in',
                             style: TextStyle(
                               color: Color(0xFF5096F1),
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontFamily: 'Inter',
                               fontWeight: FontWeight.w400,
                               letterSpacing: 0.16,

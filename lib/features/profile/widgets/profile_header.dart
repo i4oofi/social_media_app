@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/shared/widgets/user_avatar.dart';
@@ -84,7 +85,7 @@ class ProfileHeader extends StatelessWidget {
                 child: UserAvatar(
                   imageUrl: userData.imageUrl,
                   name: userData.name,
-                  radius: 60,
+                  radius: 60.r,
                   showBorder: true,
                   borderColor: AppColors.primaryColor,
                   borderWidth: 3,
@@ -94,7 +95,7 @@ class ProfileHeader extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Column(
             children: [
               Text(
@@ -104,7 +105,7 @@ class ProfileHeader extends StatelessWidget {
                   color: AppColors.primaryColor,
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Text(
                 userData.name,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
@@ -112,7 +113,7 @@ class ProfileHeader extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
               if (isPrivate)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -135,14 +136,14 @@ class ProfileHeader extends StatelessWidget {
                             });
                       },
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Container(
-                      height: 50,
-                      width: 50,
+                      height: 50.h,
+                      width: 50.w,
                       decoration: BoxDecoration(
                         color: Colors.transparent,
-                        border: Border.all(color: AppColors.grey, width: 2),
-                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.grey, width: 2.w),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: IconButton(
                         padding: EdgeInsets.zero,
@@ -169,7 +170,7 @@ class ProfileHeader extends StatelessWidget {
                         await profileCubit.toggleFollowUser(userData.id);
                       },
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     MainButton(
                       text: 'MESSAGE',
                       width: size.width * 0.4,
@@ -204,7 +205,7 @@ class _CoverPlaceholder extends StatelessWidget {
   final bool isLoading;
   final String userName;
 
-  const _CoverPlaceholder({
+  _CoverPlaceholder({
     required this.width,
     required this.height,
     required this.isPrivate,
@@ -225,7 +226,7 @@ class _CoverPlaceholder extends StatelessWidget {
             colors: [Color(0xFF0779B8), Color(0xFF003D6B)],
           ),
         ),
-        child: const Center(
+        child: Center(
           child: CircularProgressIndicator(
             color: Colors.white54,
             strokeWidth: 2,
@@ -247,45 +248,45 @@ class _CoverPlaceholder extends StatelessWidget {
           ),
           border: Border.all(
             color: Colors.white.withValues(alpha: 0.25),
-            width: 0,
+            width: 0.w,
           ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 64,
-              height: 64,
+              width: 64.w,
+              height: 64.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white.withValues(alpha: 0.15),
                 border: Border.all(
                   color: Colors.white.withValues(alpha: 0.4),
-                  width: 1.5,
+                  width: 1.5.w,
                 ),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.add_photo_alternate_outlined,
-                size: 32,
+                size: 32.h,
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Text(
               'Add a Cover Photo',
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.9),
-                fontSize: 15,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.3,
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Text(
               'Tap "Edit Profile" to add one',
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.55),
-                fontSize: 12,
+                fontSize: 12.sp,
               ),
             ),
           ],
@@ -320,8 +321,8 @@ class _CoverPlaceholder extends StatelessWidget {
             top: -30,
             right: -30,
             child: Container(
-              width: 160,
-              height: 160,
+              width: 160.w,
+              height: 160.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: const Color(0xFF0779B8).withValues(alpha: 0.18),
@@ -333,8 +334,8 @@ class _CoverPlaceholder extends StatelessWidget {
             bottom: -20,
             left: -20,
             child: Container(
-              width: 100,
-              height: 100,
+              width: 100.w,
+              height: 100.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white.withValues(alpha: 0.05),
@@ -346,11 +347,11 @@ class _CoverPlaceholder extends StatelessWidget {
             child: Text(
               initials,
               style: TextStyle(
-                fontSize: 72,
+                fontSize: 72.sp,
                 fontWeight: FontWeight.w800,
                 color: Colors.white.withValues(alpha: 0.08),
                 letterSpacing: 8,
-                height: 1,
+                height: 1.h,
               ),
             ),
           ),

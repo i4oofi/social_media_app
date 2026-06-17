@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
+import 'package:social_media_app/core/shared/widgets/animated_empty_state.dart';
 import 'package:social_media_app/core/shared/widgets/post_card.dart';
 import 'package:social_media_app/features/home/cubit/home_cubit.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
@@ -26,7 +28,7 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Saved Posts',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
@@ -45,7 +47,7 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
             return Center(
               child: Text(
                 'Failed to load posts: ${postsState.error}',
-                style: const TextStyle(color: Colors.red),
+                style: TextStyle(color: Colors.red),
               ),
             );
           }
@@ -54,45 +56,16 @@ class _SavedPostsScreenState extends State<SavedPostsScreen> {
             final savedPosts = postsState.savedPosts;
 
             if (savedPosts.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.bookmark_border_rounded,
-                      size: 64,
-                      color: theme.brightness == Brightness.dark
-                          ? Colors.grey[600]
-                          : Colors.grey[400],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'No saved posts yet',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: theme.brightness == Brightness.dark
-                            ? Colors.grey[400]
-                            : Colors.grey[600],
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Posts you bookmark will appear here',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: theme.brightness == Brightness.dark
-                            ? Colors.grey[500]
-                            : Colors.grey[500],
-                      ),
-                    ),
-                  ],
-                ),
+              return const AnimatedEmptyState(
+                icon: Icons.bookmark_border_rounded,
+                title: 'No saved posts yet',
+                subtitle: 'Posts you bookmark will appear here',
+                // imagePath: 'assets/images/empty_saved_posts.gif', // uncomment when GIF is added
               );
             }
 
             return ListView.builder(
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.all(8.w),
               itemCount: savedPosts.length,
               itemBuilder: (context, index) {
                 return PostCard(post: savedPosts[index]);

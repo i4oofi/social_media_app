@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
@@ -29,11 +30,11 @@ class LikeSection extends StatelessWidget {
             children: [
               ...likes.map(
                 (like) => CircleAvatar(
-                  radius: 12,
+                  radius: 12.r,
                   backgroundImage: NetworkImage(like.imageUrl ?? ''),
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Text('${likes.length} likes'),
             ],
           );

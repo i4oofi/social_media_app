@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:social_media_app/core/app_assets.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 
@@ -16,7 +17,7 @@ class HomeScreenHeader extends StatelessWidget {
             Image.asset(
               AppAssets.appLogo,
               width: size.width * 0.50,
-              height: 50,
+              height: 50.h,
             ),
           ],
         ),
@@ -24,8 +25,8 @@ class HomeScreenHeader extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {},
-              icon: const Icon(Icons.search_rounded),
-              iconSize: 30,
+              icon: Icon(Icons.search_rounded),
+              iconSize: 30.r,
             ),
             IconButton(
               onPressed: () {
@@ -34,8 +35,8 @@ class HomeScreenHeader extends StatelessWidget {
                   rootNavigator: true,
                 ).pushNamed(AppRoutes.notifications);
               },
-              icon: const Icon(Icons.notifications_none_outlined),
-              iconSize: 30,
+              icon: Icon(Icons.notifications_none_outlined),
+              iconSize: 30.r,
             ),
             IconButton(
               onPressed: () {
@@ -44,8 +45,8 @@ class HomeScreenHeader extends StatelessWidget {
                   rootNavigator: true,
                 ).pushNamed(AppRoutes.inboxScreen);
               },
-              icon: const Icon(Icons.chat_bubble_outline_rounded),
-              iconSize: 30,
+              icon: Icon(Icons.chat_bubble_outline_rounded),
+              iconSize: 30.r,
             ),
           ],
         ),

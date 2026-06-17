@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:social_media_app/core/shared/widgets/animated_empty_state.dart';
 import 'package:social_media_app/core/shared/widgets/post_card.dart';
 import 'package:social_media_app/core/shared/widgets/shimmer_loading.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
@@ -49,7 +51,7 @@ class ProfileDetails extends StatelessWidget {
     final joinDate = DateFormat('MMMM yyyy').format(DateTime.now());
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -77,7 +79,7 @@ class ProfileDetails extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
 
           // ── Contact Info (private only) ──
           if (isPrivate) ...[
@@ -92,7 +94,7 @@ class ProfileDetails extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 14),
+            SizedBox(height: 14.h),
           ],
 
           // ── Account Info ──
@@ -122,7 +124,7 @@ class ProfileDetails extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
 
           // ── Activity Summary ──
           _DetailsSectionCard(
@@ -132,23 +134,29 @@ class ProfileDetails extends StatelessWidget {
               _ActivityChip(
                 icon: Icons.photo_library_outlined,
                 label: '${user.postsCount ?? 0} posts shared',
-                color: Theme.of(context).textTheme.bodyLarge?.color ?? AppColors.black,
+                color:
+                    Theme.of(context).textTheme.bodyLarge?.color ??
+                    AppColors.black,
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               _ActivityChip(
                 icon: Icons.favorite_border_rounded,
                 label: '${user.followersCount ?? 0} people follow this account',
-                color: Theme.of(context).textTheme.bodyLarge?.color ?? AppColors.black,
+                color:
+                    Theme.of(context).textTheme.bodyLarge?.color ??
+                    AppColors.black,
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               _ActivityChip(
                 icon: Icons.visibility_outlined,
                 label: '${user.followingCount ?? 0} accounts being followed',
-                color: Theme.of(context).textTheme.bodyLarge?.color ?? AppColors.black,
+                color:
+                    Theme.of(context).textTheme.bodyLarge?.color ??
+                    AppColors.black,
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
         ],
       ),
     );
@@ -174,19 +182,22 @@ class _DetailsSectionCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: theme.cardColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.3), width: 1),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: theme.dividerColor.withValues(alpha: 0.3),
+          width: 1.w,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Section Header ──
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+            padding: EdgeInsets.fromLTRB(16.w, 16.h, 14.w, 14.h),
             child: Row(
               children: [
-                Icon(icon, size: 20, color: theme.iconTheme.color),
-                const SizedBox(width: 10),
+                Icon(icon, size: 20.h, color: theme.iconTheme.color),
+                SizedBox(width: 10.w),
                 Text(
                   title,
                   style: theme.textTheme.titleMedium?.copyWith(
@@ -197,12 +208,16 @@ class _DetailsSectionCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(height: 20, thickness: 0.5, color: theme.dividerColor.withValues(alpha: 0.5)),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Divider(
+              height: 20.h,
+              thickness: 0.5,
+              color: theme.dividerColor.withValues(alpha: 0.5),
+            ),
           ),
           // ── Section Content ──
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+            padding: EdgeInsets.fromLTRB(16.w, 16.h, 0.w, 0.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: children,
@@ -232,14 +247,14 @@ class _DetailRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: EdgeInsets.symmetric(vertical: 6.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: theme.hintColor),
-          const SizedBox(width: 12),
+          Icon(icon, size: 20.h, color: theme.hintColor),
+          SizedBox(width: 12.w),
           SizedBox(
-            width: 110,
+            width: 110.w,
             child: Text(
               label,
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -247,13 +262,15 @@ class _DetailRow extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Expanded(
             child: Text(
               value,
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w500,
-                color: isSubtle ? theme.hintColor : theme.textTheme.bodyLarge?.color,
+                color: isSubtle
+                    ? theme.hintColor
+                    : theme.textTheme.bodyLarge?.color,
                 fontStyle: isSubtle ? FontStyle.italic : FontStyle.normal,
               ),
             ),
@@ -281,17 +298,17 @@ class _ActivityChip extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: theme.brightness == Brightness.dark
             ? Colors.white.withValues(alpha: 0.05)
             : AppColors.grey.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: color),
-          const SizedBox(width: 10),
+          Icon(icon, size: 20.h, color: color),
+          SizedBox(width: 10.w),
           Expanded(
             child: Text(
               label,
@@ -332,14 +349,24 @@ class ProfilePosts extends StatelessWidget {
         if (state is ProfilePostsSuccess) {
           final posts = state.posts;
           final isLoadingMore = state.isLoadingMore;
+
+          if (posts.isEmpty && !isLoadingMore) {
+            return const AnimatedEmptyState(
+              icon: Icons.grid_on_rounded,
+              title: 'No Posts Yet',
+              subtitle: 'This account hasn\'t posted anything yet.',
+              // imagePath: 'assets/images/empty_profile_posts.gif', // uncomment when GIF is added
+            );
+          }
+
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
             child: ListView.builder(
               itemCount: posts.length + (isLoadingMore ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == posts.length) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    padding: EdgeInsets.symmetric(vertical: 24.h),
                     child: Center(
                       child: CircularProgressIndicator.adaptive(
                         valueColor: AlwaysStoppedAnimation(
@@ -360,4 +387,3 @@ class ProfilePosts extends StatelessWidget {
     );
   }
 }
-

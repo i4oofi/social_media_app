@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
@@ -28,23 +29,29 @@ class _SendCommentSectionState extends State<SendCommentSection> {
           children: [
             if (replyingTo != null)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                 decoration: BoxDecoration(
                   color: AppColors.babyBlue5.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
-                margin: const EdgeInsets.only(bottom: 8),
+                margin: EdgeInsets.only(bottom: 8.h),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'Replying to ${replyingTo.authorName ?? "Anonymous"}',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    Expanded(
+                      child: Text(
+                        'Replying to ${replyingTo.authorName ?? "Anonymous"}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.sp,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8.w),
                     InkWell(
                       onTap: () => postsCubit.setReplyingTo(null),
-                      child: const Icon(Icons.close, size: 16),
+                      child: Icon(Icons.close, size: 16.h),
                     ),
                   ],
                 ),
@@ -57,7 +64,7 @@ class _SendCommentSectionState extends State<SendCommentSection> {
                     decoration: InputDecoration(
                       hintText: "Add a comment...",
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
                   ),
@@ -84,19 +91,21 @@ class _SendCommentSectionState extends State<SendCommentSection> {
                   },
                   builder: (context, state) {
                     if (state is CommentAdding) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0.w),
                         child: CircularProgressIndicator(),
                       );
                     }
                     return IconButton(
-                      icon: const Icon(Icons.send),
+                      icon: Icon(Icons.send),
                       onPressed: () async {
                         if (textController.text.trim().isEmpty) return;
                         await postsCubit.addComment(
                           widget.post.id,
                           textController.text.trim(),
-                          parentId: postsCubit.replyingToComment?.parentId ?? postsCubit.replyingToComment?.id,
+                          parentId:
+                              postsCubit.replyingToComment?.parentId ??
+                              postsCubit.replyingToComment?.id,
                         );
                       },
                     );

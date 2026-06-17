@@ -11,6 +11,7 @@ import 'package:social_media_app/core/models/comment_model.dart';
 import 'package:social_media_app/core/models/notification_model.dart';
 import 'package:social_media_app/core/services/notification_services.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 
 part 'posts_state.dart';
 
@@ -19,9 +20,9 @@ class PostsCubit extends Cubit<PostsState> {
     loadSavedPosts();
   }
 
-  final postServices = PostServices();
-  final coreAuthServices = CoreAuthServices();
-  final filePickerServices = FilePickerServices();
+  final postServices = sl<PostServices>();
+  final coreAuthServices = sl<CoreAuthServices>();
+  final filePickerServices = sl<FilePickerServices>();
   File? currentImage;
   File? currentFile;
   List<String> savedPostIds = [];

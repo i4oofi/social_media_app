@@ -91,7 +91,7 @@ class _ProfileScreenContent extends StatelessWidget {
                     child: NestedScrollView(
                       // Must be AlwaysScrollable so RefreshIndicator
                       // can be triggered even when content fills the screen.
-                      physics: const AlwaysScrollableScrollPhysics(),
+                      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                       headerSliverBuilder: (context, innerBoxIsScrolled) {
                         return [
                           SliverToBoxAdapter(

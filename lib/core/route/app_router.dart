@@ -20,10 +20,13 @@ import 'package:social_media_app/features/home/views/post_detail_screen.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 import 'package:social_media_app/features/settings/views/saved_posts_screen.dart';
 import 'package:social_media_app/features/home/views/notifications_screen.dart';
+import 'package:social_media_app/core/shared/views/splash_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case AppRoutes.splashScreen:
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case AppRoutes.onboardingScreen:
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());
       case AppRoutes.authScreen:

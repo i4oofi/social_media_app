@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 import 'package:social_media_app/core/services/core_auth_services.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
@@ -10,9 +11,10 @@ part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit() : super(ProfileInitial());
-  final coreAuthServices = CoreAuthServices();
-  final profileServices = ProfileServices();
-  final postServices = PostServices();
+  
+  final coreAuthServices = sl<CoreAuthServices>();
+  final profileServices = sl<ProfileServices>();
+  final postServices = sl<PostServices>();
 
   @override
   void emit(ProfileState state) {

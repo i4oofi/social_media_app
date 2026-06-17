@@ -6,13 +6,14 @@ import 'package:social_media_app/core/services/core_auth_services.dart';
 import 'package:social_media_app/features/chat/services/chat_services.dart';
 import 'package:social_media_app/core/theme/app_tables_names.dart';
 import 'inbox_state.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 
 class InboxCubit extends Cubit<InboxState> {
   InboxCubit() : super(InboxInitial());
 
   StreamSubscription? _inboxSubscription;
-  final ChatServices _chatServices = ChatServices();
-  final CoreAuthServices _coreAuthServices = CoreAuthServices();
+  final ChatServices _chatServices = sl<ChatServices>();
+  final CoreAuthServices _coreAuthServices = sl<CoreAuthServices>();
   final Map<String, UserData> _profileCache = {};
 
   void listenToInbox() async {

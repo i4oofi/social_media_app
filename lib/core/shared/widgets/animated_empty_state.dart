@@ -46,52 +46,66 @@ class _AnimatedEmptyStateState extends State<AnimatedEmptyState>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 20.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AnimatedBuilder(
-              animation: _animation,
-              builder: (context, child) {
-                return Transform.translate(
-                  offset: Offset(0, _animation.value),
-                  child: child,
-                );
-              },
-              child: widget.imagePath != null
-                  ? Image.asset(
-                      widget.imagePath!,
-                      width: 150.r,
-                      height: 150.r,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return _buildIconFallback();
-                      },
-                    )
-                  : _buildIconFallback(),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isBounded = constraints.hasBoundedHeight;
+        return SingleChildScrollView(
+          physics: isBounded
+              ? const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics())
+              : const NeverScrollableScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: isBounded ? constraints.maxHeight : 0,
             ),
-            SizedBox(height: 24.h),
-            Text(
-              widget.title,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 20.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedBuilder(
+                    animation: _animation,
+                    builder: (context, child) {
+                      return Transform.translate(
+                        offset: Offset(0, _animation.value),
+                        child: child,
+                      );
+                    },
+                    child: widget.imagePath != null
+                        ? Image.asset(
+                            widget.imagePath!,
+                            width: 150.r,
+                            height: 150.r,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              return _buildIconFallback();
+                            },
+                          )
+                        : _buildIconFallback(),
+                  ),
+                  SizedBox(height: 24.h),
+                  Text(
+                    widget.title,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    widget.subtitle,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.hintColor,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 8.h),
-            Text(
-              widget.subtitle,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.hintColor,
-                height: 1.5,
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

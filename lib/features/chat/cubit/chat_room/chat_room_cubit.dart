@@ -4,13 +4,14 @@ import 'package:social_media_app/core/models/chat_model.dart';
 import 'package:social_media_app/features/chat/services/chat_services.dart';
 import 'package:social_media_app/core/services/core_auth_services.dart';
 import 'chat_room_state.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 
 class ChatRoomCubit extends Cubit<ChatRoomState> {
   ChatRoomCubit() : super(ChatRoomInitial());
 
   StreamSubscription? _messagesSubscription;
-  final ChatServices _chatServices = ChatServices();
-  final CoreAuthServices _coreAuthServices = CoreAuthServices();
+  final ChatServices _chatServices = sl<ChatServices>();
+  final CoreAuthServices _coreAuthServices = sl<CoreAuthServices>();
 
   void initChatRoom({ChatModel? chat, String? otherUserId}) async {
     emit(ChatRoomLoading());

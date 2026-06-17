@@ -11,15 +11,16 @@ import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 import 'package:social_media_app/features/home/models/post_request_body.dart';
 import 'package:social_media_app/features/home/models/story_model.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
-  final homeServices = HomeServices();
-  final coreAuthServices = CoreAuthServices();
-  final filePickerServices = FilePickerServices();
-  final postServices = PostServices();
+  final homeServices = sl<HomeServices>();
+  final coreAuthServices = sl<CoreAuthServices>();
+  final filePickerServices = sl<FilePickerServices>();
+  final postServices = sl<PostServices>();
   File? currentImage;
   File? currentFile;
   File? currentVideo;

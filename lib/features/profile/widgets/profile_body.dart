@@ -51,6 +51,7 @@ class ProfileDetails extends StatelessWidget {
     final joinDate = DateFormat('MMMM yyyy').format(DateTime.now());
 
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,6 +363,7 @@ class ProfilePosts extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
             child: ListView.builder(
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
               itemCount: posts.length + (isLoadingMore ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == posts.length) {

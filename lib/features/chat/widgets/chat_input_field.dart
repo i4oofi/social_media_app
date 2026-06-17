@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:social_media_app/core/services/file_picker_services.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/core/shared/widgets/app_toast.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 
 class ChatInputField extends StatefulWidget {
   final Function(String text) onSend;
@@ -23,7 +24,7 @@ class ChatInputField extends StatefulWidget {
 
 class _ChatInputFieldState extends State<ChatInputField> {
   final TextEditingController _controller = TextEditingController();
-  final FilePickerServices _filePickerServices = FilePickerServices();
+  final FilePickerServices _filePickerServices = sl<FilePickerServices>();
   bool _isTextEmpty = true;
 
   @override

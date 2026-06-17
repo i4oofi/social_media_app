@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media_app/core/app_constants.dart';
 import 'package:social_media_app/core/cubit/posts_cubit/posts_cubit.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 import 'package:social_media_app/core/route/app_router.dart';
 import 'package:social_media_app/core/route/app_routes.dart';
 import 'package:social_media_app/core/theme/app_theme.dart';
@@ -18,6 +19,10 @@ import 'package:social_media_app/core/services/push_notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize dependency injection
+  setupLocator();
+
   await Supabase.initialize(
     url: AppConstants.supabaseUrl,
     anonKey: AppConstants.supabaseAnonKey,
@@ -69,9 +74,7 @@ class MyApp extends StatelessWidget {
                         onGenerateRoute: AppRouter.onGenerateRoute,
                         initialRoute: !onboardingCompleted
                             ? AppRoutes.onboardingScreen
-                            : (authState is auth.AuthSuccess
-                                  ? AppRoutes.customBottomNavbar
-                                  : AppRoutes.authScreen),
+                            : AppRoutes.splashScreen,
                         builder: (context, widget) {
                           // Ensure ScreenUtil is initialized for nested widgets
                           return child ?? widget ?? const SizedBox.shrink();

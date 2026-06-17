@@ -4,13 +4,14 @@ import 'package:meta/meta.dart';
 import 'package:social_media_app/core/services/core_auth_services.dart';
 import 'package:social_media_app/core/services/notification_services.dart';
 import 'package:social_media_app/core/models/notification_model.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 
 part 'notification_state.dart';
 
 class NotificationCubit extends Cubit<NotificationState> {
   NotificationCubit() : super(NotificationInitial());
-  final notificationServices = NotificationServices();
-  final coreAuthServices = CoreAuthServices();
+  final notificationServices = sl<NotificationServices>();
+  final coreAuthServices = sl<CoreAuthServices>();
 
   Future<void> fetchNotifications() async {
     try {

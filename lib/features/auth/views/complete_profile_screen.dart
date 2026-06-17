@@ -8,6 +8,7 @@ import 'package:social_media_app/features/auth/cubit/auth_cubit.dart';
 import 'package:social_media_app/features/auth/widgets/main_button.dart';
 import 'package:social_media_app/core/shared/widgets/app_toast.dart';
 import 'package:social_media_app/core/services/file_picker_services.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 
 class CompleteProfileScreen extends StatefulWidget {
   const CompleteProfileScreen({super.key});
@@ -29,7 +30,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   bool _isUsernameUnique = true;
   String _usernameError = '';
 
-  final filePickerServices = FilePickerServices();
+  final filePickerServices = sl<FilePickerServices>();
 
   @override
   void dispose() {

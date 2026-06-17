@@ -4,11 +4,12 @@ import 'package:social_media_app/core/services/core_auth_services.dart';
 import 'package:social_media_app/features/profile/services/profile_services.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 import 'reels_state.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 
 class ReelsCubit extends Cubit<ReelsState> {
   final PostServices _postServices;
-  final CoreAuthServices _coreAuthServices = CoreAuthServices();
-  final ProfileServices _profileServices = ProfileServices();
+  final CoreAuthServices _coreAuthServices = sl<CoreAuthServices>();
+  final ProfileServices _profileServices = sl<ProfileServices>();
 
   ReelsCubit(this._postServices) : super(ReelsInitial());
 

@@ -3,13 +3,14 @@ import 'package:meta/meta.dart';
 import 'package:social_media_app/features/auth/models/user_data.dart';
 import 'package:social_media_app/features/discover/views/services/discover_services.dart';
 import 'package:social_media_app/features/profile/services/profile_services.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 
 part 'discover_state.dart';
 
 class DiscoverCubit extends Cubit<DiscoverState> {
   DiscoverCubit() : super(DiscoverInitial());
 
-  final discoverServices = DiscoverServices();
+  final discoverServices = sl<DiscoverServices>();
 
   Future<void> fetchAllUsers() async {
     try {

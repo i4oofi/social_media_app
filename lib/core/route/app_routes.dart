@@ -14,4 +14,5 @@ class AppRoutes {
   static const savedPosts = '/saved_posts';
   static const notifications = '/notifications';
   static const emailVerificationScreen = '/email_verification';
+  static const splashScreen = '/splash';
 }

@@ -1,12 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 import 'package:social_media_app/features/auth/services/auth_services.dart';
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit() : super(AuthInitial());
-  final authServices = AuthServices();
+  AuthCubit() : super(AuthChecking());
+  final authServices = sl<AuthServices>();
 
   Future<void> signUpWithEmail(
     String email,

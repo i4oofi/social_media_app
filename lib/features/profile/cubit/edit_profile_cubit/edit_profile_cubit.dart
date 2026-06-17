@@ -5,15 +5,16 @@ import 'package:meta/meta.dart';
 import 'package:social_media_app/core/services/core_auth_services.dart';
 import 'package:social_media_app/core/services/file_picker_services.dart';
 import 'package:social_media_app/features/profile/services/profile_services.dart';
+import 'package:social_media_app/core/di/service_locator.dart';
 
 part 'edit_profile_state.dart';
 
 class EditProfileCubit extends Cubit<EditProfileState> {
   EditProfileCubit() : super(EditProfileInitial());
 
-  final profileServices = ProfileServices();
-  final coreAuthServices = CoreAuthServices();
-  final filePickerServices = FilePickerServices();
+  final profileServices = sl<ProfileServices>();
+  final coreAuthServices = sl<CoreAuthServices>();
+  final filePickerServices = sl<FilePickerServices>();
 
   File? _profileImageFile;
   File? _coverImageFile;

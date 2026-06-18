@@ -20,7 +20,7 @@ import 'package:social_media_app/features/home/views/post_detail_screen.dart';
 import 'package:social_media_app/features/home/models/post_model.dart';
 import 'package:social_media_app/features/settings/views/saved_posts_screen.dart';
 import 'package:social_media_app/features/home/views/notifications_screen.dart';
-import 'package:social_media_app/core/shared/views/splash_screen.dart';
+import 'package:social_media_app/features/splash/views/splash_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -37,7 +37,9 @@ class AppRouter {
       case AppRoutes.completeProfileScreen:
         return MaterialPageRoute(builder: (_) => const CompleteProfileScreen());
       case AppRoutes.emailVerificationScreen:
-        return MaterialPageRoute(builder: (_) => const EmailVerificationScreen());
+        return MaterialPageRoute(
+          builder: (_) => const EmailVerificationScreen(),
+        );
       case AppRoutes.customBottomNavbar:
         return MaterialPageRoute(builder: (_) => const CustomBottomNavbar());
       case AppRoutes.createPost:
@@ -51,9 +53,7 @@ class AppRouter {
       case AppRoutes.editProfile:
         final args = settings.arguments as EditProfileScreenArgs;
         return MaterialPageRoute(
-          builder: (_) => EditProfileScreen(
-            userData: args.userData,
-          ),
+          builder: (_) => EditProfileScreen(userData: args.userData),
         );
       case AppRoutes.settings:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
@@ -64,10 +64,7 @@ class AppRouter {
         final chat = args?['chat'] as ChatModel?;
         final otherUserId = args?['otherUserId'] as String?;
         return MaterialPageRoute(
-          builder: (_) => ChatRoomScreen(
-            chat: chat,
-            otherUserId: otherUserId,
-          ),
+          builder: (_) => ChatRoomScreen(chat: chat, otherUserId: otherUserId),
         );
       case AppRoutes.createStory:
         final homeCubit = settings.arguments as HomeCubit;
@@ -79,9 +76,7 @@ class AppRouter {
         );
       case AppRoutes.postDetailScreen:
         final post = settings.arguments as PostModel;
-        return MaterialPageRoute(
-          builder: (_) => PostDetailScreen(post: post),
-        );
+        return MaterialPageRoute(builder: (_) => PostDetailScreen(post: post));
       case AppRoutes.savedPosts:
         return MaterialPageRoute(builder: (_) => const SavedPostsScreen());
       case AppRoutes.notifications:

@@ -58,10 +58,13 @@ class AuthServices {
         id: userId,
         builder: (data, id) => data,
       );
-      // If user exists but dob is empty, it means it's a dummy row from CoreAuthServices and profile is incomplete
+      // Profile is considered complete only if the user row exists AND
+      // user_name is filled (it's required in completeProfile).
+      // This prevents existing users from being redirected to CompleteProfileScreen
+      // just because an optional field like dob is missing.
       if (user != null) {
-        final dob = user['dob'] as String?;
-        return dob != null && dob.isNotEmpty;
+        final userName = user['user_name'] as String?;
+        return userName != null && userName.isNotEmpty;
       }
       return false;
     } catch (e) {

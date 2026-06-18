@@ -75,8 +75,8 @@ class ProfileDetails extends StatelessWidget {
               _DetailRow(
                 icon: Icons.cake_outlined,
                 label: 'Date of Birth',
-                value: user.dob ?? 'Unknown',
-                isSubtle: user.dob == null || user.dob!.isEmpty,
+                value: user.dob.isEmpty ? 'Unknown' : user.dob,
+                isSubtle: user.dob.isEmpty,
               ),
             ],
           ),
@@ -341,7 +341,7 @@ class ProfilePosts extends StatelessWidget {
         if (state is ProfilePostsLoading) {
           return ListView.builder(
             itemCount: 4,
-            itemBuilder: (_, __) => const PostShimmer(),
+            itemBuilder: (context, index) => const PostShimmer(),
           );
         }
         if (state is ProfilePostsFailure) {

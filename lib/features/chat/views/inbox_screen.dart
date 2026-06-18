@@ -56,9 +56,7 @@ class _InboxScreenState extends State<InboxScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocProvider(
-      create: (context) => InboxCubit()..listenToInbox(),
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text(
             'Messages',
@@ -365,7 +363,6 @@ class _InboxScreenState extends State<InboxScreen> {
               ),
             ),
           ],
-        ),
       ),
     );
   }

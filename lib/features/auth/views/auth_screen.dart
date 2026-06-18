@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:social_media_app/core/app_assets.dart';
 import 'package:social_media_app/core/theme/app_colors.dart';
 import 'package:social_media_app/features/auth/widgets/login_form.dart';
@@ -43,13 +44,10 @@ class AuthView extends StatelessWidget {
           return Scaffold(
             body: SafeArea(
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 64.w,
-                  vertical: 16.h,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 64.w, vertical: 16.h),
                 child: Column(
                   children: [
-                    Image.asset(AppAssets.appLogo),
+                    SvgPicture.asset(AppAssets.appLogo),
                     SizedBox(height: 32.h),
                     TabBar(
                       controller: DefaultTabController.of(context),

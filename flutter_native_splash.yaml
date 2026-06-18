@@ -1,11 +1,13 @@
 flutter_native_splash:
   color: "#FFFFFF"
-  image: "assets/images/logo_padded.png"
+  image: "assets/images/logo/logo_icon.png"
   color_dark: "#121212"
-  image_dark: "assets/images/logo_padded.png"
+  image_dark: "assets/images/logo/logo_icon.png"
 
   android_12:
     color: "#FFFFFF"
-    image: "assets/images/logo_padded.png"
+    image: "assets/images/logo/logo_icon.png"
+    icon_background_color: "#FFFFFF"
     color_dark: "#121212"
-    image_dark: "assets/images/logo_padded.png"
+    image_dark: "assets/images/logo/logo_icon.png"
+    icon_background_color_dark: "#121212"

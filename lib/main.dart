@@ -13,6 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:social_media_app/core/cubit/theme_cubit/theme_cubit.dart';
 import 'package:social_media_app/core/cubit/notification_cubit/notification_cubit.dart';
+import 'package:social_media_app/features/chat/cubit/inbox/inbox_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:social_media_app/firebase_options.dart';
 import 'package:social_media_app/core/services/push_notification_service.dart';
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => PostsCubit()),
         BlocProvider(create: (context) => ThemeCubit()),
         BlocProvider(create: (context) => NotificationCubit()),
+        BlocProvider(create: (context) => InboxCubit()),
       ],
       child: Builder(
         builder: (context) {

@@ -45,3 +45,11 @@ app.*.map.json
 /android/app/release
 supabase_chat_schema.sql
 supabase_notifications_migration.sql
+docs/presentation/assets/supabase-schema-luwbglucaedacswkaqgn.svg
+docs/presentation/assets/logo.svg
+docs/presentation/assets/logo_icon.svg
+docs/presentation/assets/logo_icon.png
+docs/presentation/styles.css
+docs/presentation/index.html
+docs/presentation/generate.py
+docs/presentation/app.js

@@ -539,13 +539,16 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   padding: EdgeInsets.zero,
+                                  visualDensity: const VisualDensity(
+                                    horizontal: -4,
+                                  ),
                                   constraints: BoxConstraints(
-                                    minWidth: 40.w,
+                                    minWidth: 0,
                                     minHeight: 40.h,
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 2.w),
+                              SizedBox(width: 4.w),
                               AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 200),
                                 transitionBuilder: (child, anim) =>
@@ -601,7 +604,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                     },
                   ),
 
-                  SizedBox(width: 4.w),
+                  SizedBox(width: 10.w),
 
                   // Comment button
                   Row(
@@ -638,12 +641,13 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                           size: 25.sp,
                         ),
                         padding: EdgeInsets.zero,
+                        visualDensity: const VisualDensity(horizontal: -4),
                         constraints: BoxConstraints(
-                          minWidth: 40.w,
+                          minWidth: 0,
                           minHeight: 40.h,
                         ),
                       ),
-                      SizedBox(width: 2.w),
+                      SizedBox(width: 4.w),
                       Text(
                         _formatCount(post.commentCount ?? 0),
                         style: theme.textTheme.bodyMedium?.copyWith(
@@ -687,8 +691,9 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                             ),
                           ),
                           padding: EdgeInsets.zero,
+                          visualDensity: const VisualDensity(horizontal: -4),
                           constraints: BoxConstraints(
-                            minWidth: 40.w,
+                            minWidth: 0,
                             minHeight: 40.h,
                           ),
                         ),

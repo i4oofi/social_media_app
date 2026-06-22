@@ -66,3 +66,4 @@ docs/presentation/assets/logo_icon.png
 .gitignore
 docs/presentation/assets/logo.svg
 docs/presentation/assets/logo_icon.svg
+supabase/trigger_notifications.py

@@ -535,7 +535,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                       color: isOptimisticLiked
                                           ? AppColors.primaryColor
                                           : null,
-                                      size: 22.sp,
+                                      size: 25.sp,
                                     ),
                                   ),
                                   padding: EdgeInsets.zero,
@@ -562,7 +562,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                 child: Text(
                                   _formatCount(optimisticLikesCount),
                                   key: ValueKey(optimisticLikesCount),
-                                  style: theme.textTheme.bodySmall?.copyWith(
+                                  style: theme.textTheme.bodyMedium?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: isOptimisticLiked
                                         ? AppColors.white
@@ -635,7 +635,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                         },
                         icon: Icon(
                           Icons.chat_bubble_outline_rounded,
-                          size: 20.sp,
+                          size: 25.sp,
                         ),
                         padding: EdgeInsets.zero,
                         constraints: BoxConstraints(
@@ -646,7 +646,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                       SizedBox(width: 2.w),
                       Text(
                         _formatCount(post.commentCount ?? 0),
-                        style: theme.textTheme.bodySmall?.copyWith(
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -683,7 +683,7 @@ class _PostCardState extends State<PostCard> with TickerProviderStateMixin {
                                   : Icons.bookmark_border_rounded,
                               key: ValueKey(isSaved),
                               color: isSaved ? AppColors.primaryColor : null,
-                              size: 22.sp,
+                              size: 25.sp,
                             ),
                           ),
                           padding: EdgeInsets.zero,

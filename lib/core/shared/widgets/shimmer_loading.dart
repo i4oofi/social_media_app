@@ -42,54 +42,137 @@ class ShimmerBox extends StatelessWidget {
 
 // ─── Post Shimmer ─────────────────────────────────────────────────────────────
 
-/// Skeleton that mimics the layout of `PostCard`.
 class PostShimmer extends StatelessWidget {
   const PostShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 8.h),
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.3)
+                : Colors.black.withValues(alpha: 0.06),
+            blurRadius: 18,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Author row
-            Row(
-              children: [
-                ShimmerBox(width: 40.w, height: 40.h, isCircle: true),
-                SizedBox(width: 10.w),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ShimmerBox(width: 120.w, height: 13.h, borderRadius: 6),
-                    SizedBox(height: 6.h),
-                    ShimmerBox(width: 72.w, height: 11.h, borderRadius: 6),
-                  ],
-                ),
-              ],
+            // ── Header ─────────────────────────────────────────────────
+            Padding(
+              padding: EdgeInsets.fromLTRB(14.w, 14.h, 8.w, 0),
+              child: Row(
+                children: [
+                  ShimmerBox(width: 44.r, height: 44.r, isCircle: true),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ShimmerBox(width: 120.w, height: 14.h, borderRadius: 6),
+                        SizedBox(height: 6.h),
+                        ShimmerBox(width: 80.w, height: 11.h, borderRadius: 6),
+                      ],
+                    ),
+                  ),
+                  ShimmerBox(width: 22.sp, height: 22.sp, isCircle: true),
+                  SizedBox(width: 8.w),
+                ],
+              ),
             ),
-            SizedBox(height: 14.h),
+
+            // ── Body ────────────────────────────────────────
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ShimmerBox(
+                    width: double.infinity,
+                    height: 14.5.sp,
+                    borderRadius: 6,
+                  ),
+                  SizedBox(height: 6.h),
+                  ShimmerBox(width: 200.w, height: 14.5.sp, borderRadius: 6),
+                ],
+              ),
+            ),
+
             // Image placeholder
-            ShimmerBox(width: double.infinity, height: 180.h, borderRadius: 10),
-            SizedBox(height: 12.h),
-            // Text lines
-            ShimmerBox(width: double.infinity, height: 13.h, borderRadius: 6),
-            SizedBox(height: 6.h),
-            ShimmerBox(width: 200.w, height: 13.h, borderRadius: 6),
-            SizedBox(height: 14.h),
-            // Like / Comment row
-            Row(
-              children: [
-                ShimmerBox(width: 28.w, height: 28.h, isCircle: true),
-                SizedBox(width: 6.w),
-                ShimmerBox(width: 24.w, height: 11.h, borderRadius: 6),
-                SizedBox(width: 16.w),
-                ShimmerBox(width: 28.w, height: 28.h, isCircle: true),
-                SizedBox(width: 6.w),
-                ShimmerBox(width: 24.w, height: 11.h, borderRadius: 6),
-              ],
+            ShimmerBox(width: double.infinity, height: 350.h, borderRadius: 0),
+
+            // ── Divider ────────────────────────────────────────────────
+            Divider(
+              height: 1,
+              thickness: 0.5,
+              color: AppColors.dividerColor.withValues(alpha: 0.4),
+            ),
+
+            // ── Actions bar ────────────────────────────────────────────
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 4.h),
+              child: Row(
+                children: [
+                  // Like
+                  SizedBox(
+                    width: 40.w,
+                    height: 40.h,
+                    child: Center(
+                      child: ShimmerBox(
+                        width: 25.sp,
+                        height: 25.sp,
+                        isCircle: true,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+                  ShimmerBox(width: 20.w, height: 14.h, borderRadius: 4),
+
+                  SizedBox(width: 12.w), // Space between actions
+                  // Comment
+                  SizedBox(
+                    width: 40.w,
+                    height: 40.h,
+                    child: Center(
+                      child: ShimmerBox(
+                        width: 25.sp,
+                        height: 25.sp,
+                        isCircle: true,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 2.w),
+                  ShimmerBox(width: 20.w, height: 14.h, borderRadius: 4),
+
+                  const Spacer(),
+
+                  // Save
+                  SizedBox(
+                    width: 40.w,
+                    height: 40.h,
+                    child: Center(
+                      child: ShimmerBox(
+                        width: 25.sp,
+                        height: 25.sp,
+                        isCircle: true,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                ],
+              ),
             ),
           ],
         ),
@@ -166,73 +249,107 @@ class ProfileHeaderShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Cover image
-              ShimmerBox(
-                width: double.infinity,
-                height: 200.h,
-                borderRadius: 0,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              // ── Cover + Avatar ────────────────────────────────────────────
+              SizedBox(
+                height: size.height * 0.3 + 44,
+                child: Stack(
                   children: [
-                    SizedBox(height: 12.h),
-                    // Avatar + follow button row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        ShimmerBox(width: 90.w, height: 90.h, isCircle: true),
-                        ShimmerBox(
-                          width: 110.w,
-                          height: 36.h,
-                          borderRadius: 20,
+                    // Cover photo
+                    ShimmerBox(
+                      width: size.width,
+                      height: size.height * 0.3,
+                      borderRadius: 0,
+                    ),
+
+                    // Avatar (centered)
+                    Positioned(
+                      bottom: 0,
+                      left: size.width * 0.5 - 62,
+                      right: size.width * 0.5 - 62,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).scaffoldBackgroundColor,
                         ),
-                      ],
+                        child: ShimmerBox(
+                          width: 124.r,
+                          height: 124.r,
+                          isCircle: true,
+                        ),
+                      ),
                     ),
-                    SizedBox(height: 16.h),
-                    // Name
-                    ShimmerBox(width: 160.w, height: 18.h, borderRadius: 8),
-                    SizedBox(height: 8.h),
-                    // Bio
-                    ShimmerBox(width: 220.w, height: 13.h, borderRadius: 6),
-                    SizedBox(height: 6.h),
-                    ShimmerBox(width: 180.w, height: 13.h, borderRadius: 6),
-                    SizedBox(height: 20.h),
-                    // Stats row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _statShimmer(),
-                        _statShimmer(),
-                        _statShimmer(),
-                      ],
-                    ),
-                    SizedBox(height: 20.h),
                   ],
                 ),
               ),
+
+              // ── Name / Username ───────────────────────────────────────────
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  children: [
+                    SizedBox(height: 10.h),
+                    Center(
+                      child: ShimmerBox(
+                        width: 180.w,
+                        height: 24.sp,
+                        borderRadius: 8,
+                      ),
+                    ),
+                    SizedBox(height: 6.h),
+                    Center(
+                      child: ShimmerBox(
+                        width: 120.w,
+                        height: 13.sp,
+                        borderRadius: 6,
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                  ],
+                ),
+              ),
+
+              // ── Action Buttons ────────────────────────────────────────────
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ShimmerBox(
+                      width: size.width * 0.5,
+                      height: 48.h,
+                      borderRadius: 24.r,
+                    ),
+                    SizedBox(width: 12.w),
+                    ShimmerBox(width: 48.w, height: 48.h, borderRadius: 12.r),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 20.h),
+
+              // ── Profile Stats ─────────────────────────────────────────────
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: ShimmerBox(
+                  width: double.infinity,
+                  height: 90.h,
+                  borderRadius: 24.r,
+                ),
+              ),
+
+              SizedBox(height: 8.h),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _statShimmer() {
-    return Column(
-      children: [
-        ShimmerBox(width: 50.w, height: 20.h, borderRadius: 6),
-        SizedBox(height: 4.h),
-        ShimmerBox(width: 60.w, height: 11.h, borderRadius: 6),
-      ],
     );
   }
 }

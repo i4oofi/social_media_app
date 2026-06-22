@@ -46,10 +46,23 @@ app.*.map.json
 supabase_chat_schema.sql
 supabase_notifications_migration.sql
 docs/presentation/assets/supabase-schema-luwbglucaedacswkaqgn.svg
-docs/presentation/assets/logo.svg
-docs/presentation/assets/logo_icon.svg
-docs/presentation/assets/logo_icon.png
-docs/presentation/styles.css
+# docs/presentation/assets/logo.svg
+# docs/presentation/assets/logo_icon.svg
+# docs/presentation/assets/logo_icon.png
+# docs/presentation/styles.css
+# docs/presentation/index.html
+# docs/presentation/generate.py
+# docs/presentation/app.js
+supabase/seed_data.py
+supabase/clear_db.py
+docs/presentation/assets/videos/features_demo.mp4
+.gitignore
 docs/presentation/index.html
+.gitignore
 docs/presentation/generate.py
 docs/presentation/app.js
+docs/presentation/styles.css
+docs/presentation/assets/logo_icon.png
+.gitignore
+docs/presentation/assets/logo.svg
+docs/presentation/assets/logo_icon.svg

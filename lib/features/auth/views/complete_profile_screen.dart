@@ -141,7 +141,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Complete Profile'),
+        title: const Text('Complete Profile'),
         automaticallyImplyLeading: false,
       ),
       body: BlocConsumer<AuthCubit, AuthState>(

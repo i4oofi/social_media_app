@@ -79,11 +79,22 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> checkUserAuth() async {
-    final user = authServices.fetchUserRaw();
-    if (user != null) {
-      await _checkUserProfileCompletion();
-    } else {
-      emit(AuthInitial());
+    try {
+      final user = authServices.fetchUserRaw();
+      if (user != null) {
+        final exists = await authServices.checkUserExistsInDb(user.id);
+        if (exists) {
+          emit(AuthSuccess());
+        } else {
+          // If profile is wiped/missing, sign out to prevent trapping in CompleteProfileScreen
+          await authServices.signOut();
+          emit(AuthInitial());
+        }
+      } else {
+        emit(AuthInitial());
+      }
+    } catch (e) {
+      emit(AuthFailure(e.toString()));
     }
   }
 

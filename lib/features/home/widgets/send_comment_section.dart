@@ -31,7 +31,7 @@ class _SendCommentSectionState extends State<SendCommentSection> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
                 decoration: BoxDecoration(
-                  color: AppColors.babyBlue5.withOpacity(0.5),
+                  color: AppColors.primaryColor.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 margin: EdgeInsets.only(bottom: 8.h),
